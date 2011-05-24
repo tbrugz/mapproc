@@ -32,14 +32,16 @@ public class LocalMain {
 	static Log log = LogFactory.getLog(LocalMain.class);
 	
 	public static void main(String[] args) throws Exception {
-		FileReader fr = new FileReader("work/input/tabela-municipios_e_habitantes.csv");
+		FileReader seriesFile = new FileReader("work/input/tabela-municipios_e_habitantes.csv");
 		String kmlFile = "work/input/Municipalities_of_RS.kml";
-		FileWriter fw = new FileWriter("work/output/Mun.kml");
+		FileWriter outputWriter = new FileWriter("work/output/Mun.kml");
 		int numOfCategories = 5;
 		ScaleType scaleType = ScaleType.LOG;
+		//String colorSpec = "a0--ffff";
+		String colorSpec = "a000++00";
 		
 		LocalMain lm = new LocalMain();
-		lm.doIt(kmlFile, fr, fw, scaleType, numOfCategories);
+		lm.doIt(kmlFile, seriesFile, outputWriter, scaleType, numOfCategories, colorSpec);
 	}
 	
 	void debug(double[] vals, int numOfCategories) {
@@ -61,7 +63,7 @@ public class LocalMain {
 		System.out.println("cats: "+cats);
 	}
 		
-	public void doIt(String kmlURI, Reader dataSeriesReader, Writer outputWriter, ScaleType scaleType, int numOfCategories) throws Exception {
+	public void doIt(String kmlURI, Reader dataSeriesReader, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec) throws Exception {
 		BufferedReader br = new BufferedReader(dataSeriesReader);
 		IndexedSeries is = new IndexedSeries();
 		is.readFromStream(br);
@@ -98,7 +100,7 @@ public class LocalMain {
 		//snippets.load(new FileInputStream("snippets.properties"));
 		snippets.load(LocalMain.class.getResourceAsStream("/"+"snippets.properties"));
 
-		List<String> styles = getStylesFromCategories(cats, snippets);
+		List<String> styles = getStylesFromCategories(cats, snippets, colorSpec);
 		//System.out.println(styles);
 		//System.out.println("Root element :"	+ doc.getDocumentElement().getNodeName());
 		
@@ -191,7 +193,11 @@ public class LocalMain {
 		 * 
 		 */
 	
-	static List<String> getStylesFromCategories(List<Category> cats, Properties prop) {
+	static List<String> getStylesFromCategories(List<Category> cats, Properties prop, String colorSpec) {
+		if(colorSpec==null || colorSpec.length()!=8) {
+			throw new RuntimeException("ColorSpec must be in format 'aabbggrr'; '++' and '--' are used for color substitution");
+		}
+		
 		List<String> styles = new ArrayList<String>();
 		List<Double> colors = StatsUtils.getLinearCategoriesLimits(0, 255, cats.size()-1);
 		
@@ -199,12 +205,24 @@ public class LocalMain {
 		 * color format is 'aabbggrr', see: http://code.google.com/apis/kml/documentation/kmlreference.html#colorstyle
 		 */
 			
+		//String colorSpec = a0++ffff, a0--ffff
+		//String colorSpec = "a0--ffff";
+		//String colorSpec = "a0++ffff";
+		
 		int i=0;
 		for(Category c: cats) {
 			String style = prop.getProperty("Style"); //0: id, 1: color
 			style = style.replaceAll("\\{0\\}", c.styleId);
-			String hex = hexString( complFF( colors.get(i).intValue() ) );
-			style = style.replaceAll("\\{1\\}", "a0"+hex+"ffff");
+			
+			String positiveHex = hexString( colors.get(i).intValue() );
+			String complementHex = hexString( complFF( colors.get(i).intValue() ) );
+			
+			String color = colorSpec.replaceAll("\\+\\+", positiveHex);
+			color = color.replaceAll("\\-\\-", complementHex);
+			log.warn("colorSpec: "+colorSpec+"; cat: "+c.styleId+"; color: "+color);
+			
+			//style = style.replaceAll("\\{1\\}", "a0"+hex+"ffff");
+			style = style.replaceAll("\\{1\\}", color);
 			i++;
 			styles.add(style);
 		}
