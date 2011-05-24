@@ -6,19 +6,40 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-public class IndexedSerie {
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+public class IndexedSeries {
+	static Log log = LogFactory.getLog(IndexedSeries.class);
+
 	Map<String, Double> values = new HashMap<String, Double>();
 	
-	public static final String DELIMITER = ";";
+	String objectLabel;
+	String valueLabel;
+	
+	public static final String DEFAULT_DELIMITER = ";";
 	
 	public void readFromStream(BufferedReader reader) throws IOException {
+		readFromStream(reader, DEFAULT_DELIMITER);
+	}
+
+	public void readFromStream(BufferedReader reader, String delimiter) throws IOException {
 		String header = reader.readLine();
-		String[] headers = header.split(DELIMITER);
+		String[] headers = header.split(delimiter);
+		objectLabel = headers[0];
+		String[] valueFields = headers[1].split(":");
+		valueLabel = valueFields[0];
+		String valueType = "int";
+		if(valueFields.length>1) {
+			valueType = valueFields[1]; 
+		}
+		log.info("IndexedSeries: objLabel: "+objectLabel+"; valueLabel: "+valueLabel+"; valueType: "+valueType);
+		
 		String line = reader.readLine();
 		//TODO: non-double values... like Date or String
 		while(line!=null) {
 			//---
-			String[] linevals = line.split(DELIMITER);
+			String[] linevals = line.split(delimiter);
 			String s = linevals[0];
 			Double d = Double.parseDouble(linevals[1]);
 			values.put(s, d);

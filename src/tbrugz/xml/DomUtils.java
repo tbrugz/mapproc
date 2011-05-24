@@ -10,7 +10,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class XmlUtils {
+public class DomUtils {
 
 	public static Element getChildByTagName(Element elem, String tagName) {
 		NodeList nl = elem.getElementsByTagName(tagName);

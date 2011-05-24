@@ -1,10 +1,10 @@
 package tbrugz.mapproc;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -21,20 +21,27 @@ import org.w3c.dom.NodeList;
 
 import tbrugz.stats.StatsUtils;
 import tbrugz.xml.XmlPrinter;
-import tbrugz.xml.XmlUtils;
+import tbrugz.xml.DomUtils;
 
+/*
+ * TODO: placemark ordering by id, name, series-value
+ * TODO: only output placemarks which have value 
+ */
 public class LocalMain {
 	static Log log = LogFactory.getLog(LocalMain.class);
 	
 	public static void main(String[] args) throws Exception {
 		FileReader fr = new FileReader("work/input/tabela-municipios_e_habitantes.csv");
-		BufferedReader br = new BufferedReader(fr);
-		IndexedSerie is = new IndexedSerie();
-		is.readFromStream(br);
-		double[] vals = StatsUtils.toDoubleArray(is.getValues());
+		String kmlFile = "work/input/Municipalities_of_RS.kml";
+		FileWriter fw = new FileWriter("work/output/Mun.kml");
+		
+		LocalMain lm = new LocalMain();
+		lm.doIt(kmlFile, fr, fw);
+	}
+	
+	void debug(double[] vals) {
 		List<Double> valsL = StatsUtils.toDoubleList(vals);
 
-		//test...
 		double min = StatsUtils.min(vals);
 		double max = StatsUtils.max(vals);
 		System.out.println("max: "+max);
@@ -42,13 +49,30 @@ public class LocalMain {
 		
 		List<Double> limits = StatsUtils.getLogCategoriesLimits(min, max, 5);
 		List<Category> cats = Category.getCategoriesFromLimits(limits);
-		System.out.println("log categories bounds: "+limits);
 
+		System.out.println("log categories bounds: "+limits);
 		System.out.println("linear categories bounds: "+StatsUtils.getLinearCategoriesLimits(min, max, 5));
 		//System.out.println("log categories bounds: "+StatsUtils.getLogCategoriesLimits(min, max, 5));
 		System.out.println("percentile categories bounds: "+StatsUtils.getPercentileCategoriesLimits(valsL,  5));
 		
 		System.out.println("cats: "+cats);
+	}
+		
+	public void doIt(String kmlURI, Reader dataSerieReader, Writer outputWriter) throws Exception {
+		BufferedReader br = new BufferedReader(dataSerieReader);
+		IndexedSeries is = new IndexedSeries();
+		is.readFromStream(br);
+		double[] vals = StatsUtils.toDoubleArray(is.getValues());
+		
+		//debug(vals);
+
+		double min = StatsUtils.min(vals);
+		double max = StatsUtils.max(vals);
+		
+		List<Double> limits = StatsUtils.getLogCategoriesLimits(min, max, 5);
+		List<Category> cats = Category.getCategoriesFromLimits(limits);
+		//System.out.println("log categories bounds: "+limits);
+		//System.out.println("cats: "+cats);
 		
 		/*
 		 * proc KLM:
@@ -60,7 +84,6 @@ public class LocalMain {
 		 * 
 		 */
 		
-		String kmlFile = "work/input/Municipalities_of_RS.kml";
 		//KMLParser parser = new KMLParser();
 		//StringWriter sw = new StringWriter();
 		//parser.parseDocument(kmlFile, sw);
@@ -68,27 +91,27 @@ public class LocalMain {
 		//http://www.mkyong.com/java/how-to-read-xml-file-in-java-dom-parser/
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		Document doc = dBuilder.parse(kmlFile);
+		Document doc = dBuilder.parse(kmlURI);
 		doc.getDocumentElement().normalize();
 		
 		Properties snippets = new Properties();
-		snippets.load(new FileInputStream("snippets.properties"));
+		//snippets.load(new FileInputStream("snippets.properties"));
+		snippets.load(LocalMain.class.getResourceAsStream("/"+"snippets.properties"));
 
 		List<String> styles = getStylesFromCategories(cats, snippets);
-		System.out.println(styles);
-		
+		//System.out.println(styles);
 		//System.out.println("Root element :"	+ doc.getDocumentElement().getNodeName());
 		
 		//styles
-		Element kmldoc = XmlUtils.getChildByTagName(doc.getDocumentElement(), "Document");
+		Element kmldoc = DomUtils.getChildByTagName(doc.getDocumentElement(), "Document");
 		int count = 0;
 		Node kmlStylesPosBefore = kmldoc.getFirstChild();
-		Node node1stFolder = XmlUtils.getChildByTagName(kmldoc, "Folder");
+		Node node1stFolder = DomUtils.getChildByTagName(kmldoc, "Folder");
 		if(node1stFolder!=null) {
 			kmlStylesPosBefore = node1stFolder;
 		}
 		for(String styleStr: styles) {
-			Element st = XmlUtils.getDocumentNodeFromString(styleStr, dBuilder).getDocumentElement();
+			Element st = DomUtils.getDocumentNodeFromString(styleStr, dBuilder).getDocumentElement();
 			//Element st = doc.createElement("Style");
 			//st.setTextContent(styleStr);
 			//st.setAttribute("id", "style"+count);
@@ -114,13 +137,14 @@ public class LocalMain {
 				if(valueFromIS!=null) {
 					Category cat = Category.getCategoryFromValue(cats, valueFromIS);
 					String styleId = cat!=null?cat.styleId:"NULL";
-					Element eName = XmlUtils.getChildByTagName(eElement, "name");
-					log.info("Placemark: value: "+valueFromIS+"; cat: "+cat+"; name: "+eName.getTextContent());
+					Element eName = DomUtils.getChildByTagName(eElement, "name");
+					log.debug("Placemark: value: "+valueFromIS+"; cat: "+cat+"; name: "+eName.getTextContent());
 					
 					//change description
 					String desc = snippets.getProperty("description.append");
-					desc = desc.replaceAll("\\{0\\}", String.valueOf(valueFromIS));
-					Element descElem = XmlUtils.getChildByTagName(eElement, "description");
+					desc = desc.replaceAll("\\{0\\}", is.valueLabel);
+					desc = desc.replaceAll("\\{1\\}", String.valueOf(valueFromIS));
+					Element descElem = DomUtils.getChildByTagName(eElement, "description");
 					if(descElem!=null) {
 						descElem.setTextContent(descElem.getTextContent()+desc);
 					}
@@ -139,7 +163,7 @@ public class LocalMain {
 					}*/
 
 					//change style
-					Element styleElem = XmlUtils.getChildByTagName(eElement, "styleUrl");
+					Element styleElem = DomUtils.getChildByTagName(eElement, "styleUrl");
 					if(styleElem!=null) {
 						styleElem.setTextContent("#style"+styleId);
 					}
@@ -147,32 +171,12 @@ public class LocalMain {
 						//TODO: add style
 					}
 
-					/*NodeList nl3 = eElement.getElementsByTagName("styleUrl");
-					for (int j = 0; j < nl3.getLength(); j++) {
-						Node nNode2 = nl3.item(j);
-						if (nNode2.getNodeType() == Node.ELEMENT_NODE) {
-							Element eElement2 = (Element) nNode2;
-							eElement2.setTextContent("#style"+styleId);
-						}
-					}*/
-					
 				}
-				/*
-				System.out.println("First Name : "
-						+ getTagValue("firstname", eElement));
-				System.out.println("Last Name : "
-						+ getTagValue("lastname", eElement));
-				System.out.println("Nick Name : "
-						+ getTagValue("nickname", eElement));
-				System.out.println("Salary : "
-						+ getTagValue("salary", eElement));
-				*/
 			}
 		}
 		
-		//XmlPrinter.serialize(doc, System.out);
-		XmlPrinter.serialize(doc, new FileWriter("work/output/Mun.kml"));
-		//System.out.println("SW: "+sw);
+		XmlPrinter.serialize(doc, outputWriter);
+	}
 		
 		/*
 		 * XSL? XPath? SAXParser?
@@ -186,7 +190,6 @@ public class LocalMain {
 </Placemark>
 		 * 
 		 */
-	}
 	
 	static List<String> getStylesFromCategories(List<Category> cats, Properties prop) {
 		List<String> styles = new ArrayList<String>();
@@ -220,10 +223,4 @@ public class LocalMain {
 		}
 		return s.substring(s.length()-2);
 	}
-	
-	/*private static String getTagValue(String sTag, Element eElement) {
-		NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
-		Node nValue = (Node) nlList.item(0);
-		return nValue.getNodeValue();
-	}*/
 }
