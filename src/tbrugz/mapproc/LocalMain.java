@@ -190,17 +190,26 @@ public class LocalMain {
 	
 	static List<String> getStylesFromCategories(List<Category> cats, Properties prop) {
 		List<String> styles = new ArrayList<String>();
-		List<Double> cores = StatsUtils.getLinearCategoriesLimits(0, 255, cats.size()-1);
+		List<Double> colors = StatsUtils.getLinearCategoriesLimits(0, 255, cats.size()-1);
 		
+		/*
+		 * color format is 'aabbggrr', see: http://code.google.com/apis/kml/documentation/kmlreference.html#colorstyle
+		 */
+			
 		int i=0;
 		for(Category c: cats) {
 			String style = prop.getProperty("Style"); //0: id, 1: color
 			style = style.replaceAll("\\{0\\}", c.styleId);
-			style = style.replaceAll("\\{1\\}", "80"+hexString(cores.get(i).intValue())+"ffff");
+			String hex = hexString( complFF( colors.get(i).intValue() ) );
+			style = style.replaceAll("\\{1\\}", "a0"+hex+"ffff");
 			i++;
 			styles.add(style);
 		}
 		return styles;
+	}
+	
+	static int complFF(int i) {
+		return 255-i;
 	}
 	
 	static String hexString(int i) {

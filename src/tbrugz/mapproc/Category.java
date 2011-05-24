@@ -30,7 +30,8 @@ public class Category {
 	static Category getCategoryFromValue(List<Category> cats, Double value) {
 		Category cLast = null;
 		for(Category c: cats) {
-			if(value>=c.startVal && value<c.endVal) { return c; }
+			if(value<c.endVal) { return c; }
+			//if(value>=c.startVal && value<c.endVal) { return c; } //may not return correct category on lowest value
 			cLast = c;
 		}
 		return cLast;
