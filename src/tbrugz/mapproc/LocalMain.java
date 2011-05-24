@@ -20,6 +20,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import tbrugz.stats.StatsUtils;
+import tbrugz.stats.StatsUtils.ScaleType;
 import tbrugz.xml.XmlPrinter;
 import tbrugz.xml.DomUtils;
 
@@ -34,12 +35,14 @@ public class LocalMain {
 		FileReader fr = new FileReader("work/input/tabela-municipios_e_habitantes.csv");
 		String kmlFile = "work/input/Municipalities_of_RS.kml";
 		FileWriter fw = new FileWriter("work/output/Mun.kml");
+		int numOfCategories = 5;
+		ScaleType scaleType = ScaleType.LOG;
 		
 		LocalMain lm = new LocalMain();
-		lm.doIt(kmlFile, fr, fw);
+		lm.doIt(kmlFile, fr, fw, scaleType, numOfCategories);
 	}
 	
-	void debug(double[] vals) {
+	void debug(double[] vals, int numOfCategories) {
 		List<Double> valsL = StatsUtils.toDoubleList(vals);
 
 		double min = StatsUtils.min(vals);
@@ -47,29 +50,26 @@ public class LocalMain {
 		System.out.println("max: "+max);
 		System.out.println("min: "+min);
 		
-		List<Double> limits = StatsUtils.getLogCategoriesLimits(min, max, 5);
+		List<Double> limits = StatsUtils.getLogCategoriesLimits(min, max, numOfCategories);
 		List<Category> cats = Category.getCategoriesFromLimits(limits);
 
 		System.out.println("log categories bounds: "+limits);
-		System.out.println("linear categories bounds: "+StatsUtils.getLinearCategoriesLimits(min, max, 5));
-		//System.out.println("log categories bounds: "+StatsUtils.getLogCategoriesLimits(min, max, 5));
-		System.out.println("percentile categories bounds: "+StatsUtils.getPercentileCategoriesLimits(valsL,  5));
+		System.out.println("linear categories bounds: "+StatsUtils.getLinearCategoriesLimits(min, max, numOfCategories));
+		//System.out.println("log categories bounds: "+StatsUtils.getLogCategoriesLimits(min, max, numOfCategories));
+		System.out.println("percentile categories bounds: "+StatsUtils.getPercentileCategoriesLimits(valsL,  numOfCategories));
 		
 		System.out.println("cats: "+cats);
 	}
 		
-	public void doIt(String kmlURI, Reader dataSerieReader, Writer outputWriter) throws Exception {
-		BufferedReader br = new BufferedReader(dataSerieReader);
+	public void doIt(String kmlURI, Reader dataSeriesReader, Writer outputWriter, ScaleType scaleType, int numOfCategories) throws Exception {
+		BufferedReader br = new BufferedReader(dataSeriesReader);
 		IndexedSeries is = new IndexedSeries();
 		is.readFromStream(br);
 		double[] vals = StatsUtils.toDoubleArray(is.getValues());
 		
-		//debug(vals);
+		//debug(vals, numOfCategories);
 
-		double min = StatsUtils.min(vals);
-		double max = StatsUtils.max(vals);
-		
-		List<Double> limits = StatsUtils.getLogCategoriesLimits(min, max, 5);
+		List<Double> limits = StatsUtils.getCategoriesLimits(scaleType, StatsUtils.toDoubleList(vals), numOfCategories);
 		List<Category> cats = Category.getCategoriesFromLimits(limits);
 		//System.out.println("log categories bounds: "+limits);
 		//System.out.println("cats: "+cats);

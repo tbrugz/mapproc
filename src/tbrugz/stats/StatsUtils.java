@@ -12,11 +12,13 @@ public class StatsUtils {
 
 	static Log log = LogFactory.getLog(StatsUtils.class);
 	
-	//TODO: escala por percentils... (necessário ordenar dados)
+	static final double[] ZERO_SIZE_DOUBLE_ARRAY = new double[0]; 
 	
-	/*public enum ScaleTypes {
-		LINEAR, LOG; //, POLYNOMIAL;
-	}*/
+	//TODOne: escala por percentils... (necessário ordenar dados)
+	
+	public enum ScaleType {
+		LINEAR, LOG, PERCENTILE; //, POLYNOMIAL;
+	}
 	
 	public static double max(double[] vals) {
 		double max = -Double.MAX_VALUE;
@@ -32,6 +34,25 @@ public class StatsUtils {
 			if(d<min) min=d;
 		}
 		return min;
+	}
+	
+	public static List<Double> getCategoriesLimits(ScaleType type, List<Double> vals, int numCategories) {
+		if(type==ScaleType.PERCENTILE) {
+			return getPercentileCategoriesLimits(vals, numCategories);
+		}
+		double[] valsArr = toDoubleArray(vals);
+		double min = min(valsArr);
+		double max = max(valsArr);
+		
+		switch (type) {
+			case LINEAR:
+				return getLinearCategoriesLimits(min, max, numCategories);
+			case LOG: 
+				return getLogCategoriesLimits(min, max, numCategories);
+		}
+		
+		log.warn("ScaleType '"+type+"' not known");
+		throw new RuntimeException("ScaleType '"+type+"' not known");
 	}
 	
 	public static List<Double> getLinearCategoriesLimits(double min, double max, int numCategories) {
