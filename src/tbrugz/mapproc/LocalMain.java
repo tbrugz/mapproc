@@ -19,6 +19,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.googlepages.aanand.dom.DOMUtilExt;
+
 import tbrugz.stats.StatsUtils;
 import tbrugz.stats.StatsUtils.ScaleType;
 import tbrugz.xml.KmlBounds;
@@ -26,11 +28,11 @@ import tbrugz.xml.XmlPrinter;
 import tbrugz.xml.DomUtils;
 
 /*
- * TODO: placemark ordering by id, name or series-value (asc, desc)
+ * ~TODO: placemark ordering by id, name or series-value (asc, desc)
  * TODO: only output placemarks which have value
  * TODO: categories from csv (description;startVal;endVal;styleId[;styleColor])
  * TODO: option to generate, or not, kml's <Styles>
- * TODO: generate categories descriptions in a box next to the map
+ * TODOne: generate categories descriptions in a box next to the map
  * TODO: categories descriptions as folders...
  */
 public class LocalMain {
@@ -130,6 +132,7 @@ public class LocalMain {
 			count++;
 		}
 
+		Element placemarksFolder = null;
 		//placemarks
 		NodeList nList = doc.getElementsByTagName("Placemark");
 		for (int i = 0; i < nList.getLength(); i++) {
@@ -139,6 +142,11 @@ public class LocalMain {
 				//System.out.println();
 				String id = eElement.getAttribute("id");
 				Double valueFromIS = is.getValue(id);
+				
+				//container of first placemark is used for placemark sorting
+				if(placemarksFolder==null) {
+					placemarksFolder = (Element) eElement.getParentNode();
+				}
 				
 				//has entry
 				if(valueFromIS!=null) {
@@ -193,6 +201,8 @@ public class LocalMain {
 		Node catElemNew = doc.importNode(catElem, true);
 		kmldoc.appendChild(catElemNew);*/
 		kmlBounds.addCategoriesLabels(doc, kmldoc, snippets.getProperty("Categories.Feature"), cats, snippets.getProperty("Categories.Elem"), is.metadata, dBuilder);
+		
+		DOMUtilExt.sortChildNodes(placemarksFolder, false, 1, new DOMUtilExt.IdAttribComparator());
 		
 		XmlPrinter.serialize(doc, outputWriter);
 	}

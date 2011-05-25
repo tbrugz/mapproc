@@ -1,6 +1,8 @@
 package tbrugz.mapproc;
 
+import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.util.Date;
 
 public class IndexedSeriesMetadata {
 
@@ -14,6 +16,7 @@ public class IndexedSeriesMetadata {
 	
 	static NumberFormat intNumFormat = NumberFormat.getIntegerInstance();
 	static NumberFormat floatNumFormat = NumberFormat.getNumberInstance();
+	static DateFormat dateFormat = DateFormat.getDateInstance();
 	
 	static {
 		floatNumFormat.setGroupingUsed(true);
@@ -27,9 +30,10 @@ public class IndexedSeriesMetadata {
 				return intNumFormat.format(d);
 			case FLOAT:
 				return floatNumFormat.format(d);
+			case DATE:
+				return dateFormat.format(new Date(Math.round(d)));
 		}
 		throw new RuntimeException("Unknown value type: "+valueType);
-		//return null;
 	} 
 
 }
