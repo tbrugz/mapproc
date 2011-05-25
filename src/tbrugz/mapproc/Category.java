@@ -8,6 +8,7 @@ public class Category {
 	double endVal;
 	String description;
 	String styleId;
+	String styleColor;
 	
 	@Override
 	public String toString() {
@@ -36,4 +37,25 @@ public class Category {
 		}
 		return cLast;
 	}
+
+	public double getStartVal() {
+		return startVal;
+	}
+
+	public double getEndVal() {
+		return endVal;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public String getStyleId() {
+		return styleId;
+	}
+
+	public String getStyleColor() {
+		return styleColor;
+	}
+	
 }

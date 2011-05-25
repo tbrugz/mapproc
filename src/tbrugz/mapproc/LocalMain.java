@@ -21,12 +21,17 @@ import org.w3c.dom.NodeList;
 
 import tbrugz.stats.StatsUtils;
 import tbrugz.stats.StatsUtils.ScaleType;
+import tbrugz.xml.KmlBounds;
 import tbrugz.xml.XmlPrinter;
 import tbrugz.xml.DomUtils;
 
 /*
- * TODO: placemark ordering by id, name, series-value
- * TODO: only output placemarks which have value 
+ * TODO: placemark ordering by id, name or series-value (asc, desc)
+ * TODO: only output placemarks which have value
+ * TODO: categories from csv (description;startVal;endVal;styleId[;styleColor])
+ * TODO: option to generate, or not, kml's <Styles>
+ * TODO: generate categories descriptions in a box next to the map
+ * TODO: categories descriptions as folders...
  */
 public class LocalMain {
 	static Log log = LogFactory.getLog(LocalMain.class);
@@ -144,7 +149,7 @@ public class LocalMain {
 					
 					//change description
 					String desc = snippets.getProperty("description.append");
-					desc = desc.replaceAll("\\{0\\}", is.valueLabel);
+					desc = desc.replaceAll("\\{0\\}", is.metadata.valueLabel);
 					desc = desc.replaceAll("\\{1\\}", String.valueOf(valueFromIS));
 					Element descElem = DomUtils.getChildByTagName(eElement, "description");
 					if(descElem!=null) {
@@ -177,8 +182,22 @@ public class LocalMain {
 			}
 		}
 		
+		KmlBounds kmlBounds = new KmlBounds();
+		/*kmlBounds.grabMinMaxLatLong(doc.getDocumentElement());
+		String boundsCoords = kmlBounds.getBoundsCoordinates(-1);
+		String categoriesStr = snippets.getProperty("Categories.Feature");
+		log.info("boundsCoords: "+boundsCoords);
+		categoriesStr = categoriesStr.replaceAll("\\{0\\}", boundsCoords);
+		
+		Element catElem = DomUtils.getDocumentNodeFromString(categoriesStr, dBuilder).getDocumentElement();
+		Node catElemNew = doc.importNode(catElem, true);
+		kmldoc.appendChild(catElemNew);*/
+		kmlBounds.addCategoriesLabels(doc, kmldoc, snippets.getProperty("Categories.Feature"), cats, snippets.getProperty("Categories.Elem"), is.metadata, dBuilder);
+		
 		XmlPrinter.serialize(doc, outputWriter);
 	}
+	
+	
 		
 		/*
 		 * XSL? XPath? SAXParser?
@@ -219,10 +238,11 @@ public class LocalMain {
 			
 			String color = colorSpec.replaceAll("\\+\\+", positiveHex);
 			color = color.replaceAll("\\-\\-", complementHex);
-			log.warn("colorSpec: "+colorSpec+"; cat: "+c.styleId+"; color: "+color);
+			log.debug("colorSpec: "+colorSpec+"; cat: "+c.styleId+"; color: "+color);
 			
 			//style = style.replaceAll("\\{1\\}", "a0"+hex+"ffff");
 			style = style.replaceAll("\\{1\\}", color);
+			c.styleColor = color;
 			i++;
 			styles.add(style);
 		}
@@ -236,9 +256,9 @@ public class LocalMain {
 	static String hexString(int i) {
 		String s = Integer.toHexString(i);
 		switch(s.length()) {
-			case 1: return "0"+s;
+			case 1: return "0"+s; //padding
 			case 2: return s;
 		}
-		return s.substring(s.length()-2);
+		return s.substring(s.length()-2); //reminder (like '%')
 	}
 }

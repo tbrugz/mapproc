@@ -11,11 +11,12 @@ import org.apache.commons.logging.LogFactory;
 
 public class IndexedSeries {
 	static Log log = LogFactory.getLog(IndexedSeries.class);
-
+	
 	Map<String, Double> values = new HashMap<String, Double>();
 	
-	String objectLabel;
-	String valueLabel;
+	IndexedSeriesMetadata metadata = new IndexedSeriesMetadata();
+	//String objectLabel;
+	//String valueLabel;
 	
 	public static final String DEFAULT_DELIMITER = ";";
 	
@@ -26,14 +27,16 @@ public class IndexedSeries {
 	public void readFromStream(BufferedReader reader, String delimiter) throws IOException {
 		String header = reader.readLine();
 		String[] headers = header.split(delimiter);
-		objectLabel = headers[0];
+		metadata.objectLabel = headers[0];
 		String[] valueFields = headers[1].split(":");
-		valueLabel = valueFields[0];
-		String valueType = "int";
+		metadata.valueLabel = valueFields[0];
+		metadata.valueType = IndexedSeriesMetadata.ValueType.INTEGER;
+		//String valueType = "int";
 		if(valueFields.length>1) {
-			valueType = valueFields[1]; 
+			metadata.valueType = IndexedSeriesMetadata.ValueType.valueOf(valueFields[1]);
+			//valueType = valueFields[1]; 
 		}
-		log.info("IndexedSeries: objLabel: "+objectLabel+"; valueLabel: "+valueLabel+"; valueType: "+valueType);
+		log.info("IndexedSeries: objLabel: "+metadata.objectLabel+"; valueLabel: "+metadata.valueLabel+"; valueType: "+metadata.valueType);
 		
 		String line = reader.readLine();
 		//TODO: non-double values... like Date or String
