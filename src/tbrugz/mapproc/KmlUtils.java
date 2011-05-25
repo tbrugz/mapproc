@@ -1,10 +1,14 @@
 package tbrugz.mapproc;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -15,8 +19,9 @@ import tbrugz.xml.DomUtils;
 import tbrugz.xml.KmlBounds;
 
 public class KmlUtils {
+	static Log log = LogFactory.getLog(KmlUtils.class);
 	
-	public void addCategoriesLabels(Document doc, Element kmlElem, String catLabelsSnippet, List<Category> cats, String catElemSnippet, IndexedSeriesMetadata isMetadata, DocumentBuilder dBuilder) throws SAXException, IOException {
+	static void addCategoriesLabels(Document doc, Element kmlElem, String catLabelsSnippet, List<Category> cats, String catElemSnippet, IndexedSeriesMetadata isMetadata, DocumentBuilder dBuilder) throws SAXException, IOException {
 		KmlBounds kmlbounds = new KmlBounds();
 		
 		kmlbounds.grabMinMaxLatLong(doc.getDocumentElement());
@@ -48,11 +53,12 @@ public class KmlUtils {
 			double bottom = yVals.get(i);
 			double top = yVals.get(i+1);
 
+			//Character Entity References, see: http://www.elizabethcastro.com/html/extras/entities.html
 			String catId = c.getStyleId(); //XXX: +1 (test to see if it is an int)
 			String catBoundsCoords = KmlBounds.getBoundsCoordinates(right, left, top, bottom, 0);
 			String catDesc = 
 				isMetadata.format(c.getStartVal()) + 
-				" &lt; " + "# "+isMetadata.valueLabel + " &lt; " +
+				" &#8804; " + "# "+isMetadata.valueLabel + " &lt; " +
 				isMetadata.format(c.getEndVal()); //c.getDescription();
 			
 			String catElemStr = catElemSnippet.replaceAll("\\{0\\}", catId);
@@ -64,6 +70,56 @@ public class KmlUtils {
 			
 			i+=2;
 		}
+	}
+	
+	static List<String> getStylesFromCategories(List<Category> cats, Properties prop, String colorSpec) {
+		if(colorSpec==null || colorSpec.length()!=8) {
+			throw new RuntimeException("ColorSpec must be in format 'aabbggrr'; '++' and '--' are used for color substitution");
+		}
+		
+		List<String> styles = new ArrayList<String>();
+		List<Double> colors = StatsUtils.getLinearCategoriesLimits(0, 255, cats.size()-1);
+		
+		/*
+		 * color format is 'aabbggrr', see: http://code.google.com/apis/kml/documentation/kmlreference.html#colorstyle
+		 */
+			
+		//String colorSpec = a0++ffff, a0--ffff
+		//String colorSpec = "a0--ffff";
+		//String colorSpec = "a0++ffff";
+		
+		int i=0;
+		for(Category c: cats) {
+			String style = prop.getProperty("Style"); //0: id, 1: color
+			style = style.replaceAll("\\{0\\}", c.styleId);
+			
+			String positiveHex = hexString( colors.get(i).intValue() );
+			String complementHex = hexString( complFF( colors.get(i).intValue() ) );
+			
+			String color = colorSpec.replaceAll("\\+\\+", positiveHex);
+			color = color.replaceAll("\\-\\-", complementHex);
+			log.debug("colorSpec: "+colorSpec+"; cat: "+c.styleId+"; color: "+color);
+			
+			//style = style.replaceAll("\\{1\\}", "a0"+hex+"ffff");
+			style = style.replaceAll("\\{1\\}", color);
+			c.styleColor = color;
+			i++;
+			styles.add(style);
+		}
+		return styles;
+	}
+	
+	static int complFF(int i) {
+		return 255-i;
+	}
+	
+	static String hexString(int i) {
+		String s = Integer.toHexString(i);
+		switch(s.length()) {
+			case 1: return "0"+s; //padding
+			case 2: return s;
+		}
+		return s.substring(s.length()-2); //reminder (like '%')
 	}
 
 }

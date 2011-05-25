@@ -106,7 +106,7 @@ public class MapProc {
 		//snippets.load(new FileInputStream("snippets.properties"));
 		snippets.load(MapProc.class.getResourceAsStream("/"+"snippets.properties"));
 
-		List<String> styles = getStylesFromCategories(cats, snippets, colorSpec);
+		List<String> styles = KmlUtils.getStylesFromCategories(cats, snippets, colorSpec);
 		//System.out.println(styles);
 		//System.out.println("Root element :"	+ doc.getDocumentElement().getNodeName());
 		
@@ -189,7 +189,7 @@ public class MapProc {
 			}
 		}
 		
-		KmlUtils kmlBoundUtils = new KmlUtils();
+		//KmlUtils kmlBoundUtils = new KmlUtils();
 		/*kmlBounds.grabMinMaxLatLong(doc.getDocumentElement());
 		String boundsCoords = kmlBounds.getBoundsCoordinates(-1);
 		String categoriesStr = snippets.getProperty("Categories.Feature");
@@ -199,7 +199,7 @@ public class MapProc {
 		Element catElem = DomUtils.getDocumentNodeFromString(categoriesStr, dBuilder).getDocumentElement();
 		Node catElemNew = doc.importNode(catElem, true);
 		kmldoc.appendChild(catElemNew);*/
-		kmlBoundUtils.addCategoriesLabels(doc, kmldoc, snippets.getProperty("Categories.Feature"), cats, snippets.getProperty("Categories.Elem"), is.metadata, dBuilder);
+		KmlUtils.addCategoriesLabels(doc, kmldoc, snippets.getProperty("Categories.Feature"), cats, snippets.getProperty("Categories.Elem"), is.metadata, dBuilder);
 		
 		DOMUtilExt.sortChildNodes(placemarksFolder, false, 1, new DOMUtilExt.IdAttribComparator());
 		
@@ -221,53 +221,4 @@ public class MapProc {
 		 * 
 		 */
 	
-	static List<String> getStylesFromCategories(List<Category> cats, Properties prop, String colorSpec) {
-		if(colorSpec==null || colorSpec.length()!=8) {
-			throw new RuntimeException("ColorSpec must be in format 'aabbggrr'; '++' and '--' are used for color substitution");
-		}
-		
-		List<String> styles = new ArrayList<String>();
-		List<Double> colors = StatsUtils.getLinearCategoriesLimits(0, 255, cats.size()-1);
-		
-		/*
-		 * color format is 'aabbggrr', see: http://code.google.com/apis/kml/documentation/kmlreference.html#colorstyle
-		 */
-			
-		//String colorSpec = a0++ffff, a0--ffff
-		//String colorSpec = "a0--ffff";
-		//String colorSpec = "a0++ffff";
-		
-		int i=0;
-		for(Category c: cats) {
-			String style = prop.getProperty("Style"); //0: id, 1: color
-			style = style.replaceAll("\\{0\\}", c.styleId);
-			
-			String positiveHex = hexString( colors.get(i).intValue() );
-			String complementHex = hexString( complFF( colors.get(i).intValue() ) );
-			
-			String color = colorSpec.replaceAll("\\+\\+", positiveHex);
-			color = color.replaceAll("\\-\\-", complementHex);
-			log.debug("colorSpec: "+colorSpec+"; cat: "+c.styleId+"; color: "+color);
-			
-			//style = style.replaceAll("\\{1\\}", "a0"+hex+"ffff");
-			style = style.replaceAll("\\{1\\}", color);
-			c.styleColor = color;
-			i++;
-			styles.add(style);
-		}
-		return styles;
-	}
-	
-	static int complFF(int i) {
-		return 255-i;
-	}
-	
-	static String hexString(int i) {
-		String s = Integer.toHexString(i);
-		switch(s.length()) {
-			case 1: return "0"+s; //padding
-			case 2: return s;
-		}
-		return s.substring(s.length()-2); //reminder (like '%')
-	}
 }
