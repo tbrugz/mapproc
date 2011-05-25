@@ -31,10 +31,14 @@ public class IndexedSeries {
 		String[] valueFields = headers[1].split(":");
 		metadata.valueLabel = valueFields[0];
 		metadata.valueType = IndexedSeriesMetadata.ValueType.INTEGER;
-		//String valueType = "int";
+
 		if(valueFields.length>1) {
-			metadata.valueType = IndexedSeriesMetadata.ValueType.valueOf(valueFields[1]);
-			//valueType = valueFields[1]; 
+			try {
+				metadata.valueType = IndexedSeriesMetadata.ValueType.valueOf(valueFields[1]);
+			}
+			catch(IllegalArgumentException e) {
+				log.warn("Unknown valueType ["+valueFields[1]+"], assuming "+metadata.valueType);
+			}
 		}
 		log.info("IndexedSeries: objLabel: "+metadata.objectLabel+"; valueLabel: "+metadata.valueLabel+"; valueType: "+metadata.valueType);
 		

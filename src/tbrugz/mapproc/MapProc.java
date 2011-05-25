@@ -23,7 +23,6 @@ import com.googlepages.aanand.dom.DOMUtilExt;
 
 import tbrugz.stats.StatsUtils;
 import tbrugz.stats.StatsUtils.ScaleType;
-import tbrugz.xml.KmlBounds;
 import tbrugz.xml.XmlPrinter;
 import tbrugz.xml.DomUtils;
 
@@ -35,8 +34,8 @@ import tbrugz.xml.DomUtils;
  * TODOne: generate categories descriptions in a box next to the map
  * TODO: categories descriptions as folders...
  */
-public class LocalMain {
-	static Log log = LogFactory.getLog(LocalMain.class);
+public class MapProc {
+	static Log log = LogFactory.getLog(MapProc.class);
 	
 	public static void main(String[] args) throws Exception {
 		FileReader seriesFile = new FileReader("work/input/tabela-municipios_e_habitantes.csv");
@@ -47,7 +46,7 @@ public class LocalMain {
 		//String colorSpec = "a0--ffff";
 		String colorSpec = "a000++00";
 		
-		LocalMain lm = new LocalMain();
+		MapProc lm = new MapProc();
 		lm.doIt(kmlFile, seriesFile, outputWriter, scaleType, numOfCategories, colorSpec);
 	}
 	
@@ -105,7 +104,7 @@ public class LocalMain {
 		
 		Properties snippets = new Properties();
 		//snippets.load(new FileInputStream("snippets.properties"));
-		snippets.load(LocalMain.class.getResourceAsStream("/"+"snippets.properties"));
+		snippets.load(MapProc.class.getResourceAsStream("/"+"snippets.properties"));
 
 		List<String> styles = getStylesFromCategories(cats, snippets, colorSpec);
 		//System.out.println(styles);
@@ -190,7 +189,7 @@ public class LocalMain {
 			}
 		}
 		
-		KmlBounds kmlBounds = new KmlBounds();
+		KmlUtils kmlBoundUtils = new KmlUtils();
 		/*kmlBounds.grabMinMaxLatLong(doc.getDocumentElement());
 		String boundsCoords = kmlBounds.getBoundsCoordinates(-1);
 		String categoriesStr = snippets.getProperty("Categories.Feature");
@@ -200,7 +199,7 @@ public class LocalMain {
 		Element catElem = DomUtils.getDocumentNodeFromString(categoriesStr, dBuilder).getDocumentElement();
 		Node catElemNew = doc.importNode(catElem, true);
 		kmldoc.appendChild(catElemNew);*/
-		kmlBounds.addCategoriesLabels(doc, kmldoc, snippets.getProperty("Categories.Feature"), cats, snippets.getProperty("Categories.Elem"), is.metadata, dBuilder);
+		kmlBoundUtils.addCategoriesLabels(doc, kmldoc, snippets.getProperty("Categories.Feature"), cats, snippets.getProperty("Categories.Elem"), is.metadata, dBuilder);
 		
 		DOMUtilExt.sortChildNodes(placemarksFolder, false, 1, new DOMUtilExt.IdAttribComparator());
 		

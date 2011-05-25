@@ -1,22 +1,10 @@
 package tbrugz.xml;
 
-import java.io.IOException;
-import java.util.List;
-
-import javax.xml.parsers.DocumentBuilder;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import tbrugz.mapproc.Category;
-import tbrugz.mapproc.IndexedSeriesMetadata;
-import tbrugz.mapproc.LocalMain;
-import tbrugz.stats.StatsUtils;
 
 public class KmlBounds {
 	
@@ -87,7 +75,7 @@ public class KmlBounds {
 			maxLong+","+maxLat+","+altitude+" ";
 	}
 	
-	public void addCategoriesLabels(Document doc, Element kmlElem, String catLabelsSnippet, List<Category> cats, String catElemSnippet, IndexedSeriesMetadata isMetadata, DocumentBuilder dBuilder) throws SAXException, IOException {
+	/*public void addCategoriesLabels(Document doc, Element kmlElem, String catLabelsSnippet, List<Category> cats, String catElemSnippet, IndexedSeriesMetadata isMetadata, DocumentBuilder dBuilder) throws SAXException, IOException {
 		grabMinMaxLatLong(doc.getDocumentElement());
 		//put it right from features
 		double longDist = (maxLong-minLong)/10;
@@ -133,7 +121,7 @@ public class KmlBounds {
 			
 			i+=2;
 		}
-	}
+	}*/
 
 	public double getMaxLat() {
 		return maxLat;
