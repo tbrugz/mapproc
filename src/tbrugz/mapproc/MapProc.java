@@ -106,7 +106,10 @@ public class MapProc {
 		//snippets.load(new FileInputStream("snippets.properties"));
 		snippets.load(MapProc.class.getResourceAsStream("/"+"snippets.properties"));
 
-		List<String> styles = KmlUtils.getStylesFromCategories(cats, snippets, colorSpec);
+		//List<String> styles = KmlUtils.getStylesFromCategories(cats, snippets, colorSpec);
+		
+		String colorFrom = "aa00ff00"; String colorTo = "aa0000ff";
+		List<String> styles = KmlUtils.getStylesFromCategories(cats, snippets, colorFrom, colorTo);
 		//System.out.println(styles);
 		//System.out.println("Root element :"	+ doc.getDocumentElement().getNodeName());
 		

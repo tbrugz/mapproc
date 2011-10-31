@@ -108,6 +108,46 @@ public class KmlUtils {
 		}
 		return styles;
 	}
+
+	static List<String> getStylesFromCategories(List<Category> cats, Properties prop, String colorFrom, String colorTo) {
+		if(colorFrom==null || colorFrom.length()!=8) {
+			throw new RuntimeException("ColorFrom must be in format 'aabbggrr'");
+		}
+
+		if(colorTo==null || colorTo.length()!=8) {
+			throw new RuntimeException("ColorTo must be in format 'aabbggrr'");
+		}
+		
+		List<String> styles = new ArrayList<String>();
+		
+		List<Double> colorsA = StatsUtils.getLinearCategoriesLimits(Integer.parseInt(colorFrom.substring(0, 2), 16), Integer.parseInt(colorTo.substring(0, 2), 16), cats.size()-1);
+		List<Double> colorsB = StatsUtils.getLinearCategoriesLimits(Integer.parseInt(colorFrom.substring(2, 4), 16), Integer.parseInt(colorTo.substring(2, 4), 16), cats.size()-1);
+		List<Double> colorsG = StatsUtils.getLinearCategoriesLimits(Integer.parseInt(colorFrom.substring(4, 6), 16), Integer.parseInt(colorTo.substring(4, 6), 16), cats.size()-1);
+		List<Double> colorsR = StatsUtils.getLinearCategoriesLimits(Integer.parseInt(colorFrom.substring(6, 8), 16), Integer.parseInt(colorTo.substring(6, 8), 16), cats.size()-1);
+		
+		/*
+		 * color format is 'aabbggrr', see: http://code.google.com/apis/kml/documentation/kmlreference.html#colorstyle
+		 */
+		
+		int i=0;
+		for(Category c: cats) {
+			String style = prop.getProperty("Style"); //0: id, 1: color
+			style = style.replaceAll("\\{0\\}", c.styleId);
+			
+			//String positiveHex = hexString( colors.get(i).intValue() );
+			//String complementHex = hexString( complFF( colors.get(i).intValue() ) );
+			
+			String color = hexString(colorsA.get(i).intValue()) + hexString(colorsB.get(i).intValue()) + hexString(colorsG.get(i).intValue()) + hexString(colorsR.get(i).intValue());
+			log.debug("colorFrom: "+colorFrom+"; colorTo: "+colorTo+"; cat: "+c.styleId+"; color: "+color);
+			
+			//style = style.replaceAll("\\{1\\}", "a0"+hex+"ffff");
+			style = style.replaceAll("\\{1\\}", color);
+			c.styleColor = color;
+			i++;
+			styles.add(style);
+		}
+		return styles;
+	}
 	
 	static int complFF(int i) {
 		return 255-i;
