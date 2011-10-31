@@ -9,6 +9,7 @@ public class Category {
 	String description;
 	String styleId;
 	String styleColor;
+	String styleXML;
 	
 	@Override
 	public String toString() {

@@ -3,9 +3,9 @@ package tbrugz.mapproc;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -37,17 +37,29 @@ import tbrugz.xml.DomUtils;
 public class MapProc {
 	static Log log = LogFactory.getLog(MapProc.class);
 	
+	final static String PROP_SNIPPETS = "/"+"snippets.properties";
+	
 	public static void main(String[] args) throws Exception {
 		FileReader seriesFile = new FileReader("work/input/tabela-municipios_e_habitantes.csv");
 		String kmlFile = "work/input/Municipalities_of_RS.kml";
 		FileWriter outputWriter = new FileWriter("work/output/Mun.kml");
 		int numOfCategories = 5;
 		ScaleType scaleType = ScaleType.LOG;
-		//String colorSpec = "a0--ffff";
-		String colorSpec = "a000++00";
 		
 		MapProc lm = new MapProc();
-		lm.doIt(kmlFile, seriesFile, outputWriter, scaleType, numOfCategories, colorSpec);
+		
+		String colorFrom = "aaff0000"; String colorTo = "aa0000ff";
+		lm.doIt(kmlFile, getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo);
+
+		//String colorSpec = "a000++00";
+		//lm.doIt(kmlFile, getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorSpec);
+	}
+	
+	static IndexedSeries getIndexedSeries(Reader dataSeriesReader) throws IOException {
+		BufferedReader br = new BufferedReader(dataSeriesReader);
+		IndexedSeries is = new IndexedSeries();
+		is.readFromStream(br);
+		return is;
 	}
 	
 	void debug(double[] vals, int numOfCategories) {
@@ -69,16 +81,42 @@ public class MapProc {
 		System.out.println("cats: "+cats);
 	}
 		
-	public void doIt(String kmlURI, Reader dataSeriesReader, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec) throws Exception {
-		BufferedReader br = new BufferedReader(dataSeriesReader);
-		IndexedSeries is = new IndexedSeries();
-		is.readFromStream(br);
+	public void doIt(String kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorFrom, String colorTo) throws Exception {
 		double[] vals = StatsUtils.toDoubleArray(is.getValues());
-		
-		//debug(vals, numOfCategories);
 
 		List<Double> limits = StatsUtils.getCategoriesLimits(scaleType, StatsUtils.toDoubleList(vals), numOfCategories);
 		List<Category> cats = Category.getCategoriesFromLimits(limits);
+
+		Properties snippets = new Properties();
+		snippets.load(MapProc.class.getResourceAsStream(PROP_SNIPPETS));
+		
+		KmlUtils.procStylesFromCategories(cats, snippets, colorFrom, colorTo);
+		
+		doIt(kmlURI, is, outputWriter, cats);
+	}
+
+	public void doIt(String kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec) throws Exception {
+		double[] vals = StatsUtils.toDoubleArray(is.getValues());
+
+		List<Double> limits = StatsUtils.getCategoriesLimits(scaleType, StatsUtils.toDoubleList(vals), numOfCategories);
+		List<Category> cats = Category.getCategoriesFromLimits(limits);
+
+		Properties snippets = new Properties();
+		snippets.load(MapProc.class.getResourceAsStream(PROP_SNIPPETS));
+		
+		KmlUtils.procStylesFromCategories(cats, snippets, colorSpec);
+		
+		doIt(kmlURI, is, outputWriter, cats);
+	}
+	
+	//public void doIt(String kmlURI, Reader dataSeriesReader, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec) throws Exception {
+	public void doIt(String kmlURI, IndexedSeries is, Writer outputWriter, List<Category> cats) throws Exception {
+		//double[] vals = StatsUtils.toDoubleArray(is.getValues());
+		
+		//debug(vals, numOfCategories);
+
+		//List<Double> limits = StatsUtils.getCategoriesLimits(scaleType, StatsUtils.toDoubleList(vals), numOfCategories);
+		//List<Category> cats = Category.getCategoriesFromLimits(limits);
 		//System.out.println("log categories bounds: "+limits);
 		//System.out.println("cats: "+cats);
 		
@@ -104,14 +142,13 @@ public class MapProc {
 		
 		Properties snippets = new Properties();
 		//snippets.load(new FileInputStream("snippets.properties"));
-		snippets.load(MapProc.class.getResourceAsStream("/"+"snippets.properties"));
+		snippets.load(MapProc.class.getResourceAsStream(PROP_SNIPPETS));
 
 		//List<String> styles = KmlUtils.getStylesFromCategories(cats, snippets, colorSpec);
 		
-		String colorFrom = "aa00ff00"; String colorTo = "aa0000ff";
-		List<String> styles = KmlUtils.getStylesFromCategories(cats, snippets, colorFrom, colorTo);
+		List<String> styles = KmlUtils.getStyleXMLsFromCategories(cats);
 		//System.out.println(styles);
-		//System.out.println("Root element :"	+ doc.getDocumentElement().getNodeName());
+		//System.out.println("Root element :" + doc.getDocumentElement().getNodeName());
 		
 		//styles
 		Element kmldoc = DomUtils.getChildByTagName(doc.getDocumentElement(), "Document");

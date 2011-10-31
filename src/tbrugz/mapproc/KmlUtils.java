@@ -72,12 +72,12 @@ public class KmlUtils {
 		}
 	}
 	
-	static List<String> getStylesFromCategories(List<Category> cats, Properties prop, String colorSpec) {
+	static void procStylesFromCategories(List<Category> cats, Properties prop, String colorSpec) {
 		if(colorSpec==null || colorSpec.length()!=8) {
 			throw new RuntimeException("ColorSpec must be in format 'aabbggrr'; '++' and '--' are used for color substitution");
 		}
 		
-		List<String> styles = new ArrayList<String>();
+		//List<String> styles = new ArrayList<String>();
 		List<Double> colors = StatsUtils.getLinearCategoriesLimits(0, 255, cats.size()-1);
 		
 		/*
@@ -104,12 +104,28 @@ public class KmlUtils {
 			style = style.replaceAll("\\{1\\}", color);
 			c.styleColor = color;
 			i++;
-			styles.add(style);
+			c.styleXML = style;
+			//styles.add(style);
 		}
-		return styles;
+		//return styles;
 	}
 
-	static List<String> getStylesFromCategories(List<Category> cats, Properties prop, String colorFrom, String colorTo) {
+	static void procStylesXMLFromCategories(List<Category> cats, Properties prop) {
+		/*
+		 * color format is 'aabbggrr', see: http://code.google.com/apis/kml/documentation/kmlreference.html#colorstyle
+		 */
+		
+		int i=0;
+		for(Category c: cats) {
+			String style = prop.getProperty("Style"); //0: id, 1: color
+			style = style.replaceAll("\\{0\\}", c.styleId);
+			style = style.replaceAll("\\{1\\}", c.styleColor);
+			i++;
+			c.styleXML = style;
+		}
+	}
+	
+	static void procStylesFromCategories(List<Category> cats, Properties prop, String colorFrom, String colorTo) {
 		if(colorFrom==null || colorFrom.length()!=8) {
 			throw new RuntimeException("ColorFrom must be in format 'aabbggrr'");
 		}
@@ -118,7 +134,7 @@ public class KmlUtils {
 			throw new RuntimeException("ColorTo must be in format 'aabbggrr'");
 		}
 		
-		List<String> styles = new ArrayList<String>();
+		//List<String> styles = new ArrayList<String>();
 		
 		List<Double> colorsA = StatsUtils.getLinearCategoriesLimits(Integer.parseInt(colorFrom.substring(0, 2), 16), Integer.parseInt(colorTo.substring(0, 2), 16), cats.size()-1);
 		List<Double> colorsB = StatsUtils.getLinearCategoriesLimits(Integer.parseInt(colorFrom.substring(2, 4), 16), Integer.parseInt(colorTo.substring(2, 4), 16), cats.size()-1);
@@ -144,7 +160,17 @@ public class KmlUtils {
 			style = style.replaceAll("\\{1\\}", color);
 			c.styleColor = color;
 			i++;
-			styles.add(style);
+			c.styleXML = style;
+			//styles.add(style);
+		}
+		//return styles;
+	}
+
+	static List<String> getStyleXMLsFromCategories(List<Category> cats) {
+		List<String> styles = new ArrayList<String>();
+		
+		for(Category c: cats) {
+			styles.add(c.styleXML);
 		}
 		return styles;
 	}
