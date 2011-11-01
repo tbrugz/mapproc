@@ -11,6 +11,7 @@ import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +19,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.googlepages.aanand.dom.DOMUtilExt;
 
@@ -39,7 +41,7 @@ public class MapProc {
 	
 	final static String PROP_SNIPPETS = "/"+"snippets.properties";
 	
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
 		FileReader seriesFile = new FileReader("work/input/tabela-municipios_e_habitantes.csv");
 		String kmlFile = "work/input/Municipalities_of_RS.kml";
 		FileWriter outputWriter = new FileWriter("work/output/Mun.kml");
@@ -55,7 +57,7 @@ public class MapProc {
 		//lm.doIt(kmlFile, getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorSpec);
 	}
 	
-	static IndexedSeries getIndexedSeries(Reader dataSeriesReader) throws IOException {
+	public static IndexedSeries getIndexedSeries(Reader dataSeriesReader) throws IOException {
 		BufferedReader br = new BufferedReader(dataSeriesReader);
 		IndexedSeries is = new IndexedSeries();
 		is.readFromStream(br);
@@ -81,7 +83,7 @@ public class MapProc {
 		System.out.println("cats: "+cats);
 	}
 		
-	public void doIt(String kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorFrom, String colorTo) throws Exception {
+	public void doIt(String kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorFrom, String colorTo) throws IOException, ParserConfigurationException, SAXException {
 		double[] vals = StatsUtils.toDoubleArray(is.getValues());
 
 		List<Double> limits = StatsUtils.getCategoriesLimits(scaleType, StatsUtils.toDoubleList(vals), numOfCategories);
@@ -95,7 +97,7 @@ public class MapProc {
 		doIt(kmlURI, is, outputWriter, cats);
 	}
 
-	public void doIt(String kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec) throws Exception {
+	public void doIt(String kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec) throws ParserConfigurationException, SAXException, IOException {
 		double[] vals = StatsUtils.toDoubleArray(is.getValues());
 
 		List<Double> limits = StatsUtils.getCategoriesLimits(scaleType, StatsUtils.toDoubleList(vals), numOfCategories);
@@ -110,7 +112,7 @@ public class MapProc {
 	}
 	
 	//public void doIt(String kmlURI, Reader dataSeriesReader, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec) throws Exception {
-	public void doIt(String kmlURI, IndexedSeries is, Writer outputWriter, List<Category> cats) throws Exception {
+	public void doIt(String kmlURI, IndexedSeries is, Writer outputWriter, List<Category> cats) throws ParserConfigurationException, SAXException, IOException {
 		//double[] vals = StatsUtils.toDoubleArray(is.getValues());
 		
 		//debug(vals, numOfCategories);

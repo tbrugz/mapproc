@@ -1,0 +1,11 @@
+body {
+	margin: 4px auto;
+	font: normal 15px Tahoma, Geneva, sans-serif; 
+	color: #222222;
+}
+input {
+	width: 30em;
+}
+input.submit {
+	width: 5em;
+}

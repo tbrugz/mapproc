@@ -17,7 +17,7 @@ import org.w3c.dom.Document;
  */
 public class XmlPrinter {
 
-    public static void serialize(Document doc, Writer writer) throws Exception {
+    public static void serialize(Document doc, Writer writer) {
         
         TransformerFactory tfactory = TransformerFactory.newInstance();
         Transformer serializer;

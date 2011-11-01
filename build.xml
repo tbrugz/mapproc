@@ -1,0 +1,15 @@
+<project name="mapproc" default="war" basedir=".">
+
+	<property name="dist.dir" value="dist"/>
+
+	<target name="war">
+		<war destfile="${dist.dir}/mapproc.war">
+			<webinf dir="web/WEB-INF"></webinf>
+			<lib dir="lib"></lib>
+			<classes dir="bin"></classes>
+			<fileset dir="web"></fileset>
+			<!--zipfileset dir="work/input" prefix="work/input"></zipfileset-->
+		</war>
+	</target>
+	
+</project>
