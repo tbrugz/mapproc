@@ -1,6 +1,6 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="mapproc.css" />
+<link rel="stylesheet" type="text/css" href="css/mapproc.css" />
 </head>
 <body>
 
@@ -11,6 +11,8 @@
 <form action="proc/">
 KML URL: <input type="text" name="kmlUrl"/><br/>
 Data (CSV) URL: <input type="text" name="csvUrl"/><br/>
+<em>Categories URL</em> or <em>(<em>Number of categories</em> and <em>Scale Type</em>)</em> must be set<br/>
+Categories (CSV) URL: <input type="text" name="categoriesUrl"/><br/>
 Number of categories: <input type="text" name="numOfCategories"/><br/>
 Scale Type: 
 <select name="scaleType">
@@ -20,6 +22,7 @@ Scale Type:
 </select><br/>
 Color From: <input type="text" name="colorFrom"/><br/>
 Color To: <input type="text" name="colorTo"/><br/>
+<br/>
 <input type="submit"/>
 </form>
 

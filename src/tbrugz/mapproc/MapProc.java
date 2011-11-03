@@ -43,6 +43,8 @@ public class MapProc {
 	
 	public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
 		FileReader seriesFile = new FileReader("work/input/tabela-municipios_e_habitantes.csv");
+		//BufferedReader catsFile = new BufferedReader(new FileReader("work/input/tabela_categorias_vereadores-por-municipio.csv"));
+		BufferedReader catsFile = new BufferedReader(new FileReader("work/input/tabela_categorias_vereadores-por-municipio-color.csv"));
 		String kmlFile = "work/input/Municipalities_of_RS.kml";
 		FileWriter outputWriter = new FileWriter("work/output/Mun.kml");
 		int numOfCategories = 5;
@@ -51,7 +53,10 @@ public class MapProc {
 		MapProc lm = new MapProc();
 		
 		String colorFrom = "aaff0000"; String colorTo = "aa0000ff";
-		lm.doIt(kmlFile, getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo);
+		//lm.doIt(kmlFile, getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo);
+		
+		lm.doIt(kmlFile, getIndexedSeries(seriesFile), outputWriter, catsFile, colorFrom, colorTo);
+		
 
 		//String colorSpec = "a000++00";
 		//lm.doIt(kmlFile, getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorSpec);
@@ -83,6 +88,19 @@ public class MapProc {
 		System.out.println("cats: "+cats);
 	}
 		
+	public void doIt(String kmlURI, IndexedSeries is, Writer outputWriter, BufferedReader categoriesCsv, String colorFrom, String colorTo) throws IOException, ParserConfigurationException, SAXException {
+		double[] vals = StatsUtils.toDoubleArray(is.getValues());
+
+		List<Category> cats = Category.getCategoriesFromCSVStream(categoriesCsv, ";");
+
+		Properties snippets = new Properties();
+		snippets.load(MapProc.class.getResourceAsStream(PROP_SNIPPETS));
+		
+		KmlUtils.procStylesFromCategories(cats, snippets, colorFrom, colorTo);
+		
+		doIt(kmlURI, is, outputWriter, cats);
+	}
+
 	public void doIt(String kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorFrom, String colorTo) throws IOException, ParserConfigurationException, SAXException {
 		double[] vals = StatsUtils.toDoubleArray(is.getValues());
 
@@ -112,7 +130,7 @@ public class MapProc {
 	}
 	
 	//public void doIt(String kmlURI, Reader dataSeriesReader, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec) throws Exception {
-	public void doIt(String kmlURI, IndexedSeries is, Writer outputWriter, List<Category> cats) throws ParserConfigurationException, SAXException, IOException {
+	void doIt(String kmlURI, IndexedSeries is, Writer outputWriter, List<Category> cats) throws ParserConfigurationException, SAXException, IOException {
 		//double[] vals = StatsUtils.toDoubleArray(is.getValues());
 		
 		//debug(vals, numOfCategories);

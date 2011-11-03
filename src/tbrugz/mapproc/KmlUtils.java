@@ -115,12 +115,10 @@ public class KmlUtils {
 		 * color format is 'aabbggrr', see: http://code.google.com/apis/kml/documentation/kmlreference.html#colorstyle
 		 */
 		
-		int i=0;
 		for(Category c: cats) {
 			String style = prop.getProperty("Style"); //0: id, 1: color
 			style = style.replaceAll("\\{0\\}", c.styleId);
 			style = style.replaceAll("\\{1\\}", c.styleColor);
-			i++;
 			c.styleXML = style;
 		}
 	}
@@ -152,13 +150,17 @@ public class KmlUtils {
 			
 			//String positiveHex = hexString( colors.get(i).intValue() );
 			//String complementHex = hexString( complFF( colors.get(i).intValue() ) );
-			
-			String color = hexString(colorsA.get(i).intValue()) + hexString(colorsB.get(i).intValue()) + hexString(colorsG.get(i).intValue()) + hexString(colorsR.get(i).intValue());
-			log.debug("colorFrom: "+colorFrom+"; colorTo: "+colorTo+"; cat: "+c.styleId+"; color: "+color);
-			
+	
+			//String color = "";
+			log.debug("colorFrom: "+colorFrom+"; colorTo: "+colorTo+"; cat: "+c.styleId+"; colorNow:"+c.styleColor);
+
+			if(c.styleColor==null) {
+				c.styleColor = hexString(colorsA.get(i).intValue()) + hexString(colorsB.get(i).intValue()) + hexString(colorsG.get(i).intValue()) + hexString(colorsR.get(i).intValue());
+				log.debug("new Color:: colorFrom: "+colorFrom+"; colorTo: "+colorTo+"; cat: "+c.styleId+"; colorNow:"+c.styleColor);
+			}
 			//style = style.replaceAll("\\{1\\}", "a0"+hex+"ffff");
-			style = style.replaceAll("\\{1\\}", color);
-			c.styleColor = color;
+			style = style.replaceAll("\\{1\\}", c.styleColor);
+			//c.styleColor = color;
 			i++;
 			c.styleXML = style;
 			//styles.add(style);

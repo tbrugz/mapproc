@@ -1,11 +1,8 @@
 package tbrugz.mapproc;
 
-import java.io.File;
-import java.io.FileReader;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.servlet.ServletException;
@@ -29,10 +26,13 @@ public class MapProcServlet extends HttpServlet {
 		
 		String kmlUrl = req.getParameter("kmlUrl");
 		String csvUrl = req.getParameter("csvUrl");
+		String categoriesUrl = req.getParameter("categoriesUrl");
+
+		String kmlWebPath = req.getParameter("kmlPath");
+		String csvWebPath = req.getParameter("csvPath");
+		String categoriesPath = req.getParameter("categoriesPath");
 		
 		//categories params
-		int numOfCategories = Integer.parseInt( req.getParameter("numOfCategories") );
-		ScaleType scaleType = ScaleType.valueOf( req.getParameter("scaleType") );
 		String colorFrom = req.getParameter("colorFrom");
 		String colorTo = req.getParameter("colorTo");
 		
@@ -51,11 +51,19 @@ public class MapProcServlet extends HttpServlet {
 				csvIn = new File(csvUrl);
 			}
 			FileReader seriesFile = new FileReader(csvIn);*/
-			InputStreamReader seriesFile = new InputStreamReader(new URL(csvUrl).openStream());
+			InputStreamReader seriesReader = new InputStreamReader(new URL(csvUrl).openStream());
 			resp.setContentType(KML_MIMETYPE);
 			resp.setHeader("Content-Disposition","attachment; filename=mapproc.kml");
 			//if(1==1) throw new SAXException("bla bla");
-			lm.doIt(kmlUrl, MapProc.getIndexedSeries(seriesFile), resp.getWriter(), scaleType, numOfCategories, colorFrom, colorTo);
+			if(categoriesUrl!=null) {
+				BufferedReader catsReader = new BufferedReader(new InputStreamReader(new URL(categoriesUrl).openStream()));
+				lm.doIt(kmlUrl, MapProc.getIndexedSeries(seriesReader), resp.getWriter(), catsReader, colorFrom, colorTo);
+			}
+			else {
+				int numOfCategories = Integer.parseInt( req.getParameter("numOfCategories") );
+				ScaleType scaleType = ScaleType.valueOf( req.getParameter("scaleType") );
+				lm.doIt(kmlUrl, MapProc.getIndexedSeries(seriesReader), resp.getWriter(), scaleType, numOfCategories, colorFrom, colorTo);
+			}
 		} catch (ParserConfigurationException e) {
 			throw new RuntimeException(e);
 			//resp.setContentType(TXT_MIMETYPE);

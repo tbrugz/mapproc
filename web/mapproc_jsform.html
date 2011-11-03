@@ -1,0 +1,137 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="css/mapproc.css" />
+<!-- script src="//maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAzr2EBOXUKnm_jVnk0OJI7xSosDVG8KKPE1-m51RBrvYughuyMxQ-i1QfUnH94QxWIa6N4U6MouMmBA" type="text/javascript"></script -->
+<script src="http://maps.google.com/maps?file=api&amp;v=2" type="text/javascript"></script>
+
+<script type="text/javascript"> 
+
+	var map;
+	var geoXml;
+	//var toggleState = 1;
+
+	function loadKml() {
+		if (GBrowserIsCompatible()) {
+			//geoXml = new GGeoXml("http://gmaps-samples.googlecode.com/svn/trunk/ggeoxml/cta.kml");
+			var geoUrl = document.getElementById('theform').action+"?"+getQueryString('theform');
+			alert('geourl: '+geoUrl)
+			geoXml = new GGeoXml(geoUrl);
+			map = new GMap2(document.getElementById("map_canvas"));
+			map.setCenter(new GLatLng(41.875696, -87.624207), 11); //FIXME
+			map.setUIToDefault();
+			map.addOverlay(geoXml);
+		}
+		else {
+			alert('gmaps not compatible?');
+		}
+	}
+
+	/*function toggleMyKml() {
+		if (toggleState == 1) {
+			map.removeOverlay(geoXml);
+			toggleState = 0;
+		} else {
+			map.addOverlay(geoXml);
+			toggleState = 1;
+		}
+	}*/
+	
+	/*function handler() {
+		if (this.readyState == 4 && this.status == 200) {
+			// so far so good
+			if (this.responseXML != null
+					&& this.responseXML.getElementById('test').firstChild.data)
+				// success!
+				test(this.responseXML.getElementById('test').firstChild.data);
+			else
+				test(null);
+		} else if (this.readyState == 4 && this.status != 200) {
+			alert('some error... ' + this.status);
+			//test(null);
+		}
+	}
+
+	function loadKml() {
+		//XMLHttpRequest... form
+		var client = new XMLHttpRequest();
+		var form = document.getElementById('theform')
+		client.onreadystatechange = handler;
+		client.open(form.method, form.action);
+		client.send(getQueryString(form));
+	}*/
+
+	function getQueryString(formname) {
+		var form = document.forms[formname];
+		var qstr = "";
+		function GetElemValue(name, value) {
+			qstr += (qstr.length > 0 ? "&" : "")
+			+ escape(name).replace(/\+/g, "%2B") + "="
+			+ escape(value ? value : "").replace(/\+/g, "%2B");
+			//+ escape(value ? value : "").replace(/\n/g, "%0D");
+		}
+		var elemArray = form.elements;
+		for ( var i = 0; i < elemArray.length; i++) {
+			var element = elemArray[i];
+			var elemType = element.type.toUpperCase();
+			var elemName = element.name;
+			if (elemName) {
+				if (elemType == "TEXT"
+				|| elemType == "TEXTAREA"
+				//|| elemType == "PASSWORD"
+				//|| elemType == "BUTTON"
+				//|| elemType == "RESET"
+				//|| elemType == "SUBMIT"
+				//|| elemType == "FILE"
+				//|| elemType == "IMAGE"
+				|| elemType == "HIDDEN")
+					GetElemValue(elemName, element.value);
+				else if (elemType == "CHECKBOX" && element.checked)
+					GetElemValue(elemName,
+					element.value ? element.value : "On");
+				else if (elemType == "RADIO" && element.checked)
+					GetElemValue(elemName, element.value);
+				else if (elemType.indexOf("SELECT") != -1)
+					for ( var j = 0; j < element.options.length; j++) {
+						var option = element.options[j];
+						if (option.selected)
+							GetElemValue(elemName,
+							option.value ? option.value : option.text);
+					}
+			}
+		}
+		return qstr;
+	}
+	
+</script>
+</head>
+
+<body>
+
+<h2>MapProc.js</h2>
+
+<div id="form">
+
+<form id="theform" action="http://sesis-28529.tce.rs.gov.br:9090/mapproc/proc/">
+KML URL: <input type="text" name="kmlUrl"/><br/>
+Data (CSV) URL: <input type="text" name="csvUrl"/><br/>
+Number of categories: <input type="text" name="numOfCategories"/><br/>
+Scale Type: 
+<select name="scaleType">
+	<option value="LINEAR">LINEAR</option>
+	<option value="LOG">LOG</option>
+	<option value="PERCENTILE">PERCENTILE</option>
+</select><br/>
+Color From: <input type="text" name="colorFrom"/><br/>
+Color To: <input type="text" name="colorTo"/><br/>
+<br/>
+<!-- input type="submit"/ -->
+</form>
+<input type="button" value="Load KML" onClick="loadKml();"/>
+
+</div>
+
+<div id="map_canvas" style="width: 640px; height: 480px; float:left; border: 1px solid black">
+</div>
+
+</body>
+</html>
