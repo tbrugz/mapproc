@@ -1,0 +1,32 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="css/mapproc.css" />
+</head>
+<body>
+
+<h2>MapProc.res</h2>
+
+<div id="form">
+
+<form action="proc/">
+KML Resource: <input type="text" name="kmlResource"/><br/>
+Data (CSV) Resource: <input type="text" name="csvResource"/><br/>
+<em>Categories Resource</em> or <em>(<em>Number of categories</em> and <em>Scale Type</em>)</em> must be set<br/>
+Categories (CSV) Resource: <input type="text" name="categoriesResource"/><br/>
+Number of categories: <input type="text" name="numOfCategories"/><br/>
+Scale Type: 
+<select name="scaleType">
+	<option value="LINEAR">LINEAR</option>
+	<option value="LOG">LOG</option>
+	<option value="PERCENTILE">PERCENTILE</option>
+</select><br/>
+Color From: <input type="text" name="colorFrom"/><br/>
+Color To: <input type="text" name="colorTo"/><br/>
+<br/>
+<input type="submit"/>
+</form>
+
+</div>
+
+</body>
+</html>

@@ -2,7 +2,9 @@ package tbrugz.mapproc;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.servlet.ServletException;
@@ -19,6 +21,9 @@ public class MapProcServlet extends HttpServlet {
 	
 	public static final String KML_MIMETYPE = "application/vnd.google-earth.kml+xml";
 	public static final String TXT_MIMETYPE = "text/plain";
+	
+	boolean kmlUrlAllowed = true;
+	boolean csvUrlAllowed = true;
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -28,41 +33,55 @@ public class MapProcServlet extends HttpServlet {
 		String csvUrl = req.getParameter("csvUrl");
 		String categoriesUrl = req.getParameter("categoriesUrl");
 
-		String kmlWebPath = req.getParameter("kmlPath");
-		String csvWebPath = req.getParameter("csvPath");
-		String categoriesPath = req.getParameter("categoriesPath");
+		String kmlResource = req.getParameter("kmlResource");
+		String csvResource = req.getParameter("csvResource");
+		String categoriesResource = req.getParameter("categoriesResource");
 		
 		//categories params
 		String colorFrom = req.getParameter("colorFrom");
 		String colorTo = req.getParameter("colorTo");
 		
-		//String kmlURI = "work/input/Municipalities_of_RS.kml";
-		
 		try {
 			MapProc lm = new MapProc();
-			/*File csvIn = null;
-			try {
-				csvIn = new File(new URI(csvUrl));
+
+			InputStream kmlStream = null;
+			InputStreamReader seriesReader = null;
+			
+			kmlStream = getStream(kmlResource, kmlUrlAllowed, kmlUrl, "KML");
+			/*if(kmlResource!=null) {
+				kmlStream = getServletContext().getResourceAsStream(kmlResource);
 			}
-			catch(IllegalArgumentException e) {
-				csvIn = new File(csvUrl);
+			else if(kmlUrlAllowed){
+				kmlStream = new URL(kmlUrl).openStream();
 			}
-			catch(URISyntaxException e) {
-				csvIn = new File(csvUrl);
+			else {
+				throw new RuntimeException("no KML defined");
+			}*/
+			
+			seriesReader = new InputStreamReader(getStream(csvResource, csvUrlAllowed, csvUrl, "CSV Data"));
+			/*if(csvResource!=null) {
+				seriesReader = new InputStreamReader(getServletContext().getResourceAsStream(csvResource));
 			}
-			FileReader seriesFile = new FileReader(csvIn);*/
-			InputStreamReader seriesReader = new InputStreamReader(new URL(csvUrl).openStream());
+			else if(csvUrlAllowed){
+				seriesReader = new InputStreamReader(new URL(csvUrl).openStream());
+			}
+			else {
+				throw new RuntimeException("no CSV Data defined");
+			}*/
+			
 			resp.setContentType(KML_MIMETYPE);
 			resp.setHeader("Content-Disposition","attachment; filename=mapproc.kml");
-			//if(1==1) throw new SAXException("bla bla");
-			if(categoriesUrl!=null) {
-				BufferedReader catsReader = new BufferedReader(new InputStreamReader(new URL(categoriesUrl).openStream()));
-				lm.doIt(kmlUrl, MapProc.getIndexedSeries(seriesReader), resp.getWriter(), catsReader, colorFrom, colorTo);
+			
+			if(categoriesResource!=null || categoriesUrl!=null) {
+				//BufferedReader catsReader = new BufferedReader(new InputStreamReader(new URL(categoriesUrl).openStream()));
+				BufferedReader catsReader = new BufferedReader(new InputStreamReader(getStream(categoriesResource, csvUrlAllowed, categoriesUrl, "CSV Categories")));
+				
+				lm.doIt(kmlStream, MapProc.getIndexedSeries(seriesReader), resp.getWriter(), catsReader, colorFrom, colorTo);
 			}
 			else {
 				int numOfCategories = Integer.parseInt( req.getParameter("numOfCategories") );
 				ScaleType scaleType = ScaleType.valueOf( req.getParameter("scaleType") );
-				lm.doIt(kmlUrl, MapProc.getIndexedSeries(seriesReader), resp.getWriter(), scaleType, numOfCategories, colorFrom, colorTo);
+				lm.doIt(kmlStream, MapProc.getIndexedSeries(seriesReader), resp.getWriter(), scaleType, numOfCategories, colorFrom, colorTo);
 			}
 		} catch (ParserConfigurationException e) {
 			throw new RuntimeException(e);
@@ -72,6 +91,18 @@ public class MapProcServlet extends HttpServlet {
 		} catch (SAXException e) {
 			throw new RuntimeException(e);
 			//e.printStackTrace(resp.getWriter());
+		}
+	}
+	
+	InputStream getStream(String resourcePath, boolean allowUrl, String url, String contentType) throws MalformedURLException, IOException {
+		if(resourcePath!=null) {
+			return getServletContext().getResourceAsStream(resourcePath);
+		}
+		else if(allowUrl){
+			return new URL(url).openStream();
+		}
+		else {
+			throw new RuntimeException("no "+contentType+" defined");
 		}
 	}
 	

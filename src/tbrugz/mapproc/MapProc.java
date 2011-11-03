@@ -1,9 +1,11 @@
 package tbrugz.mapproc;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.List;
@@ -45,7 +47,7 @@ public class MapProc {
 		FileReader seriesFile = new FileReader("work/input/tabela-municipios_e_habitantes.csv");
 		//BufferedReader catsFile = new BufferedReader(new FileReader("work/input/tabela_categorias_vereadores-por-municipio.csv"));
 		BufferedReader catsFile = new BufferedReader(new FileReader("work/input/tabela_categorias_vereadores-por-municipio-color.csv"));
-		String kmlFile = "work/input/Municipalities_of_RS.kml";
+		FileInputStream kmlFile = new FileInputStream("work/input/Municipalities_of_RS.kml");
 		FileWriter outputWriter = new FileWriter("work/output/Mun.kml");
 		int numOfCategories = 5;
 		ScaleType scaleType = ScaleType.LOG;
@@ -88,7 +90,7 @@ public class MapProc {
 		System.out.println("cats: "+cats);
 	}
 		
-	public void doIt(String kmlURI, IndexedSeries is, Writer outputWriter, BufferedReader categoriesCsv, String colorFrom, String colorTo) throws IOException, ParserConfigurationException, SAXException {
+	public void doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, BufferedReader categoriesCsv, String colorFrom, String colorTo) throws IOException, ParserConfigurationException, SAXException {
 		double[] vals = StatsUtils.toDoubleArray(is.getValues());
 
 		List<Category> cats = Category.getCategoriesFromCSVStream(categoriesCsv, ";");
@@ -101,7 +103,7 @@ public class MapProc {
 		doIt(kmlURI, is, outputWriter, cats);
 	}
 
-	public void doIt(String kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorFrom, String colorTo) throws IOException, ParserConfigurationException, SAXException {
+	public void doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorFrom, String colorTo) throws IOException, ParserConfigurationException, SAXException {
 		double[] vals = StatsUtils.toDoubleArray(is.getValues());
 
 		List<Double> limits = StatsUtils.getCategoriesLimits(scaleType, StatsUtils.toDoubleList(vals), numOfCategories);
@@ -115,7 +117,7 @@ public class MapProc {
 		doIt(kmlURI, is, outputWriter, cats);
 	}
 
-	public void doIt(String kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec) throws ParserConfigurationException, SAXException, IOException {
+	public void doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec) throws ParserConfigurationException, SAXException, IOException {
 		double[] vals = StatsUtils.toDoubleArray(is.getValues());
 
 		List<Double> limits = StatsUtils.getCategoriesLimits(scaleType, StatsUtils.toDoubleList(vals), numOfCategories);
@@ -130,7 +132,7 @@ public class MapProc {
 	}
 	
 	//public void doIt(String kmlURI, Reader dataSeriesReader, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec) throws Exception {
-	void doIt(String kmlURI, IndexedSeries is, Writer outputWriter, List<Category> cats) throws ParserConfigurationException, SAXException, IOException {
+	void doIt(InputStream kmlStream, IndexedSeries is, Writer outputWriter, List<Category> cats) throws ParserConfigurationException, SAXException, IOException {
 		//double[] vals = StatsUtils.toDoubleArray(is.getValues());
 		
 		//debug(vals, numOfCategories);
@@ -157,7 +159,7 @@ public class MapProc {
 		//http://www.mkyong.com/java/how-to-read-xml-file-in-java-dom-parser/
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		Document doc = dBuilder.parse(kmlURI);
+		Document doc = dBuilder.parse(kmlStream);
 		doc.getDocumentElement().normalize();
 		
 		Properties snippets = new Properties();

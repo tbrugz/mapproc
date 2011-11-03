@@ -1,9 +1,11 @@
 package tbrugz.mapproc.test;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -19,7 +21,7 @@ public class MapProcTest {
 	FileReader seriesFile;
 	//BufferedReader catsFile = new BufferedReader(new FileReader("work/input/tabela_categorias_vereadores-por-municipio.csv"));
 	BufferedReader catsFile;
-	String kmlFile;
+	InputStream kmlFile;
 	FileWriter outputWriter;
 	
 	@Before
@@ -27,7 +29,7 @@ public class MapProcTest {
 		seriesFile = new FileReader("work/input/tabela-municipios_e_habitantes.csv");
 		//BufferedReader catsFile = new BufferedReader(new FileReader("work/input/tabela_categorias_vereadores-por-municipio.csv"));
 		catsFile = new BufferedReader(new FileReader("work/input/tabela_categorias_vereadores-por-municipio-color.csv"));
-		kmlFile = "work/input/Municipalities_of_RS.kml";
+		kmlFile = new FileInputStream("work/input/Municipalities_of_RS.kml");
 		outputWriter = new FileWriter("work/output/Mun.kml");
 	}
 	

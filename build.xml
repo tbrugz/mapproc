@@ -1,6 +1,8 @@
 <project name="mapproc" default="war" basedir=".">
-
+	
 	<property name="dist.dir" value="dist"/>
+	
+	<property file="build.properties"/>
 
 	<target name="war">
 		<war destfile="${dist.dir}/mapproc.war">
@@ -8,8 +10,12 @@
 			<lib dir="lib"></lib>
 			<classes dir="bin"></classes>
 			<fileset dir="web"></fileset>
-			<!--zipfileset dir="work/input" prefix="work/input"></zipfileset-->
+			<zipfileset dir="work/input" prefix="input"></zipfileset>
 		</war>
+	</target>
+	
+	<target name="deploy" depends="war">
+		<copy file="${dist.dir}/mapproc.war" todir="${deploy.dir}"></copy>
 	</target>
 	
 </project>
