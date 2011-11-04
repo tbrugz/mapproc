@@ -20,6 +20,7 @@ import tbrugz.stats.StatsUtils.ScaleType;
 public class MapProcServlet extends HttpServlet {
 	
 	public static final String KML_MIMETYPE = "application/vnd.google-earth.kml+xml";
+	public static final String XML_MIMETYPE = "text/xml";
 	public static final String TXT_MIMETYPE = "text/plain";
 	
 	boolean kmlUrlAllowed = true;
@@ -36,6 +37,8 @@ public class MapProcServlet extends HttpServlet {
 		String kmlResource = req.getParameter("kmlResource");
 		String csvResource = req.getParameter("csvResource");
 		String categoriesResource = req.getParameter("categoriesResource");
+
+		String mime = req.getParameter("mime");
 		
 		//categories params
 		String colorFrom = req.getParameter("colorFrom");
@@ -69,8 +72,13 @@ public class MapProcServlet extends HttpServlet {
 				throw new RuntimeException("no CSV Data defined");
 			}*/
 			
-			resp.setContentType(KML_MIMETYPE);
-			resp.setHeader("Content-Disposition","attachment; filename=mapproc.kml");
+			if(mime==null) {
+				resp.setContentType(KML_MIMETYPE);
+				resp.setHeader("Content-Disposition","attachment; filename=mapproc.kml");
+			}
+			else {
+				resp.setContentType(XML_MIMETYPE);
+			}
 			
 			if((categoriesResource!=null && !categoriesResource.equals("")) || (categoriesUrl!=null && categoriesUrl.equals(""))) {
 				//BufferedReader catsReader = new BufferedReader(new InputStreamReader(new URL(categoriesUrl).openStream()));

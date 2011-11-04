@@ -1,80 +1,28 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="css/mapproc.css" />
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
-<!-- 
-http://code.google.com/intl/en/apis/maps/documentation/javascript/examples/map-geolocation.html
-http://code.google.com/intl/en/apis/maps/documentation/javascript/overlays.html#KMLLayers
-'http://api.flickr.com/services/feeds/geo/?g=322338@N20&lang=en-us&format=feed-georss'
- -->
+<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="js/geoxml3.js"></script>
 <script type="text/javascript"> 
 
-	var map;
-	var geoXml;
-	//var toggleState = 1;
+	var gmap;
 
 	function loadKml() {
-		//if (GBrowserIsCompatible()) {
-			//geoXml = new GGeoXml("http://gmaps-samples.googlecode.com/svn/trunk/ggeoxml/cta.kml");
-			var geoUrl = document.getElementById('theform').action+"?"+getQueryString('theform');
-			alert('geourl: '+geoUrl);
-			document.getElementById('map_location').innerHTML = geoUrl;
-			//geoXml = new GGeoXml(geoUrl);
-			
-			var myOptions = {
-				zoom: 6,
-				position: new google.maps.LatLng(-30, -53),
-				mapTypeId: google.maps.MapTypeId.ROADMAP
-			};
-			map = new google.maps.Map(document.getElementById('map_canvas'), myOptions);
-			
-			//map = new GMap2(document.getElementById("map_canvas"));
-			map.setCenter(myOptions.position);
-			//map.setCenter(new GLatLng(41.875696, -87.624207), 11); //FIXME
-			//map.setUIToDefault();
-			
-			var georssLayer = new google.maps.KmlLayer(geoUrl);
-			georssLayer.setMap(map);			
-			//map.addOverlay(georssLayer);
-		//}
-		//else {
-		//	alert('gmaps not compatible?');
-		//}
-	}
+		var geoUrl = document.getElementById('theform').action+"?"+getQueryString('theform')+"&mime=1";
+		alert('geourl: '+geoUrl);
+		document.getElementById('map_location').innerHTML = geoUrl;
+		
+		var myOptions = {
+			zoom: 6,
+			position: new google.maps.LatLng(-30, -53),
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		};
+		gmap = new google.maps.Map(document.getElementById('map_canvas'), myOptions);
+		gmap.setCenter(myOptions.position);
 
-	/*function toggleMyKml() {
-		if (toggleState == 1) {
-			map.removeOverlay(geoXml);
-			toggleState = 0;
-		} else {
-			map.addOverlay(geoXml);
-			toggleState = 1;
-		}
-	}*/
-	
-	/*function handler() {
-		if (this.readyState == 4 && this.status == 200) {
-			// so far so good
-			if (this.responseXML != null
-					&& this.responseXML.getElementById('test').firstChild.data)
-				// success!
-				test(this.responseXML.getElementById('test').firstChild.data);
-			else
-				test(null);
-		} else if (this.readyState == 4 && this.status != 200) {
-			alert('some error... ' + this.status);
-			//test(null);
-		}
+		var myParser = new geoXML3.parser({map: gmap});
+		myParser.parse(geoUrl);
 	}
-
-	function loadKml() {
-		//XMLHttpRequest... form
-		var client = new XMLHttpRequest();
-		var form = document.getElementById('theform')
-		client.onreadystatechange = handler;
-		client.open(form.method, form.action);
-		client.send(getQueryString(form));
-	}*/
 
 	function getQueryString(formname) {
 		var form = document.forms[formname];
@@ -123,7 +71,7 @@ http://code.google.com/intl/en/apis/maps/documentation/javascript/overlays.html#
 
 <body>
 
-<h2>MapProc.js v3</h2>
+<h2>MapProc.js geoxml</h2>
 
 <div id="form">
 
