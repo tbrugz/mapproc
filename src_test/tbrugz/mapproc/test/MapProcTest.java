@@ -50,4 +50,15 @@ public class MapProcTest {
 		MapProc lm = new MapProc();
 		lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo);
 	}
+	
+	@Test
+	public void testGeneratedCategoriesPattern() throws IOException, ParserConfigurationException, SAXException {
+		int numOfCategories = 5;
+		ScaleType scaleType = ScaleType.LOG;
+		String colorSpec = "a000++00";
+		
+		MapProc lm = new MapProc();
+		lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorSpec);
+	}
+
 }

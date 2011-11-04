@@ -43,27 +43,6 @@ public class MapProc {
 	
 	final static String PROP_SNIPPETS = "/"+"snippets.properties";
 	
-	public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
-		FileReader seriesFile = new FileReader("work/input/tabela-municipios_e_habitantes.csv");
-		//BufferedReader catsFile = new BufferedReader(new FileReader("work/input/tabela_categorias_vereadores-por-municipio.csv"));
-		BufferedReader catsFile = new BufferedReader(new FileReader("work/input/tabela_categorias_vereadores-por-municipio-color.csv"));
-		FileInputStream kmlFile = new FileInputStream("work/input/Municipalities_of_RS.kml");
-		FileWriter outputWriter = new FileWriter("work/output/Mun.kml");
-		int numOfCategories = 5;
-		ScaleType scaleType = ScaleType.LOG;
-		
-		MapProc lm = new MapProc();
-		
-		String colorFrom = "aaff0000"; String colorTo = "aa0000ff";
-		//lm.doIt(kmlFile, getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo);
-		
-		lm.doIt(kmlFile, getIndexedSeries(seriesFile), outputWriter, catsFile, colorFrom, colorTo);
-		
-
-		//String colorSpec = "a000++00";
-		//lm.doIt(kmlFile, getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorSpec);
-	}
-	
 	public static IndexedSeries getIndexedSeries(Reader dataSeriesReader) throws IOException {
 		BufferedReader br = new BufferedReader(dataSeriesReader);
 		IndexedSeries is = new IndexedSeries();
@@ -91,7 +70,7 @@ public class MapProc {
 	}
 		
 	public void doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, BufferedReader categoriesCsv, String colorFrom, String colorTo) throws IOException, ParserConfigurationException, SAXException {
-		double[] vals = StatsUtils.toDoubleArray(is.getValues());
+		//double[] vals = StatsUtils.toDoubleArray(is.getValues());
 
 		List<Category> cats = Category.getCategoriesFromCSVStream(categoriesCsv, ";");
 
@@ -195,19 +174,23 @@ public class MapProc {
 
 		Element placemarksFolder = null;
 		//placemarks
+		int placemarkCount = 0;
 		NodeList nList = doc.getElementsByTagName("Placemark");
 		for (int i = 0; i < nList.getLength(); i++) {
 			Node nNode = nList.item(i);
 			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 				Element eElement = (Element) nNode;
-				//System.out.println();
-				String id = eElement.getAttribute("id");
-				Double valueFromIS = is.getValue(id);
-				
+
 				//container of first placemark is used for placemark sorting
 				if(placemarksFolder==null) {
 					placemarksFolder = (Element) eElement.getParentNode();
 				}
+				
+				String id = eElement.getAttribute("id");
+				if(id==null || id.equals("")) {
+					id = newId(eElement, false);
+				}
+				Double valueFromIS = is.getValue(id);
 				
 				//has entry
 				if(valueFromIS!=null) {
@@ -244,13 +227,26 @@ public class MapProc {
 						styleElem.setTextContent("#style"+styleId);
 					}
 					else {
-						//TODO: add style
+						//XXX: add style?
+						log.warn("no 'style' found [id="+id+"]");
 					}
 
 				}
+				else {
+					//TODO: remove if not found?
+					//log.warn("id '"+id+"' not found in data");
+				}
+				placemarkCount++;
 			}
 		}
 		
+		//NodeList newNodeList = doc.getElementsByTagName("Placemark");
+		//if(newNodeList.getLength()<=0) {
+		if(placemarkCount==0) {
+			log.warn("no nodes to serialize");
+			return;
+		}
+
 		//KmlUtils kmlBoundUtils = new KmlUtils();
 		/*kmlBounds.grabMinMaxLatLong(doc.getDocumentElement());
 		String boundsCoords = kmlBounds.getBoundsCoordinates(-1);
@@ -268,19 +264,17 @@ public class MapProc {
 		XmlPrinter.serialize(doc, outputWriter);
 	}
 	
-	
-		
-		/*
-		 * XSL? XPath? SAXParser?
-		 * 
-<Placemark id="mun_4309571">
-<name>Herveiras</name>
-<visibility>1</visibility>
-<description>#id = mun_4309571</description>
-<styleUrl>#style0</styleUrl>
-<MultiGeometry><Polygon id="poly_mun_4309571"><outerBoundaryIs><LinearRing><coordinates>-52.77426,-29.443846,0 -52.777107,-29.437965,0 -52.771664,-29.423334,0 -52.761566,-29.418055,0 -52.77021,-29.412203,0 -52.75935,-29.40501,0 -52.752506,-29.399265,0 -52.74069,-29.40017,0 -52.73858,-29.396421,0 -52.736225,-29.400387,0 -52.726624,-29.399649,0 -52.72071,-29.394152,0 -52.704594,-29.400688,0 -52.676575,-29.397953,0 -52.667107,-29.392591,0 -52.661278,-29.395136,0 -52.653698,-29.389666,0 -52.64311,-29.397379,0 -52.62721,-29.421774,0 -52.61484,-29.425713,0 -52.61558,-29.43069,0 -52.612736,-29.42935,0 -52.60365,-29.442423,0 -52.604416,-29.44967,0 -52.59949,-29.44989,0 -52.596153,-29.454922,0 -52.59191,-29.453226,0 -52.58176,-29.465097,0 -52.572758,-29.465206,0 -52.568268,-29.469828,0 -52.58967,-29.47475,0 -52.608303,-29.473166,0 -52.613884,-29.48085,0 -52.608738,-29.486238,0 -52.615498,-29.492365,0 -52.68125,-29.499557,0 -52.68358,-29.485172,0 -52.67559,-29.468325,0 -52.6835,-29.470129,0 -52.68281,-29.46556,0 -52.689297,-29.463045,0 -52.690777,-29.452324,0 -52.703224,-29.45112,0 -52.70848,-29.444748,0 -52.71945,-29.44234,0 -52.723503,-29.433151,0 -52.733078,-29.43277,0 -52.737732,-29.438568,0 -52.743835,-29.435558,0 -52.773003,-29.440208,0 -52.77426,-29.443764,0 -52.77426,-29.443846,0 -52.77426,-29.443846,0 </coordinates></LinearRing></outerBoundaryIs></Polygon></MultiGeometry>
-</Placemark>
-		 * 
-		 */
+	static String newId(Element eElement, boolean setId) {
+		Element eName = DomUtils.getChildByTagName(eElement, "name");
+		if(eName!=null) {
+			String id = eName.getTextContent();
+			if(setId) { eElement.setAttribute("id", id); }
+			return id;
+		}
+		else {
+			log.warn("placemark: object id not found");
+		}
+		return null;
+	}
 	
 }

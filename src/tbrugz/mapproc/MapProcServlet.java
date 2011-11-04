@@ -72,7 +72,7 @@ public class MapProcServlet extends HttpServlet {
 			resp.setContentType(KML_MIMETYPE);
 			resp.setHeader("Content-Disposition","attachment; filename=mapproc.kml");
 			
-			if(categoriesResource!=null || categoriesUrl!=null) {
+			if((categoriesResource!=null && !categoriesResource.equals("")) || (categoriesUrl!=null && categoriesUrl.equals(""))) {
 				//BufferedReader catsReader = new BufferedReader(new InputStreamReader(new URL(categoriesUrl).openStream()));
 				BufferedReader catsReader = new BufferedReader(new InputStreamReader(getStream(categoriesResource, csvUrlAllowed, categoriesUrl, "CSV Categories")));
 				
