@@ -1,11 +1,22 @@
 <project name="mapproc" default="war" basedir=".">
 	
 	<property name="dist.dir" value="dist"/>
+	<property name="war.file" value="${dist.dir}/mapproc.war"/>
+	<property name="war.dir" value="${dist.dir}/war"/>
 	
 	<property file="build.properties"/>
 
-	<target name="war">
-		<war destfile="${dist.dir}/mapproc.war">
+	<import file="build-gae.xml" />
+	
+	<target name="prepare">
+		<mkdir dir="${dist.dir}" />
+	</target>
+
+	<target name="compile">
+	</target>
+	
+	<target name="war" depends="prepare">
+		<war destfile="${war.file}" needxmlfile="false">
 			<webinf dir="web/WEB-INF"></webinf>
 			<lib dir="lib"></lib>
 			<classes dir="bin"></classes>
@@ -14,7 +25,13 @@
 		</war>
 	</target>
 	
-	<target name="deploy" depends="war">
+	<target name="unwar" depends="war">
+		<unzip src="${war.file}" dest="${war.dir}"/>
+	</target>
+	
+	<target name="gae-deps" depends="unwar" />
+
+	<target name="deploy-local" depends="war">
 		<copy file="${dist.dir}/mapproc.war" todir="${deploy.dir}"></copy>
 	</target>
 	
