@@ -256,7 +256,7 @@ public class MapProc {
 		kmldoc.appendChild(catElemNew);*/
 		KmlUtils.addCategoriesLabels(doc, kmldoc, snippets.getProperty("Categories.Feature"), cats, snippets.getProperty("Categories.Elem"), is.metadata, dBuilder);
 		
-		DOMUtilExt.sortChildNodes(placemarksFolder, false, 1, new DOMUtilExt.IdAttribComparator());
+		//DOMUtilExt.sortChildNodes(placemarksFolder, false, 1, new DOMUtilExt.IdAttribComparator());
 		
 		XmlPrinter.serialize(doc, outputWriter);
 	}
