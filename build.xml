@@ -18,10 +18,15 @@
 	<target name="war" depends="prepare">
 		<war destfile="${war.file}" needxmlfile="false">
 			<webinf dir="web/WEB-INF"></webinf>
-			<lib dir="lib"></lib>
+			<lib dir="lib">
+				<exclude name="**/test/**"/>
+			</lib>
 			<classes dir="bin"></classes>
 			<fileset dir="web"></fileset>
-			<zipfileset dir="work/input" prefix="input"></zipfileset>
+			<zipfileset dir="work/input" prefix="input">
+				<include name="csv/**"/>
+				<include name="kml/**"/>
+			</zipfileset>
 		</war>
 	</target>
 	
