@@ -37,6 +37,9 @@ public class MapProcServlet extends HttpServlet {
 		String kmlResource = req.getParameter("kmlResource");
 		String csvResource = req.getParameter("csvResource");
 		String categoriesResource = req.getParameter("categoriesResource");
+		
+		String removeIfNotFoundStr = req.getParameter("removeIfNotFound");
+		boolean removeIfNotFound = removeIfNotFoundStr!=null && !removeIfNotFoundStr.equals("");
 
 		String mime = req.getParameter("mime");
 		
@@ -84,12 +87,12 @@ public class MapProcServlet extends HttpServlet {
 				//BufferedReader catsReader = new BufferedReader(new InputStreamReader(new URL(categoriesUrl).openStream()));
 				BufferedReader catsReader = new BufferedReader(new InputStreamReader(getStream(categoriesResource, csvUrlAllowed, categoriesUrl, "CSV Categories")));
 				
-				lm.doIt(kmlStream, MapProc.getIndexedSeries(seriesReader), resp.getWriter(), catsReader, colorFrom, colorTo);
+				lm.doIt(kmlStream, MapProc.getIndexedSeries(seriesReader), resp.getWriter(), catsReader, colorFrom, colorTo, removeIfNotFound);
 			}
 			else {
 				int numOfCategories = Integer.parseInt( req.getParameter("numOfCategories") );
 				ScaleType scaleType = ScaleType.valueOf( req.getParameter("scaleType") );
-				lm.doIt(kmlStream, MapProc.getIndexedSeries(seriesReader), resp.getWriter(), scaleType, numOfCategories, colorFrom, colorTo);
+				lm.doIt(kmlStream, MapProc.getIndexedSeries(seriesReader), resp.getWriter(), scaleType, numOfCategories, colorFrom, colorTo, removeIfNotFound);
 			}
 		} catch (ParserConfigurationException e) {
 			throw new RuntimeException(e);

@@ -20,7 +20,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.googlepages.aanand.dom.DOMUtilExt;
+//import com.googlepages.aanand.dom.DOMUtilExt;
 
 import tbrugz.stats.StatsUtils;
 import tbrugz.stats.StatsUtils.ScaleType;
@@ -29,11 +29,13 @@ import tbrugz.xml.DomUtils;
 
 /*
  * ~TODO: placemark ordering by id, name or series-value (asc, desc)
- * TODO: only output placemarks which have value
- * TODO: categories from csv (description;startVal;endVal;styleId[;styleColor])
+ * TODO: option to only output placemarks which have value
+ * TODOne: categories from csv (description;startVal;endVal;styleId[;styleColor])
  * TODO: option to generate, or not, kml's <Styles>
  * TODOne: generate categories descriptions in a box next to the map
  * TODO: categories descriptions as folders...
+ * TODO: add measure type to description
+ * TODO: option to generate categories after checking which values from series are valid (2nd pass needed)
  */
 public class MapProc {
 	static Log log = LogFactory.getLog(MapProc.class);
@@ -66,7 +68,7 @@ public class MapProc {
 		System.out.println("cats: "+cats);
 	}
 		
-	public void doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, BufferedReader categoriesCsv, String colorFrom, String colorTo) throws IOException, ParserConfigurationException, SAXException {
+	public void doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, BufferedReader categoriesCsv, String colorFrom, String colorTo, boolean removeIfNotFound) throws IOException, ParserConfigurationException, SAXException {
 		//double[] vals = StatsUtils.toDoubleArray(is.getValues());
 
 		List<Category> cats = Category.getCategoriesFromCSVStream(categoriesCsv, ";");
@@ -76,10 +78,10 @@ public class MapProc {
 		
 		KmlUtils.procStylesFromCategories(cats, snippets, colorFrom, colorTo);
 		
-		doIt(kmlURI, is, outputWriter, cats);
+		doIt(kmlURI, is, outputWriter, cats, removeIfNotFound);
 	}
 
-	public void doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorFrom, String colorTo) throws IOException, ParserConfigurationException, SAXException {
+	public void doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorFrom, String colorTo, boolean removeIfNotFound) throws IOException, ParserConfigurationException, SAXException {
 		double[] vals = StatsUtils.toDoubleArray(is.getValues());
 
 		List<Double> limits = StatsUtils.getCategoriesLimits(scaleType, StatsUtils.toDoubleList(vals), numOfCategories);
@@ -90,10 +92,10 @@ public class MapProc {
 		
 		KmlUtils.procStylesFromCategories(cats, snippets, colorFrom, colorTo);
 		
-		doIt(kmlURI, is, outputWriter, cats);
+		doIt(kmlURI, is, outputWriter, cats, removeIfNotFound);
 	}
 
-	public void doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec) throws ParserConfigurationException, SAXException, IOException {
+	public void doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec, boolean removeIfNotFound) throws ParserConfigurationException, SAXException, IOException {
 		double[] vals = StatsUtils.toDoubleArray(is.getValues());
 
 		List<Double> limits = StatsUtils.getCategoriesLimits(scaleType, StatsUtils.toDoubleList(vals), numOfCategories);
@@ -104,11 +106,11 @@ public class MapProc {
 		
 		KmlUtils.procStylesFromCategories(cats, snippets, colorSpec);
 		
-		doIt(kmlURI, is, outputWriter, cats);
+		doIt(kmlURI, is, outputWriter, cats, removeIfNotFound);
 	}
 	
 	//public void doIt(String kmlURI, Reader dataSeriesReader, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec) throws Exception {
-	void doIt(InputStream kmlStream, IndexedSeries is, Writer outputWriter, List<Category> cats) throws ParserConfigurationException, SAXException, IOException {
+	void doIt(InputStream kmlStream, IndexedSeries is, Writer outputWriter, List<Category> cats, boolean removeIfNotFound) throws ParserConfigurationException, SAXException, IOException {
 		//double[] vals = StatsUtils.toDoubleArray(is.getValues());
 		
 		//debug(vals, numOfCategories);
@@ -232,6 +234,9 @@ public class MapProc {
 				else {
 					//TODO: remove if not found?
 					//log.warn("id '"+id+"' not found in data");
+					if(removeIfNotFound) {
+						eElement.getParentNode().removeChild(eElement);
+					}
 				}
 				placemarkCount++;
 			}

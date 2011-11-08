@@ -20,6 +20,7 @@
 			<webinf dir="web/WEB-INF"></webinf>
 			<lib dir="lib">
 				<exclude name="**/test/**"/>
+				<exclude name="servlet-api.jar"/>
 			</lib>
 			<classes dir="bin"></classes>
 			<fileset dir="web"></fileset>
