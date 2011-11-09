@@ -39,3 +39,10 @@ function getQueryString(formname) {
 	}
 	return qstr;
 }
+
+function changeColor(elementChanged, elementToChange) {
+	document.getElementById(elementToChange).value = 'AA'
+		+ document.getElementById(elementChanged).value.substring(4,6)
+		+ document.getElementById(elementChanged).value.substring(2,4)
+		+ document.getElementById(elementChanged).value.substring(0,2);
+}

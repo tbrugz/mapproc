@@ -2,6 +2,8 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="css/mapproc.css" />
+<script type="text/javascript" src="js/mapproc.js"></script>
+<script type="text/javascript" src="js/jscolor/jscolor.js"></script>
 </head>
 <body>
 
@@ -13,10 +15,11 @@
 KML Resource: 
 <select name="kmlResource">
 <%
-//TODO: sort
 Properties p = new Properties();
 p.load(MapProc.class.getResourceAsStream("/paths.properties"));
-for(Object o: p.keySet()) {
+List l = new ArrayList(p.keySet());
+Collections.sort( l );
+for(Object o: l) {
 	String s = (String) o;
 	out.print("<option value=\""+p.getProperty(s)+"\">"+s+"</option>");
 }
@@ -35,17 +38,19 @@ Data (CSV) Resource:
 <br/>
 <em>Categories Resource</em> or <em>(<em>Number of categories</em> and <em>Scale Type</em>)</em> must be set<br/>
 Categories (CSV) Resource: <input type="text" name="categoriesResource"/><br/>
+<!-- TODO: select -->
 Number of categories: <input type="text" name="numOfCategories"/><br/>
 Scale Type: 
 <select name="scaleType">
 	<option value="LINEAR">LINEAR</option>
-	<option value="LOG">LOG</option>
+	<option value="LOG" selected>LOG</option>
 	<option value="PERCENTILE">PERCENTILE</option>
 </select><br/>
-Color From: <input type="text" name="colorFrom"/><br/>
-Color To: <input type="text" name="colorTo"/><br/>
+<!-- TODO: onload -->
+Color From: <input type="text" class="color small" id="colorFromRGB" name="colorFromRGB" onchange="changeColor('colorFromRGB', 'colorFrom')"/> <input type="hidden" id="colorFrom" name="colorFrom"/><br/>
+Color To: <input type="text" class="color small" id="colorToRGB" name="colorToRGB" onchange="changeColor('colorToRGB', 'colorTo')"/> <input type="hidden" id="colorTo" name="colorTo"/><br/>
 <br/>
-<input type="submit"/>
+<input type="submit" class="small"/>
 </form>
 
 </div>

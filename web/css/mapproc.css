@@ -6,6 +6,6 @@ body {
 input {
 	width: 30em;
 }
-input.submit {
-	width: 5em;
+input.small {
+	width: 7em;
 }
