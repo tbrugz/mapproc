@@ -5,7 +5,7 @@
 <script type="text/javascript" src="js/mapproc.js"></script>
 <script type="text/javascript" src="js/jscolor/jscolor.js"></script>
 </head>
-<body>
+<body onload="changeColor('colorFromRGB', 'colorFrom');changeColor('colorToRGB', 'colorTo');">
 
 <h2>MapProc.res</h2>
 
@@ -39,7 +39,14 @@ Data (CSV) Resource:
 <em>Categories Resource</em> or <em>(<em>Number of categories</em> and <em>Scale Type</em>)</em> must be set<br/>
 Categories (CSV) Resource: <input type="text" name="categoriesResource"/><br/>
 <!-- TODO: select -->
-Number of categories: <input type="text" name="numOfCategories"/><br/>
+Number of categories: 
+<select name="numOfCategories">
+<%
+for(int i=2;i<=10;i++) {
+	out.print("<option value=\""+i+"\""+(i==5?" selected":"")+">"+i+"</option>");
+}
+%>
+</select><br/>
 Scale Type: 
 <select name="scaleType">
 	<option value="LINEAR">LINEAR</option>
@@ -47,8 +54,8 @@ Scale Type:
 	<option value="PERCENTILE">PERCENTILE</option>
 </select><br/>
 <!-- TODO: onload -->
-Color From: <input type="text" class="color small" id="colorFromRGB" name="colorFromRGB" onchange="changeColor('colorFromRGB', 'colorFrom')"/> <input type="hidden" id="colorFrom" name="colorFrom"/><br/>
-Color To: <input type="text" class="color small" id="colorToRGB" name="colorToRGB" onchange="changeColor('colorToRGB', 'colorTo')"/> <input type="hidden" id="colorTo" name="colorTo"/><br/>
+Color From: <input type="text" class="color small" id="colorFromRGB" name="colorFromRGB" value="FF0000" onchange="changeColor('colorFromRGB', 'colorFrom')"/> <input type="hidden" id="colorFrom" name="colorFrom"/><br/>
+Color To: <input type="text" class="color small" id="colorToRGB" name="colorToRGB" value="00FF00" onchange="changeColor('colorToRGB', 'colorTo')"/> <input type="hidden" id="colorTo" name="colorTo"/><br/>
 <br/>
 <input type="submit" class="small"/>
 </form>

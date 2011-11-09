@@ -29,13 +29,13 @@ import tbrugz.xml.DomUtils;
 
 /*
  * ~TODO: placemark ordering by id, name or series-value (asc, desc)
- * TODO: option to only output placemarks which have value
+ * !TODO: option to only output placemarks which have value
  * TODOne: categories from csv (description;startVal;endVal;styleId[;styleColor])
- * TODO: option to generate, or not, kml's <Styles>
+ * XXX: option to generate, or not, kml's <Styles>
  * TODOne: generate categories descriptions in a box next to the map
- * TODO: categories descriptions as folders...
+ * ~TODO: categories descriptions as folders...
  * TODO: add measure type to description
- * TODO: option to generate categories after checking which values from series are valid (2nd pass needed)
+ * !TODO: option to generate categories after checking which values from series are valid (2nd pass needed)
  */
 public class MapProc {
 	static Log log = LogFactory.getLog(MapProc.class);
@@ -54,18 +54,18 @@ public class MapProc {
 
 		double min = StatsUtils.min(vals);
 		double max = StatsUtils.max(vals);
-		System.out.println("max: "+max);
-		System.out.println("min: "+min);
+		log.info("max: "+max);
+		log.info("min: "+min);
 		
 		List<Double> limits = StatsUtils.getLogCategoriesLimits(min, max, numOfCategories);
 		List<Category> cats = Category.getCategoriesFromLimits(limits);
 
-		System.out.println("log categories bounds: "+limits);
-		System.out.println("linear categories bounds: "+StatsUtils.getLinearCategoriesLimits(min, max, numOfCategories));
-		//System.out.println("log categories bounds: "+StatsUtils.getLogCategoriesLimits(min, max, numOfCategories));
-		System.out.println("percentile categories bounds: "+StatsUtils.getPercentileCategoriesLimits(valsL,  numOfCategories));
+		log.info("log categories bounds: "+limits);
+		log.info("linear categories bounds: "+StatsUtils.getLinearCategoriesLimits(min, max, numOfCategories));
+		//log.info("log categories bounds: "+StatsUtils.getLogCategoriesLimits(min, max, numOfCategories));
+		log.info("percentile categories bounds: "+StatsUtils.getPercentileCategoriesLimits(valsL,  numOfCategories));
 		
-		System.out.println("cats: "+cats);
+		log.info("cats: "+cats);
 	}
 		
 	public void doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, BufferedReader categoriesCsv, String colorFrom, String colorTo, boolean removeIfNotFound) throws IOException, ParserConfigurationException, SAXException {
