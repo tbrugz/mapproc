@@ -29,13 +29,13 @@ import tbrugz.xml.DomUtils;
 
 /*
  * ~TODO: placemark ordering by id, name or series-value (asc, desc)
- * !TODO: option to only output placemarks which have value
+ * TODOne: option to only output placemarks which have value
  * TODOne: categories from csv (description;startVal;endVal;styleId[;styleColor])
  * XXX: option to generate, or not, kml's <Styles>
  * TODOne: generate categories descriptions in a box next to the map
  * ~TODO: categories descriptions as folders...
  * TODO: add measure type to description
- * !TODO: option to generate categories after checking which values from series are valid (2nd pass needed)
+ * !TODO: option to generate categories after checking which values from series exists in kml (2nd "pre"-pass needed)
  */
 public class MapProc {
 	static Log log = LogFactory.getLog(MapProc.class);
@@ -68,7 +68,7 @@ public class MapProc {
 		log.info("cats: "+cats);
 	}
 		
-	public void doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, BufferedReader categoriesCsv, String colorFrom, String colorTo, boolean removeIfNotFound) throws IOException, ParserConfigurationException, SAXException {
+	public Document doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, BufferedReader categoriesCsv, String colorFrom, String colorTo, boolean removeIfNotFound) throws IOException, ParserConfigurationException, SAXException {
 		//double[] vals = StatsUtils.toDoubleArray(is.getValues());
 
 		List<Category> cats = Category.getCategoriesFromCSVStream(categoriesCsv, ";");
@@ -78,10 +78,11 @@ public class MapProc {
 		
 		KmlUtils.procStylesFromCategories(cats, snippets, colorFrom, colorTo);
 		
-		doIt(kmlURI, is, outputWriter, cats, removeIfNotFound);
+		return doIt(kmlURI, is, outputWriter, cats, removeIfNotFound);
 	}
 
-	public void doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorFrom, String colorTo, boolean removeIfNotFound) throws IOException, ParserConfigurationException, SAXException {
+	//XXX: option to do series pre-pass
+	public Document doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorFrom, String colorTo, boolean removeIfNotFound) throws IOException, ParserConfigurationException, SAXException {
 		double[] vals = StatsUtils.toDoubleArray(is.getValues());
 
 		List<Double> limits = StatsUtils.getCategoriesLimits(scaleType, StatsUtils.toDoubleList(vals), numOfCategories);
@@ -92,10 +93,11 @@ public class MapProc {
 		
 		KmlUtils.procStylesFromCategories(cats, snippets, colorFrom, colorTo);
 		
-		doIt(kmlURI, is, outputWriter, cats, removeIfNotFound);
+		return doIt(kmlURI, is, outputWriter, cats, removeIfNotFound);
 	}
 
-	public void doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec, boolean removeIfNotFound) throws ParserConfigurationException, SAXException, IOException {
+	//XXX: option to do series pre-pass
+	public Document doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec, boolean removeIfNotFound) throws ParserConfigurationException, SAXException, IOException {
 		double[] vals = StatsUtils.toDoubleArray(is.getValues());
 
 		List<Double> limits = StatsUtils.getCategoriesLimits(scaleType, StatsUtils.toDoubleList(vals), numOfCategories);
@@ -106,11 +108,11 @@ public class MapProc {
 		
 		KmlUtils.procStylesFromCategories(cats, snippets, colorSpec);
 		
-		doIt(kmlURI, is, outputWriter, cats, removeIfNotFound);
+		return doIt(kmlURI, is, outputWriter, cats, removeIfNotFound);
 	}
 	
 	//public void doIt(String kmlURI, Reader dataSeriesReader, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec) throws Exception {
-	void doIt(InputStream kmlStream, IndexedSeries is, Writer outputWriter, List<Category> cats, boolean removeIfNotFound) throws ParserConfigurationException, SAXException, IOException {
+	Document doIt(InputStream kmlStream, IndexedSeries is, Writer outputWriter, List<Category> cats, boolean removeIfNotFound) throws ParserConfigurationException, SAXException, IOException {
 		//double[] vals = StatsUtils.toDoubleArray(is.getValues());
 		
 		//debug(vals, numOfCategories);
@@ -152,7 +154,7 @@ public class MapProc {
 		
 		//styles
 		Element kmldoc = DomUtils.getChildByTagName(doc.getDocumentElement(), "Document");
-		int count = 0;
+		//int count = 0;
 		Node kmlStylesPosBefore = kmldoc.getFirstChild();
 		Node node1stFolder = DomUtils.getChildByTagName(kmldoc, "Folder");
 		if(node1stFolder!=null) {
@@ -168,14 +170,18 @@ public class MapProc {
 			Node newNode = doc.importNode(st, true);
 			kmldoc.insertBefore(newNode, kmlStylesPosBefore);
 			//kmldoc.appendChild(newNode);
-			count++;
+			//count++;
 		}
 
 		Element placemarksFolder = null;
 		//placemarks
 		int placemarkCount = 0;
+		int removesCount = 0;
 		NodeList nList = doc.getElementsByTagName("Placemark");
-		for (int i = 0; i < nList.getLength(); i++) {
+		int initSize = nList.getLength();
+		//log.debug("nsize: "+nList.getLength());
+		//for (int i = 0; i < nList.getLength(); i++) {
+		for (int i = nList.getLength()-1; i >= 0; i--) {
 			Node nNode = nList.item(i);
 			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 				Element eElement = (Element) nNode;
@@ -187,7 +193,8 @@ public class MapProc {
 				
 				String id = eElement.getAttribute("id");
 				if(id==null || id.equals("")) {
-					id = newId(eElement, false);
+					log.warn("Placemark with no id!"); continue;
+					//id = newId(eElement, false);
 				}
 				Double valueFromIS = is.getValue(id);
 				
@@ -236,17 +243,24 @@ public class MapProc {
 					//log.warn("id '"+id+"' not found in data");
 					if(removeIfNotFound) {
 						eElement.getParentNode().removeChild(eElement);
+						removesCount++;
 					}
 				}
 				placemarkCount++;
 			}
+			else {
+				log.warn("should not have element != Node.ELEMENT_NODE: "+nNode);
+			}
 		}
+
+		log.info("placemarks = "+placemarkCount+"; initSize = "+initSize+"; removesCount = "+removesCount);
+		//log.info("placemarks = "+placemarkCount+"; initSize = "+initSize+"; removesCount = "+removesCount+"; actualSize = "+doc.getElementsByTagName("Placemark").getLength());
 		
 		//NodeList newNodeList = doc.getElementsByTagName("Placemark");
 		//if(newNodeList.getLength()<=0) {
 		if(placemarkCount==0) {
 			log.warn("no nodes to serialize");
-			return;
+			return null;
 		}
 
 		//KmlUtils kmlBoundUtils = new KmlUtils();
@@ -264,6 +278,8 @@ public class MapProc {
 		//DOMUtilExt.sortChildNodes(placemarksFolder, false, 1, new DOMUtilExt.IdAttribComparator());
 		
 		XmlPrinter.serialize(doc, outputWriter);
+		
+		return doc;
 	}
 	
 	static String newId(Element eElement, boolean setId) {
