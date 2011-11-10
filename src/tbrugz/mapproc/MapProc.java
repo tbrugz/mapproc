@@ -36,6 +36,7 @@ import tbrugz.xml.DomUtils;
  * ~TODO: categories descriptions as folders...
  * TODO: add measure type to description
  * !TODO: option to generate categories after checking which values from series exists in kml (2nd "pre"-pass needed)
+ * XXX: round measures in placemarks' description
  */
 public class MapProc {
 	static Log log = LogFactory.getLog(MapProc.class);

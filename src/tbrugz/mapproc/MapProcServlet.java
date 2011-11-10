@@ -17,6 +17,9 @@ import org.xml.sax.SAXException;
 
 import tbrugz.stats.StatsUtils.ScaleType;
 
+/*
+ * TODO: do not return map if map contains no placemark (apart from categories labels)
+ */
 public class MapProcServlet extends HttpServlet {
 	
 	public static final String KML_MIMETYPE = "application/vnd.google-earth.kml+xml";

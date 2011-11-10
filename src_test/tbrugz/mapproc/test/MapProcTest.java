@@ -125,7 +125,7 @@ public class MapProcTest {
 
 		kmlFile = new FileInputStream("work/input/kml/Municipalities_of_RS.kml");
 		seriesFile = new FileReader("work/test/input/csv/tabela-municipios_e_habitantes-parcial-100-RS.csv");
-		outputWriter = new FileWriter("work/output/MunFull.kml");
+		outputWriter = new FileWriter("work/output/MunPartial.kml");
 		
 		lm = new MapProc();
 		doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, true);
