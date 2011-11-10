@@ -1,4 +1,4 @@
-<project name="mapproc_gae" default="war" basedir=".">
+<project name="mapproc_gae" basedir=".">
 
   <import file="${sdk.dir}/config/user/ant-macros.xml" />
 
@@ -12,7 +12,7 @@
     <dev_appserver war="${war.dir}" port="${dev_appserver.port}"/>
   </target>
 
-  <!-- if doesnt work: appengine-java-sdk\bin> appcfg.cmd update \mapproc\dist\war -->
+  <!-- if doesnt work: appengine-java-sdk\bin> appcfg.cmd update \proj\mapproc\dist\war -->
   <target name="update" depends="datanucleusenhance"
       description="Uploads the application to App Engine.">
     <appcfg action="update" war="${war.dir}" />

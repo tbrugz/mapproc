@@ -37,7 +37,9 @@ Data (CSV) Resource:
 <option value="/input/csv/area.csv">Area</option>
 </select>
 <br/>
+<span class="hint">
 <em>Categories (CSV) Resource</em> or <em>(<em>Number of categories</em> and <em>Scale Type</em>)</em> must be set<br/>
+</span>
 
 <div class="box">
 Categories (CSV) Resource: <input type="text" name="categoriesResource"/><br/>
@@ -58,7 +60,7 @@ Scale Type:
 	<option value="LOG" selected>LOG</option>
 	<option value="PERCENTILE">PERCENTILE</option>
 </select><br/>
-Generate Category Limits from existing placemarks? <input type="checkbox" class="smaller" name="genCatLimitsFromExistingPlacemarks" value="1"/><br/>
+Generate Category Limits from existing placemarks? <input type="checkbox" class="smaller" name="genCatLimitsFromExistingPlacemarks" value="1" checked/><br/>
 </div>
 Color From: <input type="text" class="color small" id="colorFromRGB" name="colorFromRGB" value="FF0000" onchange="changeColor('colorFromRGB', 'colorFrom')"/> <input type="hidden" id="colorFrom" name="colorFrom"/><br/>
 Color To: <input type="text" class="color small" id="colorToRGB" name="colorToRGB" value="00FF00" onchange="changeColor('colorToRGB', 'colorTo')"/> <input type="hidden" id="colorTo" name="colorTo"/><br/>

@@ -72,6 +72,7 @@ public class KmlUtils {
 		}
 	}
 	
+	@Deprecated
 	static void procStylesFromCategories(List<Category> cats, Properties prop, String colorSpec) {
 		if(colorSpec==null || colorSpec.length()!=8) {
 			throw new RuntimeException("ColorSpec must be in format 'aabbggrr'; '++' and '--' are used for color substitution");

@@ -10,11 +10,14 @@ input.small {
 	width: 7em;
 }
 input.smaller {
-	width: 2em;
+	width: 1em;
 }
 .box {
 	border: 2px solid #bbb;
 	padding: 4px;
 	margin: 3px;
 	width: 30em;
+}
+.hint {
+	color: #888;
 }
