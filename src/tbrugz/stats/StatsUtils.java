@@ -4,9 +4,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
+import tbrugz.mapproc.IndexedSeries;
 
 public class StatsUtils {
 
@@ -43,6 +49,8 @@ public class StatsUtils {
 		double[] valsArr = toDoubleArray(vals);
 		double min = min(valsArr);
 		double max = max(valsArr);
+
+		log.info("min = "+min+"; max = "+max);
 		
 		switch (type) {
 			case LINEAR:
@@ -53,6 +61,23 @@ public class StatsUtils {
 		
 		log.warn("ScaleType '"+type+"' not known");
 		throw new RuntimeException("ScaleType '"+type+"' not known");
+	}
+
+	public static Collection<Double> getValsForExistingPlacemarks(IndexedSeries is, Document doc) {
+		Set<String> keys = is.getKeys();
+		List<Double> existingVals = new ArrayList<Double>();
+		
+		NodeList nList = doc.getElementsByTagName("Placemark");
+		for (int i = nList.getLength()-1; i >= 0; i--) {
+			Element eElement = (Element) nList.item(i);
+			String id = eElement.getAttribute("id");
+			if(keys.contains(id)) {
+				existingVals.add(is.getValue(id));
+			}
+		}
+		
+		log.info("# of existing values: "+existingVals.size());
+		return existingVals;
 	}
 	
 	public static List<Double> getLinearCategoriesLimits(double min, double max, int numCategories) {

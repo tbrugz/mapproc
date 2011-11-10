@@ -43,6 +43,9 @@ public class MapProcServlet extends HttpServlet {
 		
 		String removeIfNotFoundStr = req.getParameter("removeIfNotFound");
 		boolean removeIfNotFound = removeIfNotFoundStr!=null && !removeIfNotFoundStr.equals("");
+		
+		String genCatLimitsFromExistingPlacemarksStr = req.getParameter("genCatLimitsFromExistingPlacemarks");
+		boolean genCatLimitsFromExistingPlacemarks = genCatLimitsFromExistingPlacemarksStr!=null && !genCatLimitsFromExistingPlacemarksStr.equals("");
 
 		String mime = req.getParameter("mime");
 		
@@ -95,7 +98,7 @@ public class MapProcServlet extends HttpServlet {
 			else {
 				int numOfCategories = Integer.parseInt( req.getParameter("numOfCategories") );
 				ScaleType scaleType = ScaleType.valueOf( req.getParameter("scaleType") );
-				lm.doIt(kmlStream, MapProc.getIndexedSeries(seriesReader), resp.getWriter(), scaleType, numOfCategories, colorFrom, colorTo, removeIfNotFound);
+				lm.doIt(kmlStream, MapProc.getIndexedSeries(seriesReader), resp.getWriter(), scaleType, numOfCategories, colorFrom, colorTo, removeIfNotFound, genCatLimitsFromExistingPlacemarks);
 			}
 		} catch (ParserConfigurationException e) {
 			throw new RuntimeException(e);

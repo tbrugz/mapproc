@@ -58,10 +58,10 @@ Scale Type:
 	<option value="LOG" selected>LOG</option>
 	<option value="PERCENTILE">PERCENTILE</option>
 </select><br/>
+Generate Category Limits from existing placemarks? <input type="checkbox" class="smaller" name="genCatLimitsFromExistingPlacemarks" value="1"/><br/>
+</div>
 Color From: <input type="text" class="color small" id="colorFromRGB" name="colorFromRGB" value="FF0000" onchange="changeColor('colorFromRGB', 'colorFrom')"/> <input type="hidden" id="colorFrom" name="colorFrom"/><br/>
 Color To: <input type="text" class="color small" id="colorToRGB" name="colorToRGB" value="00FF00" onchange="changeColor('colorToRGB', 'colorTo')"/> <input type="hidden" id="colorTo" name="colorTo"/><br/>
-<!-- TODO: checkbox: only consider series values that exists in map -->
-</div>
 
 Remove Placemark if no value found? <input type="checkbox" class="smaller" name="removeIfNotFound" value="1"/><br/>
 <br/>

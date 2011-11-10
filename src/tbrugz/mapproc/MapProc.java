@@ -31,17 +31,24 @@ import tbrugz.xml.DomUtils;
  * ~TODO: placemark ordering by id, name or series-value (asc, desc)
  * TODOne: option to only output placemarks which have value
  * TODOne: categories from csv (description;startVal;endVal;styleId[;styleColor])
- * XXX: option to generate, or not, kml's <Styles>
+ * ~XXX: option to generate, or not, kml's <Styles>
  * TODOne: generate categories descriptions in a box next to the map
  * ~TODO: categories descriptions as folders...
  * TODO: add measure type to description
- * !TODO: option to generate categories after checking which values from series exists in kml (2nd "pre"-pass needed)
- * XXX: round measures in placemarks' description
+ * TODOne: option to generate categories after checking which values from series exists in kml (2nd "pre"-pass needed)
+ * XXX: (option to) round measures in placemarks' description
  */
 public class MapProc {
 	static Log log = LogFactory.getLog(MapProc.class);
 	
 	final static String PROP_SNIPPETS = "/"+"snippets.properties";
+	
+	DocumentBuilder dBuilder;
+	
+	public MapProc() throws ParserConfigurationException {
+		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+		dBuilder = dbFactory.newDocumentBuilder();
+	}
 	
 	public static IndexedSeries getIndexedSeries(Reader dataSeriesReader) throws IOException {
 		BufferedReader br = new BufferedReader(dataSeriesReader);
@@ -79,12 +86,21 @@ public class MapProc {
 		
 		KmlUtils.procStylesFromCategories(cats, snippets, colorFrom, colorTo);
 		
-		return doIt(kmlURI, is, outputWriter, cats, removeIfNotFound);
+		return doIt(getDocument(kmlURI), is, outputWriter, cats, removeIfNotFound);
 	}
 
-	//XXX: option to do series pre-pass
-	public Document doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorFrom, String colorTo, boolean removeIfNotFound) throws IOException, ParserConfigurationException, SAXException {
-		double[] vals = StatsUtils.toDoubleArray(is.getValues());
+	public Document doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, 
+			int numOfCategories, String colorFrom, String colorTo, boolean removeIfNotFound, boolean genCategoryLimitsFromExistingPlacemarks) throws IOException, ParserConfigurationException, SAXException {
+		
+		double[] vals = null;
+		Document doc = getDocument(kmlURI);
+		
+		if(genCategoryLimitsFromExistingPlacemarks) {
+			vals = StatsUtils.toDoubleArray(StatsUtils.getValsForExistingPlacemarks(is, doc));
+		}
+		else {
+			vals = StatsUtils.toDoubleArray(is.getValues());
+		}
 
 		List<Double> limits = StatsUtils.getCategoriesLimits(scaleType, StatsUtils.toDoubleList(vals), numOfCategories);
 		List<Category> cats = Category.getCategoriesFromLimits(limits);
@@ -94,12 +110,22 @@ public class MapProc {
 		
 		KmlUtils.procStylesFromCategories(cats, snippets, colorFrom, colorTo);
 		
-		return doIt(kmlURI, is, outputWriter, cats, removeIfNotFound);
+		return doIt(doc, is, outputWriter, cats, removeIfNotFound);
 	}
 
-	//XXX: option to do series pre-pass
-	public Document doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec, boolean removeIfNotFound) throws ParserConfigurationException, SAXException, IOException {
-		double[] vals = StatsUtils.toDoubleArray(is.getValues());
+	@Deprecated
+	public Document doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, 
+			int numOfCategories, String colorSpec, boolean removeIfNotFound, boolean genCategoryLimitsFromExistingPlacemarks) throws ParserConfigurationException, SAXException, IOException {
+
+		double[] vals = null;
+		Document doc = getDocument(kmlURI);
+		
+		if(genCategoryLimitsFromExistingPlacemarks) {
+			vals = StatsUtils.toDoubleArray(StatsUtils.getValsForExistingPlacemarks(is, doc));
+		}
+		else {
+			vals = StatsUtils.toDoubleArray(is.getValues());
+		}
 
 		List<Double> limits = StatsUtils.getCategoriesLimits(scaleType, StatsUtils.toDoubleList(vals), numOfCategories);
 		List<Category> cats = Category.getCategoriesFromLimits(limits);
@@ -109,11 +135,18 @@ public class MapProc {
 		
 		KmlUtils.procStylesFromCategories(cats, snippets, colorSpec);
 		
-		return doIt(kmlURI, is, outputWriter, cats, removeIfNotFound);
+		return doIt(doc, is, outputWriter, cats, removeIfNotFound);
+	}
+	
+	Document getDocument(InputStream kmlStream) throws ParserConfigurationException, SAXException, IOException {
+		Document doc = dBuilder.parse(kmlStream);
+		doc.getDocumentElement().normalize(); //XXX: remove?
+		return doc;
 	}
 	
 	//public void doIt(String kmlURI, Reader dataSeriesReader, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec) throws Exception {
-	Document doIt(InputStream kmlStream, IndexedSeries is, Writer outputWriter, List<Category> cats, boolean removeIfNotFound) throws ParserConfigurationException, SAXException, IOException {
+	Document doIt(Document doc, IndexedSeries is, Writer outputWriter, 
+			List<Category> cats, boolean removeIfNotFound) throws ParserConfigurationException, SAXException, IOException {
 		//double[] vals = StatsUtils.toDoubleArray(is.getValues());
 		
 		//debug(vals, numOfCategories);
@@ -138,10 +171,6 @@ public class MapProc {
 		//parser.parseDocument(kmlFile, sw);
 		
 		//http://www.mkyong.com/java/how-to-read-xml-file-in-java-dom-parser/
-		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		Document doc = dBuilder.parse(kmlStream);
-		doc.getDocumentElement().normalize();
 		
 		Properties snippets = new Properties();
 		//snippets.load(new FileInputStream("snippets.properties"));

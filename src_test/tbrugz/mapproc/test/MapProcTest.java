@@ -21,7 +21,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import tbrugz.mapproc.IndexedSeries;
 import tbrugz.mapproc.MapProc;
+import tbrugz.stats.StatsUtils;
 import tbrugz.stats.StatsUtils.ScaleType;
 
 public class MapProcTest {
@@ -63,7 +65,7 @@ public class MapProcTest {
 		outputWriter = new FileWriter("work/output/MunFull.kml");
 		
 		MapProc lm = new MapProc();
-		Document doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, false);
+		Document doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, false, false);
 		NodeList nList = doc.getElementsByTagName("Placemark");
 		for (int i = 0; i < nList.getLength(); i++) {
 			Node nNode = nList.item(i);
@@ -80,7 +82,7 @@ public class MapProcTest {
 		outputWriter = new FileWriter("work/output/MunFull.kml");
 		
 		lm = new MapProc();
-		doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, false);
+		doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, false, false);
 		nList = doc.getElementsByTagName("Placemark");
 		log.info("size: "+nList.getLength()+"; cats: "+numOfCategories);
 		assertEquals(497 + numOfCategories + 1, nList.getLength());
@@ -94,7 +96,7 @@ public class MapProcTest {
 		outputWriter = new FileWriter("work/output/MunPartial.kml");
 		
 		MapProc lm = new MapProc();
-		Document doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, true);
+		Document doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, true, false);
 		NodeList nList = doc.getElementsByTagName("Placemark");
 		log.info("partial size: "+nList.getLength());
 		assertEquals(4 + numOfCategories + 1, nList.getLength());
@@ -104,7 +106,7 @@ public class MapProcTest {
 		outputWriter = new FileWriter("work/output/MunPartial.kml");
 		
 		lm = new MapProc();
-		doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, true);
+		doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, true, false);
 		nList = doc.getElementsByTagName("Placemark");
 		log.info("partial size: "+nList.getLength());
 		assertEquals(495 + numOfCategories + 1, nList.getLength());
@@ -114,7 +116,7 @@ public class MapProcTest {
 		outputWriter = new FileWriter("work/output/MunPartial.kml");
 		
 		lm = new MapProc();
-		doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, true);
+		doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, true, false);
 		nList = doc.getElementsByTagName("Placemark");
 		log.info("partial size: "+nList.getLength());
 		/*for (int i = 0; i < nList.getLength(); i++) {
@@ -128,10 +130,42 @@ public class MapProcTest {
 		outputWriter = new FileWriter("work/output/MunPartial.kml");
 		
 		lm = new MapProc();
-		doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, true);
+		doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, true, false);
 		nList = doc.getElementsByTagName("Placemark");
 		log.info("size: "+nList.getLength()+"; cats: "+numOfCategories);
 		assertEquals(100 + numOfCategories + 1, nList.getLength());
+	}
+
+	@Test
+	public void testGeneratedCategoriesLimits() throws IOException, ParserConfigurationException, SAXException {
+		String kmlIn = "work/test/input/kml/RSSimple.kml"; //"work/input/kml/43Mun.kml";
+		String csvIn = "work/test/input/csv/tabela-municipios_e_habitantes-parcial-5-RS.csv"; //"work/input/csv/pib.csv";
+		String kmlOut = "work/output/MunSimple.kml";
+		
+		kmlFile = new FileInputStream(kmlIn);
+		seriesFile = new FileReader(csvIn);
+		outputWriter = new FileWriter(kmlOut);
+		IndexedSeries is = MapProc.getIndexedSeries(seriesFile);
+		MapProc lm = new MapProc();
+		
+		Document doc = lm.doIt(kmlFile, is, outputWriter, scaleType, numOfCategories, colorFrom, colorTo, true, false);
+		double[] vals = StatsUtils.toDoubleArray(is.getValues());
+		long min = Math.round(StatsUtils.min(vals));
+		long max = Math.round(StatsUtils.max(vals));
+		assertEquals(12, min);
+		assertEquals(20000, max);
+
+		kmlFile = new FileInputStream(kmlIn);
+		seriesFile = new FileReader(csvIn);
+		outputWriter = new FileWriter(kmlOut);
+		
+		doc = lm.doIt(kmlFile, is, outputWriter, scaleType, numOfCategories, colorFrom, colorTo, true, true);
+		vals = StatsUtils.toDoubleArray(StatsUtils.getValsForExistingPlacemarks(is, doc));
+		min = Math.round(StatsUtils.min(vals));
+		max = Math.round(StatsUtils.max(vals));
+		assertEquals(123, min);
+		assertEquals(12312, max);
+
 	}
 	
 	//@Test
@@ -144,13 +178,13 @@ public class MapProcTest {
 		outputWriter = new FileWriter("work/output/43Mun.kml");
 		
 		MapProc lm = new MapProc();
-		lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, false);
+		lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, false, false);
 	}
 
 	//@Test
 	public void testGeneratedCategoriesPattern() throws IOException, ParserConfigurationException, SAXException {
 		MapProc lm = new MapProc();
-		lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorSpec, false);
+		lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorSpec, false, false);
 	}
 
 }
