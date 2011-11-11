@@ -46,3 +46,25 @@ function changeColor(elementChanged, elementToChange) {
 		+ document.getElementById(elementChanged).value.substring(2,4)
 		+ document.getElementById(elementChanged).value.substring(0,2);
 }
+
+//------------------- gmaps
+
+var map;
+var geoXml;
+
+function loadKml(formName, mapCanvasName, mapLocationDivName) {
+	var geoUrl = document.getElementById(formName).action+"?"+getQueryString(formName);
+	document.getElementById(mapLocationDivName).innerHTML = geoUrl;
+	
+	var myOptions = {
+		zoom: 6,
+		position: new google.maps.LatLng(-30, -53),
+		mapTypeId: google.maps.MapTypeId.ROADMAP
+	};
+	map = new google.maps.Map(document.getElementById(mapCanvasName), myOptions);
+		
+	map.setCenter(myOptions.position);
+	
+	var georssLayer = new google.maps.KmlLayer(geoUrl);
+	georssLayer.setMap(map);
+}

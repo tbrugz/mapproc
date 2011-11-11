@@ -16,6 +16,7 @@ public class Category {
 
 	double startVal;
 	double endVal;
+	//XXX: category:: String name;
 	String description;
 	String styleId;
 	String styleColor;
@@ -28,11 +29,11 @@ public class Category {
 	
 	static List<Category> getCategoriesFromLimits(List<Double> vals) {
 		List<Category> list = new ArrayList<Category>();
-		for(int i=0;i<vals.size()-1;i++) {
+		for(int i=1;i<vals.size();i++) {
 			Category cat = new Category();
-			cat.startVal = vals.get(i);
-			cat.endVal = vals.get(i+1);
-			cat.description = "category #"+(i+1);
+			cat.startVal = vals.get(i-1);
+			cat.endVal = vals.get(i);
+			cat.description = "category #"+(i);
 			cat.styleId = String.valueOf(i);
 			list.add(cat);
 		}

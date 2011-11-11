@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -45,6 +48,8 @@ public class MapProc {
 	
 	DocumentBuilder dBuilder;
 	
+	NumberFormat floatFormatter = getFloatFormatter("pt"); //XXX: defimalFormat locale: pt
+	
 	public MapProc() throws ParserConfigurationException {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		dBuilder = dbFactory.newDocumentBuilder();
@@ -57,6 +62,21 @@ public class MapProc {
 		return is;
 	}
 	
+	public static NumberFormat getFloatFormatter(String floatLocale) {
+		NumberFormat floatFormatter = null;
+		if(floatLocale==null) {
+			floatFormatter = NumberFormat.getNumberInstance();
+		}
+		else {
+			Locale locale = new Locale(floatLocale);
+			floatFormatter = NumberFormat.getNumberInstance(locale);
+		}
+		DecimalFormat df = (DecimalFormat) floatFormatter;
+		df.setGroupingUsed(true);
+		df.applyPattern("#,##0");
+		return floatFormatter;
+	}
+
 	void debug(double[] vals, int numOfCategories) {
 		List<Double> valsL = StatsUtils.toDoubleList(vals);
 
@@ -236,12 +256,24 @@ public class MapProc {
 					log.debug("Placemark: value: "+valueFromIS+"; cat: "+cat+"; name: "+eName.getTextContent());
 					
 					//change description
-					String desc = snippets.getProperty("description.append");
+					boolean replaceDesc = true;
+					String desc = snippets.getProperty("description.replace");
+					if(desc==null) {
+						desc = snippets.getProperty("description.append");
+						replaceDesc = false;
+					}
 					desc = desc.replaceAll("\\{0\\}", is.metadata.valueLabel);
-					desc = desc.replaceAll("\\{1\\}", String.valueOf(valueFromIS));
+					desc = desc.replaceAll("\\{1\\}", floatFormatter.format(valueFromIS));
+					desc = desc.replaceAll("\\{2\\}", cat.styleId);
+					//desc = desc.replaceAll("\\{1\\}", String.valueOf(valueFromIS));
 					Element descElem = DomUtils.getChildByTagName(eElement, "description");
 					if(descElem!=null) {
-						descElem.setTextContent(descElem.getTextContent()+desc);
+						if(replaceDesc) {
+							descElem.setTextContent(desc);
+						}
+						else {
+							descElem.setTextContent(descElem.getTextContent()+desc);
+						}
 					}
 					else {
 						descElem = doc.createElement("description");

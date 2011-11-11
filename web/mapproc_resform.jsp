@@ -2,6 +2,11 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="css/mapproc.css" />
+<% boolean useGMap = request.getParameter("gmap")!=null && !request.getParameter("gmap").equals(""); 
+if(useGMap) {
+%>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<% } %>
 <script type="text/javascript" src="js/mapproc.js"></script>
 <script type="text/javascript" src="js/jscolor/jscolor.js"></script>
 </head>
@@ -11,7 +16,7 @@
 
 <div id="form">
 
-<form action="proc/">
+<form id="theform" action="proc/">
 KML Resource: 
 <select name="kmlResource">
 <%
@@ -67,10 +72,16 @@ Color To: <input type="text" class="color small" id="colorToRGB" name="colorToRG
 
 Remove Placemark if no value found? <input type="checkbox" class="smaller" name="removeIfNotFound" value="1"/><br/>
 <br/>
-<input type="submit" class="small"/>
+<% if(useGMap) { %><input type="button" value="Load KML" onClick="loadKml('theform','map_canvas','map_location');"/><% } else { %>
+<input type="submit" class="small"/><% } %>
 </form>
 
 </div>
 
+<% if(useGMap) { %>
+<div id="map_canvas" style="width: 800px; height: 600px; border: 1px solid black"></div>
+<br/>
+<div id="map_location" style="width: 800px; height: 60px; border: 1px solid black; background-color: #ddd"></div>
+<% } %>
 </body>
 </html>

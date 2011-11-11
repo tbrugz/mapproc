@@ -58,7 +58,7 @@ public class KmlUtils {
 			String catBoundsCoords = KmlBounds.getBoundsCoordinates(right, left, top, bottom, 0);
 			String catDesc = 
 				isMetadata.format(c.getStartVal()) + 
-				" &#8804; " + "# "+isMetadata.valueLabel + " &lt; " +
+				" &lt; " + "# "+isMetadata.valueLabel + " &lt; " + //&#8804;
 				isMetadata.format(c.getEndVal()); //c.getDescription();
 			
 			String catElemStr = catElemSnippet.replaceAll("\\{0\\}", catId);
