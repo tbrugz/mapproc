@@ -44,7 +44,7 @@ import tbrugz.xml.DomUtils;
 public class MapProc {
 	static Log log = LogFactory.getLog(MapProc.class);
 	
-	final static String PROP_SNIPPETS = "/"+"snippets.properties";
+	public final static String PROP_SNIPPETS = "/"+"snippets.properties";
 	
 	DocumentBuilder dBuilder;
 	

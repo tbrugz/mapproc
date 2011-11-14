@@ -9,6 +9,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.Properties;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -21,7 +23,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import tbrugz.mapproc.Category;
 import tbrugz.mapproc.IndexedSeries;
+import tbrugz.mapproc.KmlUtils;
 import tbrugz.mapproc.MapProc;
 import tbrugz.stats.StatsUtils;
 import tbrugz.stats.StatsUtils.ScaleType;
@@ -31,7 +35,6 @@ public class MapProcTest {
 	static Log log = LogFactory.getLog(MapProcTest.class);
 
 	FileReader seriesFile;
-	//BufferedReader catsFile = new BufferedReader(new FileReader("work/input/tabela_categorias_vereadores-por-municipio.csv"));
 	BufferedReader catsFile;
 	InputStream kmlFile;
 	FileWriter outputWriter;
@@ -166,6 +169,32 @@ public class MapProcTest {
 		assertEquals(123, min);
 		assertEquals(12312, max);
 
+	}
+	
+	@Test
+	public void testCatFromCSVStream() throws IOException {
+		BufferedReader catsFile = new BufferedReader(new FileReader("work/input/csvcat/tabela_categorias_vereadores-por-municipio.csv"));
+		String csvCatOut = "work/output/ColorCat.csv";
+		outputWriter = new FileWriter(csvCatOut);
+		String sep = ";";
+		List<Category> cats = Category.getCategoriesFromCSVStream(catsFile, ";");
+
+		Properties snippets = new Properties();
+		snippets.load(MapProc.class.getResourceAsStream(MapProc.PROP_SNIPPETS));
+
+		KmlUtils.procStylesFromCategories(cats, snippets, colorFrom, colorTo);
+		//TODO: dump cat
+		outputWriter.write("XXX;MIN;MAX;COLOR\n");
+		for(Category cat: cats) {
+			outputWriter.write(cat.getStyleId()+sep+cat.getStartVal()+sep+cat.getEndVal()+sep+cat.getStyleColor()+"\n");
+		}
+		outputWriter.close();
+	}
+	
+	public void testCatsGen() throws IOException {
+		//List<Double> limits = StatsUtils.getCategoriesLimits(scaleType, StatsUtils.toDoubleList(vals), numOfCategories);
+		//List<Category> cats = Category.getCategoriesFromLimits(limits);
+		
 	}
 	
 	//@Test

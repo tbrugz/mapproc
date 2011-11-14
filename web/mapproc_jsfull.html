@@ -51,7 +51,7 @@ function doIt() {
 </script -->
 <script>
 var okNumber = 0;
-var places;
+var places, catData, seriesData;
 var jqxhrPlaces = $.getJSON("input/json/43Mun.json", function(data) {
 	okNumber++;
 	places = data;
@@ -61,12 +61,14 @@ var jqxhrPlaces = $.getJSON("input/json/43Mun.json", function(data) {
 
 var jqxhrCats = $.getJSON("input/json/43MunCat.json", function(data) {
 	okNumber++;
+	catData = data;
 	if(okNumber==3) { doIt(); }
 })
 .error(function() { alert("error Categories"); })
 
 var jqxhrSeries = $.getJSON("input/json/43MunSeries.json", function(data) {
 	okNumber++;
+	seriesData = data;
 	if(okNumber==3) { doIt(); }
 })
 .error(function() { alert("error Series"); })
@@ -89,30 +91,35 @@ function doIt() {
 	
 	var count = 0;
 	for(id in places) {
-		debug.innerHTML += "\n\n>> "+places[id].name+":: ";
+		//debug.innerHTML += "\n\n>> "+places[id].name+":: ";
 		var coords = new Array();
 		//$("#debug").append("["+$.dump(places[id].coordinates)+"]");
 		for(c in places[id].coordinates) {
 			coords.push( new google.maps.LatLng(places[id].coordinates[c][0], places[id].coordinates[c][1]) );
-			$("#debug").append("\n["+$.dump(places[id].coordinates[c][0])+","+$.dump(places[id].coordinates[c][1])+"]");
-			//if(coords.length>10) { break; }
+			//$("#debug").append("\n["+$.dump(places[id].coordinates[c][0])+","+$.dump(places[id].coordinates[c][1])+"]");
 			
 			//debug.innerHTML += c+";; "+coords[coords.length-1]+", ";
 			//debug.innerHTML += c[0]+":"+c[1]; //coords[coords.length-1]+", ";
 		}
 		var theplace = new google.maps.Polygon({
 			paths: coords,
-			strokeColor: "#FF0000",
+			strokeColor: "#000000",
 			strokeOpacity: 0.8,
-			strokeWeight: 2,
+			strokeWeight: 1,
 			fillColor: "#FF0000",
-			fillOpacity: 0.35
+			fillOpacity: 0.7
 		});
+		theplace.id = id;
+		theplace.name = places[id].name;
+		theplace.dataValue = seriesData.series[id];
+		theplace.catId = getCat(theplace.dataValue);
+		theplace.kmlColor = catData[theplace.catId].color;
+		theplace.fillColor = theplace.kmlColor.substring(6,8)+theplace.kmlColor.substring(4,6)+theplace.kmlColor.substring(2,4); 
+		//$("#debug").append(theplace.id+":"+theplace.name+":: ["+theplace.dataValue+";"+theplace.catId+";"+theplace.kmlColor+";"+theplace.fillColor+"]\n");
 		//$("#debug").append("[c: "+$.dump(coords)+"]");
-		//alert(coords);
 		theplace.setMap(map);
 		count++;
-		if(count>10) { break; }
+		//if(count>10) { break; }
 	}
 	
 	/*var bermudaTriangle;
@@ -145,6 +152,16 @@ function doIt() {
 
 	bermudaTriangle.setMap(map);*/
 	
+}
+
+function getCat(value) {
+	for(id in catData) {
+		//$("#debug").append("id: "+id+"; v:"+value+":"+catData[id].startval+"-"+catData[id].endval+"\n");
+		if(value >= catData[id].startval && value < catData[id].endval) {
+			return id;
+		}
+	}
+	return null;
 }
 </script>
 

@@ -124,7 +124,7 @@ public class KmlUtils {
 		}
 	}
 	
-	static void procStylesFromCategories(List<Category> cats, Properties prop, String colorFrom, String colorTo) {
+	public static void procStylesFromCategories(List<Category> cats, Properties prop, String colorFrom, String colorTo) {
 		if(colorFrom==null || colorFrom.length()!=8) {
 			throw new RuntimeException("ColorFrom must be in format 'aabbggrr'");
 		}

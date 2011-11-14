@@ -40,12 +40,12 @@ public class Kml2Json {
 		kml2json(kmlFile, writer);
 		writer.close();
 		
-		BufferedReader csvFile = new BufferedReader(new FileReader("work/input/csv/area.csv"));
+		BufferedReader csvFile = new BufferedReader(new FileReader("work/input/csv/ha.csv"));
 		FileWriter csvWriter = new FileWriter("work/output/"+idEstado+"MunSeries.json");
 		indexedSeries2json(csvFile, csvWriter);
 		csvWriter.close();
 		
-		BufferedReader csvCatFile = new BufferedReader(new FileReader("work/input/csvcat/tabela_categorias_vereadores-por-municipio.csv"));
+		BufferedReader csvCatFile = new BufferedReader(new FileReader("work/input/csvcat/tabela_categorias_vereadores-por-municipio-cor.csv"));
 		List<Category> cats = Category.getCategoriesFromCSVStream(csvCatFile, ";");
 		FileWriter csvCatWriter = new FileWriter("work/output/"+idEstado+"MunCat.json");
 		categories2json(cats, csvCatWriter);
