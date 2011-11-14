@@ -10,7 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 public class Category {
-	static Log log = LogFactory.getLog(Category.class);
+	static final Log log = LogFactory.getLog(Category.class);
 	static final String COLOR_REGEX = "[a-zA-Z0-9]{8}";
 	static final Pattern colorPattern = Pattern.compile(COLOR_REGEX);
 
@@ -40,7 +40,7 @@ public class Category {
 		return list;
 	}
 
-	static List<Category> getCategoriesFromCSVStream(BufferedReader reader, String delimiter) throws IOException {
+	public static List<Category> getCategoriesFromCSVStream(BufferedReader reader, String delimiter) throws IOException {
 		//id;min;max[;color]
 		//---- id;min;max[;value-id[;color]]
 		String header = reader.readLine();

@@ -262,9 +262,13 @@ public class MapProc {
 						desc = snippets.getProperty("description.append");
 						replaceDesc = false;
 					}
-					desc = desc.replaceAll("\\{0\\}", is.metadata.valueLabel);
-					desc = desc.replaceAll("\\{1\\}", floatFormatter.format(valueFromIS));
-					desc = desc.replaceAll("\\{2\\}", cat.styleId);
+					desc = desc.replaceAll("\\{label\\}", is.metadata.valueLabel);
+					desc = desc.replaceAll("\\{value\\}", floatFormatter.format(valueFromIS));
+					desc = desc.replaceAll("\\{catid\\}", cat.styleId);
+					String measureUnit = is.metadata.measureUnit; 
+					if(measureUnit==null) { measureUnit = ""; }
+					desc = desc.replaceAll("\\{measureUnit\\}", measureUnit);
+					
 					//desc = desc.replaceAll("\\{1\\}", String.valueOf(valueFromIS));
 					Element descElem = DomUtils.getChildByTagName(eElement, "description");
 					if(descElem!=null) {
@@ -339,6 +343,7 @@ public class MapProc {
 		
 		//DOMUtilExt.sortChildNodes(placemarksFolder, false, 1, new DOMUtilExt.IdAttribComparator());
 		
+		//TODO: do not serialize on MapProc.doIt()
 		XmlPrinter.serialize(doc, outputWriter);
 		
 		return doc;

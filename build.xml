@@ -26,6 +26,8 @@
 			<fileset dir="web"></fileset>
 			<zipfileset dir="work/input" prefix="input">
 				<include name="csv/**"/>
+				<include name="csvcat/**"/>
+				<include name="json/**"/>
 				<include name="kml/**"/>
 			</zipfileset>
 		</war>
@@ -39,6 +41,24 @@
 
 	<target name="deploy-local" depends="war">
 		<copy file="${dist.dir}/mapproc.war" todir="${deploy.dir}"></copy>
+	</target>
+
+	<target name="deploy-local-web">
+		<copy todir="${deploy.dir}/mapproc" verbose="true">
+			<fileset dir="web">
+				<include name="**/*.html"/>
+				<include name="**/*.js"/>
+				<include name="**/*.css"/>
+			</fileset>
+		</copy>
+		<copy todir="${deploy.dir}/mapproc/input" verbose="true">
+			<fileset dir="work/input">
+				<include name="csv/**"/>
+				<include name="csvcat/**"/>
+				<include name="json/**"/>
+				<include name="kml/**"/>
+			</fileset>
+		</copy>
 	</target>
 	
 </project>

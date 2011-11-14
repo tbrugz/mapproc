@@ -15,7 +15,7 @@ public class IndexedSeries {
 	
 	Map<String, Double> values = new HashMap<String, Double>();
 	
-	IndexedSeriesMetadata metadata = new IndexedSeriesMetadata();
+	public IndexedSeriesMetadata metadata = new IndexedSeriesMetadata();
 	//String objectLabel;
 	//String valueLabel;
 	
@@ -31,7 +31,7 @@ public class IndexedSeries {
 		metadata.objectLabel = headers[0];
 		String[] valueFields = headers[1].split(":");
 		metadata.valueLabel = valueFields[0];
-		metadata.valueType = IndexedSeriesMetadata.ValueType.INTEGER;
+		metadata.valueType = IndexedSeriesMetadata.ValueType.FLOAT;
 
 		if(valueFields.length>1) {
 			try {
@@ -40,8 +40,12 @@ public class IndexedSeries {
 			catch(IllegalArgumentException e) {
 				log.warn("Unknown valueType ["+valueFields[1]+"], assuming "+metadata.valueType);
 			}
+			
+			if(valueFields.length>2 && valueFields[2]!=null) {
+				metadata.measureUnit = valueFields[2];
+			}
 		}
-		log.info("IndexedSeries: objLabel: "+metadata.objectLabel+"; valueLabel: "+metadata.valueLabel+"; valueType: "+metadata.valueType);
+		log.info("IndexedSeries: objLabel: "+metadata.objectLabel+"; valueLabel: "+metadata.valueLabel+"; valueType: "+metadata.valueType+"; measureUnit: "+metadata.measureUnit);
 		
 		String line = reader.readLine();
 		//TODO: non-double values... like Date or String

@@ -13,6 +13,7 @@ public class IndexedSeriesMetadata {
 	public String objectLabel;
 	public String valueLabel;
 	public ValueType valueType;
+	public String measureUnit;
 	
 	static NumberFormat intNumFormat = NumberFormat.getIntegerInstance();
 	static NumberFormat floatNumFormat = NumberFormat.getNumberInstance();
