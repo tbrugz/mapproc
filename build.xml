@@ -46,6 +46,7 @@
 	<target name="deploy-local-web">
 		<copy todir="${deploy.dir}/mapproc" verbose="true">
 			<fileset dir="web">
+				<include name="**/*.jsp"/>
 				<include name="**/*.html"/>
 				<include name="**/*.js"/>
 				<include name="**/*.css"/>

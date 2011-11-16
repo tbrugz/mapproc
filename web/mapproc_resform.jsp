@@ -2,13 +2,24 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="css/mapproc.css" />
-<% boolean useGMap = request.getParameter("gmap")!=null && !request.getParameter("gmap").equals(""); 
-if(useGMap) {
-%>
+<% //boolean useGMap = request.getParameter("gmap")!=null && !request.getParameter("gmap").equals(""); %>
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
-<% } %>
 <script type="text/javascript" src="js/mapproc.js"></script>
 <script type="text/javascript" src="js/jscolor/jscolor.js"></script>
+<script type="text/javascript">
+function showDivs() {
+	document.getElementById('map_canvas').style.display = 'block';
+	document.getElementById('map_location').style.display = 'block';
+}
+function openInGoogleMaps() {
+	//http://maps.google.com.br/maps?q=
+	var geoUrl = document.getElementById('theform').action+"?"+getQueryString('theform');
+	var gmapsUrl = "http://maps.google.com.br/maps?q="+encodeURIComponent(geoUrl);
+	//escape, encodeURI, encodeURIComponent
+	//alert(gmapsUrl);
+	window.open(gmapsUrl, "_blank");
+}
+</script>
 </head>
 <body onload="changeColor('colorFromRGB', 'colorFrom');changeColor('colorToRGB', 'colorTo');">
 
@@ -20,6 +31,7 @@ if(useGMap) {
 KML Resource: 
 <select name="kmlResource">
 <%
+//http://maps.google.com.br/maps?q=http:%2F%2Fdl.dropbox.com%2Fu%2F26206165%2Fmapproc.kml&hl=en&sll=-30.027704,-51.228735&sspn=0.827522,1.086273&vpsrc=0&t=h&z=6
 Properties p = new Properties();
 p.load(MapProc.class.getResourceAsStream("/paths.properties"));
 List l = new ArrayList(p.keySet());
@@ -72,16 +84,16 @@ Color To: <input type="text" class="color small" id="colorToRGB" name="colorToRG
 
 Remove Placemark if no value found? <input type="checkbox" class="smaller" name="removeIfNotFound" value="1"/><br/>
 <br/>
-<% if(useGMap) { %><input type="button" value="Load KML" onClick="loadKml('theform','map_canvas','map_location');"/><% } else { %>
-<input type="submit" class="small"/><% } %>
+<input type="button" value="Open a GMaps map" class="medium" onClick="showDivs();loadKml('theform','map_canvas','map_location');"/>
+<input type="button" value="Open in GMaps" class="medium" onClick="openInGoogleMaps();"/>
+<input type="submit" value="Download" class="small"/>
 </form>
 
 </div>
 
-<% if(useGMap) { %>
-<div id="map_canvas" style="width: 800px; height: 600px; border: 1px solid black"></div>
+<div id="map_canvas" style="width: 800px; height: 600px; border: 1px solid black; display:none;"></div>
 <br/>
-<div id="map_location" style="width: 800px; height: 60px; border: 1px solid black; background-color: #ddd"></div>
-<% } %>
+<div id="map_location" style="width: 800px; height: 60px; border: 1px solid black; background-color: #ddd; display:none;"></div>
+
 </body>
 </html>

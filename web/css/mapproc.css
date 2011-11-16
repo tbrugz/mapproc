@@ -6,6 +6,9 @@ body {
 input {
 	width: 30em;
 }
+input.medium {
+	width: 12em;
+}
 input.small {
 	width: 7em;
 }
