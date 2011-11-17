@@ -10,6 +10,7 @@ import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.regex.Matcher;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -262,12 +263,13 @@ public class MapProc {
 						desc = snippets.getProperty("description.append");
 						replaceDesc = false;
 					}
-					desc = desc.replaceAll("\\{label\\}", is.metadata.valueLabel);
-					desc = desc.replaceAll("\\{value\\}", floatFormatter.format(valueFromIS));
-					desc = desc.replaceAll("\\{catid\\}", cat.styleId);
+					desc = desc.replaceAll("\\{label\\}", Matcher.quoteReplacement(is.metadata.valueLabel) );
+					desc = desc.replaceAll("\\{value\\}", Matcher.quoteReplacement(floatFormatter.format(valueFromIS)) );
+					desc = desc.replaceAll("\\{catid\\}", Matcher.quoteReplacement(cat.styleId) );
 					String measureUnit = is.metadata.measureUnit; 
 					if(measureUnit==null) { measureUnit = ""; }
-					desc = desc.replaceAll("\\{measureUnit\\}", measureUnit);
+					//log.info("measureUnit: "+measureUnit+"; quot: "+Pattern.quote(measureUnit)+"; desc: "+desc);
+					desc = desc.replaceAll("\\{measureUnit\\}", Matcher.quoteReplacement(measureUnit) );
 					
 					//desc = desc.replaceAll("\\{1\\}", String.valueOf(valueFromIS));
 					Element descElem = DomUtils.getChildByTagName(eElement, "description");

@@ -101,14 +101,18 @@ public class MapProcServlet extends HttpServlet {
 				lm.doIt(kmlStream, MapProc.getIndexedSeries(seriesReader), resp.getWriter(), scaleType, numOfCategories, colorFrom, colorTo, removeIfNotFound, genCatLimitsFromExistingPlacemarks);
 			}
 		} catch (ParserConfigurationException e) {
-			throw new RuntimeException(e);
 			//resp.setContentType(TXT_MIMETYPE);
 			//resp.setHeader("Content-Disposition","inline");
-			//e.printStackTrace(resp.getWriter());
-		} catch (SAXException e) {
+			e.printStackTrace();
 			throw new RuntimeException(e);
-			//e.printStackTrace(resp.getWriter());
+		} catch (SAXException e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
+		
 	}
 	
 	InputStream getStream(String resourcePath, boolean allowUrl, String url, String contentType) throws MalformedURLException, IOException {

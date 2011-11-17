@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -34,7 +36,7 @@ public class KmlUtils {
 		double bottomLat = kmlbounds.getMinLat() + latDist;
 		
 		String boundsCoords = KmlBounds.getBoundsCoordinates(rightLong, leftLong, topLat, bottomLat, 0);
-		catLabelsSnippet = catLabelsSnippet.replaceAll("\\{0\\}", boundsCoords);
+		catLabelsSnippet = catLabelsSnippet.replaceAll("\\{0\\}", Matcher.quoteReplacement(boundsCoords) );
 
 		Element catLabelsElem = DomUtils.getDocumentNodeFromString(catLabelsSnippet, dBuilder).getDocumentElement();
 		Node catLabelsElemNew = doc.importNode(catLabelsElem, true);
@@ -61,9 +63,9 @@ public class KmlUtils {
 				" &lt; " + "# "+isMetadata.valueLabel + " &lt; " + //&#8804;
 				isMetadata.format(c.getEndVal()); //c.getDescription();
 			
-			String catElemStr = catElemSnippet.replaceAll("\\{0\\}", catId);
-			catElemStr = catElemStr.replaceAll("\\{1\\}", catDesc);
-			catElemStr = catElemStr.replaceAll("\\{2\\}", catBoundsCoords);
+			String catElemStr = catElemSnippet.replaceAll("\\{0\\}", Matcher.quoteReplacement(catId) );
+			catElemStr = catElemStr.replaceAll("\\{1\\}", Matcher.quoteReplacement(catDesc) );
+			catElemStr = catElemStr.replaceAll("\\{2\\}", Matcher.quoteReplacement(catBoundsCoords) );
 			Element catElem = DomUtils.getDocumentNodeFromString(catElemStr, dBuilder).getDocumentElement();
 			Node catElemNew = doc.importNode(catElem, true);
 			catLabelsElemNew.appendChild(catElemNew);
@@ -92,7 +94,7 @@ public class KmlUtils {
 		int i=0;
 		for(Category c: cats) {
 			String style = prop.getProperty("Style"); //0: id, 1: color
-			style = style.replaceAll("\\{0\\}", c.styleId);
+			style = style.replaceAll("\\{0\\}", Matcher.quoteReplacement(c.styleId));
 			
 			String positiveHex = hexString( colors.get(i).intValue() );
 			String complementHex = hexString( complFF( colors.get(i).intValue() ) );
@@ -118,8 +120,8 @@ public class KmlUtils {
 		
 		for(Category c: cats) {
 			String style = prop.getProperty("Style"); //0: id, 1: color
-			style = style.replaceAll("\\{0\\}", c.styleId);
-			style = style.replaceAll("\\{1\\}", c.styleColor);
+			style = style.replaceAll("\\{0\\}", Matcher.quoteReplacement(c.styleId));
+			style = style.replaceAll("\\{1\\}", Matcher.quoteReplacement(c.styleColor));
 			c.styleXML = style;
 		}
 	}
@@ -147,7 +149,7 @@ public class KmlUtils {
 		int i=0;
 		for(Category c: cats) {
 			String style = prop.getProperty("Style"); //0: id, 1: color
-			style = style.replaceAll("\\{0\\}", c.styleId);
+			style = style.replaceAll("\\{0\\}", Matcher.quoteReplacement(c.styleId) );
 			
 			//String positiveHex = hexString( colors.get(i).intValue() );
 			//String complementHex = hexString( complFF( colors.get(i).intValue() ) );
@@ -160,7 +162,7 @@ public class KmlUtils {
 				log.debug("new Color:: colorFrom: "+colorFrom+"; colorTo: "+colorTo+"; cat: "+c.styleId+"; colorNow:"+c.styleColor);
 			}
 			//style = style.replaceAll("\\{1\\}", "a0"+hex+"ffff");
-			style = style.replaceAll("\\{1\\}", c.styleColor);
+			style = style.replaceAll("\\{1\\}", Matcher.quoteReplacement(c.styleColor) );
 			//c.styleColor = color;
 			i++;
 			c.styleXML = style;

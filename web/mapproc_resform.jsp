@@ -7,16 +7,18 @@
 <script type="text/javascript" src="js/mapproc.js"></script>
 <script type="text/javascript" src="js/jscolor/jscolor.js"></script>
 <script type="text/javascript">
-function showDivs() {
-	document.getElementById('map_canvas').style.display = 'block';
-	document.getElementById('map_location').style.display = 'block';
+function showDivs(divs) {
+	for(var i=0;i<divs.length;i++) {
+		alert('div = '+i+" - "+divs[i]);
+		document.getElementById(divs[i]).style.display = 'block';
+	}
+	//document.getElementById('map_canvas').style.display = 'block';
+	//document.getElementById('map_location').style.display = 'block';
 }
-function openInGoogleMaps() {
+function openInGoogleMaps(formname) {
 	//http://maps.google.com.br/maps?q=
-	var geoUrl = document.getElementById('theform').action+"?"+getQueryString('theform');
+	var geoUrl = document.getElementById(formname).action+"?"+getQueryString(formname);
 	var gmapsUrl = "http://maps.google.com.br/maps?q="+encodeURIComponent(geoUrl);
-	//escape, encodeURI, encodeURIComponent
-	//alert(gmapsUrl);
 	window.open(gmapsUrl, "_blank");
 }
 </script>
@@ -79,13 +81,13 @@ Scale Type:
 </select><br/>
 Generate Category Limits from existing placemarks? <input type="checkbox" class="smaller" name="genCatLimitsFromExistingPlacemarks" value="1" checked/><br/>
 </div>
-Color From: <input type="text" class="color small" id="colorFromRGB" name="colorFromRGB" value="FF0000" onchange="changeColor('colorFromRGB', 'colorFrom')"/> <input type="hidden" id="colorFrom" name="colorFrom"/><br/>
-Color To: <input type="text" class="color small" id="colorToRGB" name="colorToRGB" value="00FF00" onchange="changeColor('colorToRGB', 'colorTo')"/> <input type="hidden" id="colorTo" name="colorTo"/><br/>
+Color From: <input type="text" class="color small" id="colorFromRGB" name="colorFromRGB" value="00FF00" onchange="changeColor('colorFromRGB', 'colorFrom')"/> <input type="hidden" id="colorFrom" name="colorFrom"/><br/>
+Color To: <input type="text" class="color small" id="colorToRGB" name="colorToRGB" value="FF0000" onchange="changeColor('colorToRGB', 'colorTo')"/> <input type="hidden" id="colorTo" name="colorTo"/><br/>
 
 Remove Placemark if no value found? <input type="checkbox" class="smaller" name="removeIfNotFound" value="1"/><br/>
 <br/>
-<input type="button" value="Open a GMaps map" class="medium" onClick="showDivs();loadKml('theform','map_canvas','map_location');"/>
-<input type="button" value="Open in GMaps" class="medium" onClick="openInGoogleMaps();"/>
+<input type="button" value="Open a GMaps map" class="medium" onClick="showDivs(['map_canvas','map_location']);loadKml('theform','map_canvas','map_location');"/>
+<input type="button" value="Open in GMaps" class="medium" onClick="openInGoogleMaps('theform');"/>
 <input type="submit" value="Download" class="small"/>
 </form>
 
