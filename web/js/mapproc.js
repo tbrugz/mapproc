@@ -47,6 +47,19 @@ function changeColor(elementChanged, elementToChange) {
 		+ document.getElementById(elementChanged).value.substring(0,2);
 }
 
+function showDivs(divs) {
+	for(var i=0;i<divs.length;i++) {
+		document.getElementById(divs[i]).style.display = 'block';
+	}
+}
+
+function openInGoogleMaps(formname) {
+	//http://maps.google.com.br/maps?q=
+	var geoUrl = document.getElementById(formname).action+"?"+getQueryString(formname);
+	var gmapsUrl = "http://maps.google.com.br/maps?q="+encodeURIComponent(geoUrl);
+	window.open(gmapsUrl, "_blank");
+}
+
 //------------------- gmaps
 
 var map;
@@ -57,13 +70,34 @@ function loadKml(formName, mapCanvasName, mapLocationDivName) {
 	document.getElementById(mapLocationDivName).innerHTML = geoUrl;
 	
 	var myOptions = {
-		zoom: 6,
-		position: new google.maps.LatLng(-30, -53),
+		zoom: 4,
+		position: new google.maps.LatLng(-15, -47),
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
 	map = new google.maps.Map(document.getElementById(mapCanvasName), myOptions);
 		
 	map.setCenter(myOptions.position);
+	
+	var georssLayer = new google.maps.KmlLayer(geoUrl);
+	georssLayer.setMap(map);
+}
+
+function initMap(mapCanvasName) {
+	var myOptions = {
+		zoom: 4,
+		position: new google.maps.LatLng(-15, -47),
+		mapTypeId: google.maps.MapTypeId.ROADMAP
+	};
+	var map = new google.maps.Map(document.getElementById(mapCanvasName), myOptions);
+	map.setCenter(myOptions.position);
+	return map;
+}
+
+function loadKmlInMap(formName, map, mapLocationDivName) {
+	var geoUrl = document.getElementById(formName).action+"?"+getQueryString(formName);
+	if(document.getElementById(mapLocationDivName)) {
+		document.getElementById(mapLocationDivName).innerHTML = geoUrl;
+	}
 	
 	var georssLayer = new google.maps.KmlLayer(geoUrl);
 	georssLayer.setMap(map);
