@@ -35,7 +35,7 @@ public class KmlUtils {
 		double topLat = kmlbounds.getMaxLat() - latDist;
 		double bottomLat = kmlbounds.getMinLat() + latDist;
 		
-		String boundsCoords = KmlBounds.getBoundsCoordinates(rightLong, leftLong, topLat, bottomLat, 0);
+		String boundsCoords = KmlBounds.getBoundsCoordinates(rightLong, leftLong, topLat, bottomLat, -1); //-1 for being below other labels
 		catLabelsSnippet = catLabelsSnippet.replaceAll("\\{0\\}", Matcher.quoteReplacement(boundsCoords) );
 
 		Element catLabelsElem = DomUtils.getDocumentNodeFromString(catLabelsSnippet, dBuilder).getDocumentElement();

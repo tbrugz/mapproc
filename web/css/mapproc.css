@@ -30,3 +30,11 @@ input.smaller {
 	margin: 3px;
 	width: 12em;
 }
+.label {
+	padding: 3px;
+}
+.placeInfo {
+	font-weight: bold;
+	padding: 3px;
+	background-color: #eee;
+}

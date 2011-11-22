@@ -29,6 +29,7 @@ import tbrugz.mapproc.KmlUtils;
 import tbrugz.mapproc.MapProc;
 import tbrugz.stats.StatsUtils;
 import tbrugz.stats.StatsUtils.ScaleType;
+import tbrugz.xml.XmlPrinter;
 
 public class MapProcTest {
 
@@ -158,6 +159,7 @@ public class MapProcTest {
 		assertEquals(123, min);
 		assertEquals(12312, max);
 
+		XmlPrinter.serialize(doc, new FileWriter("work/output/MapSimple.kml"));
 	}
 	
 	@Test

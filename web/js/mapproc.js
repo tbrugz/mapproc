@@ -99,6 +99,8 @@ function loadKmlInMap(formName, map, mapLocationDivName) {
 		document.getElementById(mapLocationDivName).innerHTML = geoUrl;
 	}
 	
-	var georssLayer = new google.maps.KmlLayer(geoUrl);
-	georssLayer.setMap(map);
+	var kmlLayer = new google.maps.KmlLayer(geoUrl);
+	kmlLayer.setMap(map);
+
+	return kmlLayer;
 }
