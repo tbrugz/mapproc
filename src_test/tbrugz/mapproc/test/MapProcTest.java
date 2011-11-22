@@ -37,7 +37,6 @@ public class MapProcTest {
 	FileReader seriesFile;
 	BufferedReader catsFile;
 	InputStream kmlFile;
-	FileWriter outputWriter;
 
 	int numOfCategories = 5;
 	ScaleType scaleType = ScaleType.LOG;
@@ -50,7 +49,6 @@ public class MapProcTest {
 		//BufferedReader catsFile = new BufferedReader(new FileReader("work/input/tabela_categorias_vereadores-por-municipio.csv"));
 		//catsFile = new BufferedReader(new FileReader("work/input/csvcat/tabela_categorias_vereadores-por-municipio-color.csv"));
 		kmlFile = new FileInputStream("work/input/kml/Municipalities_of_RS.kml");
-		outputWriter = new FileWriter("work/output/Mun.kml");
 	}
 	
 	//@Test
@@ -58,17 +56,16 @@ public class MapProcTest {
 		String colorFrom = "aaff0000"; String colorTo = "aa0000ff";
 		
 		MapProc lm = new MapProc();
-		lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, catsFile, colorFrom, colorTo, false);
+		lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), catsFile, colorFrom, colorTo, false);
 	}
 	
 	@Test
 	public void testGeneratedCategories() throws IOException, ParserConfigurationException, SAXException {
 		kmlFile = new FileInputStream("work/test/input/kml/RSSimple.kml");
 		seriesFile = new FileReader("work/test/input/csv/tabela-municipios_e_habitantes-parcial-5-RS.csv");
-		outputWriter = new FileWriter("work/output/MunFull.kml");
 		
 		MapProc lm = new MapProc();
-		Document doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, false, false);
+		Document doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), scaleType, numOfCategories, colorFrom, colorTo, false, false);
 		NodeList nList = doc.getElementsByTagName("Placemark");
 		for (int i = 0; i < nList.getLength(); i++) {
 			Node nNode = nList.item(i);
@@ -82,10 +79,9 @@ public class MapProcTest {
 
 		kmlFile = new FileInputStream("work/input/kml/Municipalities_of_RS.kml");
 		seriesFile = new FileReader("work/test/input/csv/tabela-municipios_e_habitantes-parcial-100sorted-RS.csv");
-		outputWriter = new FileWriter("work/output/MunFull.kml");
 		
 		lm = new MapProc();
-		doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, false, false);
+		doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), scaleType, numOfCategories, colorFrom, colorTo, false, false);
 		nList = doc.getElementsByTagName("Placemark");
 		log.info("size: "+nList.getLength()+"; cats: "+numOfCategories);
 		assertEquals(497 + numOfCategories + 1, nList.getLength());
@@ -96,30 +92,27 @@ public class MapProcTest {
 	public void testGeneratedCategoriesPartialSeries() throws IOException, ParserConfigurationException, SAXException {
 		kmlFile = new FileInputStream("work/test/input/kml/RSSimple.kml");
 		seriesFile = new FileReader("work/test/input/csv/tabela-municipios_e_habitantes-parcial-5-RS.csv");
-		outputWriter = new FileWriter("work/output/MunPartial.kml");
 		
 		MapProc lm = new MapProc();
-		Document doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, true, false);
+		Document doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), scaleType, numOfCategories, colorFrom, colorTo, true, false);
 		NodeList nList = doc.getElementsByTagName("Placemark");
 		log.info("partial size: "+nList.getLength());
 		assertEquals(4 + numOfCategories + 1, nList.getLength());
 
 		kmlFile = new FileInputStream("work/input/kml/Municipalities_of_RS.kml");
 		seriesFile = new FileReader("work/test/input/csv/tabela-municipios_e_habitantes-parcial-495-RS.csv");
-		outputWriter = new FileWriter("work/output/MunPartial.kml");
 		
 		lm = new MapProc();
-		doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, true, false);
+		doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), scaleType, numOfCategories, colorFrom, colorTo, true, false);
 		nList = doc.getElementsByTagName("Placemark");
 		log.info("partial size: "+nList.getLength());
 		assertEquals(495 + numOfCategories + 1, nList.getLength());
 
 		kmlFile = new FileInputStream("work/input/kml/Municipalities_of_RS.kml");
 		seriesFile = new FileReader("work/test/input/csv/tabela-municipios_e_habitantes-parcial-100sorted-RS.csv");
-		outputWriter = new FileWriter("work/output/MunPartial.kml");
 		
 		lm = new MapProc();
-		doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, true, false);
+		doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), scaleType, numOfCategories, colorFrom, colorTo, true, false);
 		nList = doc.getElementsByTagName("Placemark");
 		log.info("partial size: "+nList.getLength());
 		/*for (int i = 0; i < nList.getLength(); i++) {
@@ -130,10 +123,9 @@ public class MapProcTest {
 
 		kmlFile = new FileInputStream("work/input/kml/Municipalities_of_RS.kml");
 		seriesFile = new FileReader("work/test/input/csv/tabela-municipios_e_habitantes-parcial-100-RS.csv");
-		outputWriter = new FileWriter("work/output/MunPartial.kml");
 		
 		lm = new MapProc();
-		doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, true, false);
+		doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), scaleType, numOfCategories, colorFrom, colorTo, true, false);
 		nList = doc.getElementsByTagName("Placemark");
 		log.info("size: "+nList.getLength()+"; cats: "+numOfCategories);
 		assertEquals(100 + numOfCategories + 1, nList.getLength());
@@ -143,15 +135,13 @@ public class MapProcTest {
 	public void testGeneratedCategoriesLimits() throws IOException, ParserConfigurationException, SAXException {
 		String kmlIn = "work/test/input/kml/RSSimple.kml"; //"work/input/kml/43Mun.kml";
 		String csvIn = "work/test/input/csv/tabela-municipios_e_habitantes-parcial-5-RS.csv"; //"work/input/csv/pib.csv";
-		String kmlOut = "work/output/MunSimple.kml";
 		
 		kmlFile = new FileInputStream(kmlIn);
 		seriesFile = new FileReader(csvIn);
-		outputWriter = new FileWriter(kmlOut);
 		IndexedSeries is = MapProc.getIndexedSeries(seriesFile);
 		MapProc lm = new MapProc();
 		
-		Document doc = lm.doIt(kmlFile, is, outputWriter, scaleType, numOfCategories, colorFrom, colorTo, true, false);
+		Document doc = lm.doIt(kmlFile, is, scaleType, numOfCategories, colorFrom, colorTo, true, false);
 		double[] vals = StatsUtils.toDoubleArray(is.getValues());
 		long min = Math.round(StatsUtils.min(vals));
 		long max = Math.round(StatsUtils.max(vals));
@@ -160,9 +150,8 @@ public class MapProcTest {
 
 		kmlFile = new FileInputStream(kmlIn);
 		seriesFile = new FileReader(csvIn);
-		outputWriter = new FileWriter(kmlOut);
 		
-		doc = lm.doIt(kmlFile, is, outputWriter, scaleType, numOfCategories, colorFrom, colorTo, true, true);
+		doc = lm.doIt(kmlFile, is, scaleType, numOfCategories, colorFrom, colorTo, true, true);
 		vals = StatsUtils.toDoubleArray(StatsUtils.getValsForExistingPlacemarks(is, doc));
 		min = Math.round(StatsUtils.min(vals));
 		max = Math.round(StatsUtils.max(vals));
@@ -175,7 +164,7 @@ public class MapProcTest {
 	public void testCatFromCSVStream() throws IOException {
 		BufferedReader catsFile = new BufferedReader(new FileReader("work/input/csvcat/tabela_categorias_vereadores-por-municipio.csv"));
 		String csvCatOut = "work/output/ColorCat.csv";
-		outputWriter = new FileWriter(csvCatOut);
+		FileWriter outputWriter = new FileWriter(csvCatOut);
 		String sep = ";";
 		List<Category> cats = Category.getCategoriesFromCSVStream(catsFile, ";");
 
@@ -204,16 +193,15 @@ public class MapProcTest {
 		String colorFrom = "aaff0000"; String colorTo = "aa0000ff";
 		seriesFile = new FileReader("work/input/csv/area.csv");
 		kmlFile = new FileInputStream("work/input/kml/43Mun.kml");
-		outputWriter = new FileWriter("work/output/43Mun.kml");
 		
 		MapProc lm = new MapProc();
-		lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorFrom, colorTo, false, false);
+		lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), scaleType, numOfCategories, colorFrom, colorTo, false, false);
 	}
 
 	//@Test
 	public void testGeneratedCategoriesPattern() throws IOException, ParserConfigurationException, SAXException {
 		MapProc lm = new MapProc();
-		lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), outputWriter, scaleType, numOfCategories, colorSpec, false, false);
+		lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), scaleType, numOfCategories, colorSpec, false, false);
 	}
 
 }

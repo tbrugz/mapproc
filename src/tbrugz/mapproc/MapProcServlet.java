@@ -13,9 +13,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 import tbrugz.stats.StatsUtils.ScaleType;
+import tbrugz.xml.XmlPrinter;
 
 /*
  * TODO: do not return map if map contains no placemark (apart from categories labels)
@@ -88,18 +90,21 @@ public class MapProcServlet extends HttpServlet {
 			else {
 				resp.setContentType(XML_MIMETYPE);
 			}
-			
+
+			Document doc = null;
 			if((categoriesResource!=null && !categoriesResource.equals("")) || (categoriesUrl!=null && categoriesUrl.equals(""))) {
 				//BufferedReader catsReader = new BufferedReader(new InputStreamReader(new URL(categoriesUrl).openStream()));
 				BufferedReader catsReader = new BufferedReader(new InputStreamReader(getStream(categoriesResource, csvUrlAllowed, categoriesUrl, "CSV Categories")));
 				
-				lm.doIt(kmlStream, MapProc.getIndexedSeries(seriesReader), resp.getWriter(), catsReader, colorFrom, colorTo, removeIfNotFound);
+				doc = lm.doIt(kmlStream, MapProc.getIndexedSeries(seriesReader), catsReader, colorFrom, colorTo, removeIfNotFound);
 			}
 			else {
 				int numOfCategories = Integer.parseInt( req.getParameter("numOfCategories") );
 				ScaleType scaleType = ScaleType.valueOf( req.getParameter("scaleType") );
-				lm.doIt(kmlStream, MapProc.getIndexedSeries(seriesReader), resp.getWriter(), scaleType, numOfCategories, colorFrom, colorTo, removeIfNotFound, genCatLimitsFromExistingPlacemarks);
+				doc = lm.doIt(kmlStream, MapProc.getIndexedSeries(seriesReader), scaleType, numOfCategories, colorFrom, colorTo, removeIfNotFound, genCatLimitsFromExistingPlacemarks);
 			}
+
+			XmlPrinter.serialize(doc, resp.getWriter());
 		} catch (ParserConfigurationException e) {
 			//resp.setContentType(TXT_MIMETYPE);
 			//resp.setHeader("Content-Disposition","inline");

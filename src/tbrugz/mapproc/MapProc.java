@@ -97,7 +97,7 @@ public class MapProc {
 		log.info("cats: "+cats);
 	}
 		
-	public Document doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, BufferedReader categoriesCsv, String colorFrom, String colorTo, boolean removeIfNotFound) throws IOException, ParserConfigurationException, SAXException {
+	public Document doIt(InputStream kmlURI, IndexedSeries is, BufferedReader categoriesCsv, String colorFrom, String colorTo, boolean removeIfNotFound) throws IOException, ParserConfigurationException, SAXException {
 		//double[] vals = StatsUtils.toDoubleArray(is.getValues());
 
 		List<Category> cats = Category.getCategoriesFromCSVStream(categoriesCsv, ";");
@@ -107,10 +107,10 @@ public class MapProc {
 		
 		KmlUtils.procStylesFromCategories(cats, snippets, colorFrom, colorTo);
 		
-		return doIt(getDocument(kmlURI), is, outputWriter, cats, removeIfNotFound);
+		return doIt(getDocument(kmlURI), is, cats, removeIfNotFound);
 	}
 
-	public Document doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, 
+	public Document doIt(InputStream kmlURI, IndexedSeries is, ScaleType scaleType, 
 			int numOfCategories, String colorFrom, String colorTo, boolean removeIfNotFound, boolean genCategoryLimitsFromExistingPlacemarks) throws IOException, ParserConfigurationException, SAXException {
 		
 		double[] vals = null;
@@ -131,11 +131,11 @@ public class MapProc {
 		
 		KmlUtils.procStylesFromCategories(cats, snippets, colorFrom, colorTo);
 		
-		return doIt(doc, is, outputWriter, cats, removeIfNotFound);
+		return doIt(doc, is, cats, removeIfNotFound);
 	}
 
 	@Deprecated
-	public Document doIt(InputStream kmlURI, IndexedSeries is, Writer outputWriter, ScaleType scaleType, 
+	public Document doIt(InputStream kmlURI, IndexedSeries is, ScaleType scaleType, 
 			int numOfCategories, String colorSpec, boolean removeIfNotFound, boolean genCategoryLimitsFromExistingPlacemarks) throws ParserConfigurationException, SAXException, IOException {
 
 		double[] vals = null;
@@ -156,7 +156,7 @@ public class MapProc {
 		
 		KmlUtils.procStylesFromCategories(cats, snippets, colorSpec);
 		
-		return doIt(doc, is, outputWriter, cats, removeIfNotFound);
+		return doIt(doc, is, cats, removeIfNotFound);
 	}
 	
 	Document getDocument(InputStream kmlStream) throws ParserConfigurationException, SAXException, IOException {
@@ -166,7 +166,7 @@ public class MapProc {
 	}
 	
 	//public void doIt(String kmlURI, Reader dataSeriesReader, Writer outputWriter, ScaleType scaleType, int numOfCategories, String colorSpec) throws Exception {
-	Document doIt(Document doc, IndexedSeries is, Writer outputWriter, 
+	Document doIt(Document doc, IndexedSeries is, 
 			List<Category> cats, boolean removeIfNotFound) throws ParserConfigurationException, SAXException, IOException {
 		//double[] vals = StatsUtils.toDoubleArray(is.getValues());
 		
@@ -345,8 +345,8 @@ public class MapProc {
 		
 		//DOMUtilExt.sortChildNodes(placemarksFolder, false, 1, new DOMUtilExt.IdAttribComparator());
 		
-		//TODO: do not serialize on MapProc.doIt()
-		XmlPrinter.serialize(doc, outputWriter);
+		//TODOne: do not serialize on MapProc.doIt()
+		//XmlPrinter.serialize(doc, outputWriter);
 		
 		return doc;
 	}
