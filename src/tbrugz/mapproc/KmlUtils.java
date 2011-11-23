@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -57,15 +56,17 @@ public class KmlUtils {
 
 			//Character Entity References, see: http://www.elizabethcastro.com/html/extras/entities.html
 			String catId = c.getStyleId(); //XXX: +1 (test to see if it is an int)
+			String catName = c.getName();
 			String catBoundsCoords = KmlBounds.getBoundsCoordinates(right, left, top, bottom, 0);
 			String catDesc = 
 				isMetadata.format(c.getStartVal()) + 
 				" &lt; " + "# "+isMetadata.valueLabel + " &lt; " + //&#8804;
 				isMetadata.format(c.getEndVal()); //c.getDescription();
 			
-			String catElemStr = catElemSnippet.replaceAll("\\{0\\}", Matcher.quoteReplacement(catId) );
-			catElemStr = catElemStr.replaceAll("\\{1\\}", Matcher.quoteReplacement(catDesc) );
-			catElemStr = catElemStr.replaceAll("\\{2\\}", Matcher.quoteReplacement(catBoundsCoords) );
+			String catElemStr = catElemSnippet.replaceAll("\\{id\\}", Matcher.quoteReplacement(catId) );
+			catElemStr = catElemStr.replaceAll("\\{name\\}", Matcher.quoteReplacement(catName) );
+			catElemStr = catElemStr.replaceAll("\\{description\\}", Matcher.quoteReplacement(catDesc) );
+			catElemStr = catElemStr.replaceAll("\\{coordinates\\}", Matcher.quoteReplacement(catBoundsCoords) );
 			Element catElem = DomUtils.getDocumentNodeFromString(catElemStr, dBuilder).getDocumentElement();
 			Node catElemNew = doc.importNode(catElem, true);
 			catLabelsElemNew.appendChild(catElemNew);

@@ -16,7 +16,8 @@ public class Category {
 
 	double startVal;
 	double endVal;
-	//XXX: category:: String name;
+	//TODOne: category:: add String name;
+	String name;
 	String description;
 	String styleId;
 	String styleColor;
@@ -24,7 +25,11 @@ public class Category {
 	
 	@Override
 	public String toString() {
-		return "["+description+";"+startVal+"-"+endVal+";"+styleId+"]";
+		return "["+name+";"+description+";"+startVal+"-"+endVal+";id="+styleId+"]";
+	}
+	
+	static String getNameFromId(int id) {
+		return "Category "+(id);
 	}
 	
 	static List<Category> getCategoriesFromLimits(List<Double> vals) {
@@ -33,7 +38,8 @@ public class Category {
 			Category cat = new Category();
 			cat.startVal = vals.get(i-1);
 			cat.endVal = vals.get(i);
-			cat.description = "category #"+(i);
+			//cat.description = getNameFromId(i);
+			cat.name = getNameFromId(i);
 			cat.styleId = String.valueOf(i);
 			list.add(cat);
 		}
@@ -55,6 +61,9 @@ public class Category {
 				log.warn("line: "+header);
 				throw new RuntimeException("categories must have between 3 and 5 columns: #"+headers.length);
 		}
+		
+		String catsObjectName = headers[0];
+		if("".equals(catsObjectName)) { catsObjectName = null; }
 
 		//log.info("IndexedSeries: objLabel: "+metadata.objectLabel+"; valueLabel: "+metadata.valueLabel+"; valueType: "+metadata.valueType);
 		List<Category> list = new ArrayList<Category>();
@@ -64,8 +73,10 @@ public class Category {
 			String[] linevals = line.split(delimiter);
 			Category cat = new Category();
 			//---
-			cat.styleId = "category #"+(i+1)+": "+linevals[0];
-			cat.description = linevals[0];
+			cat.styleId = String.valueOf(i+1);
+			cat.name = getNameFromId(i+1)+": "+linevals[0]
+				+(catsObjectName!=null?" "+catsObjectName:"");
+			//cat.description = linevals[0];
 			cat.startVal = Double.parseDouble(linevals[1]);
 			cat.endVal = Double.parseDouble(linevals[2]);
 
@@ -117,6 +128,10 @@ public class Category {
 
 	public String getStyleColor() {
 		return styleColor;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 }

@@ -47,17 +47,17 @@ public class MapProcTest {
 	@Before
 	public void before() throws IOException {
 		seriesFile = new FileReader("work/input/csv/tabela-municipios_e_habitantes-RS.csv");
-		//BufferedReader catsFile = new BufferedReader(new FileReader("work/input/tabela_categorias_vereadores-por-municipio.csv"));
-		//catsFile = new BufferedReader(new FileReader("work/input/csvcat/tabela_categorias_vereadores-por-municipio-color.csv"));
+		catsFile = new BufferedReader(new FileReader("work/input/csvcat/tabela_categorias_vereadores-por-municipio.csv"));
 		kmlFile = new FileInputStream("work/input/kml/Municipalities_of_RS.kml");
 	}
 	
-	//@Test
+	@Test
 	public void testCategoriesFile() throws IOException, ParserConfigurationException, SAXException {
 		String colorFrom = "aaff0000"; String colorTo = "aa0000ff";
 		
 		MapProc lm = new MapProc();
-		lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), catsFile, colorFrom, colorTo, false);
+		Document doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), catsFile, colorFrom, colorTo, false);
+		XmlPrinter.serialize(doc, new FileWriter("work/output/MapCats.kml"));
 	}
 	
 	@Test
@@ -164,7 +164,7 @@ public class MapProcTest {
 	
 	@Test
 	public void testCatFromCSVStream() throws IOException {
-		BufferedReader catsFile = new BufferedReader(new FileReader("work/input/csvcat/tabela_categorias_vereadores-por-municipio.csv"));
+		//BufferedReader catsFile = new BufferedReader(new FileReader("work/input/csvcat/tabela_categorias_vereadores-por-municipio.csv"));
 		String csvCatOut = "work/output/ColorCat.csv";
 		FileWriter outputWriter = new FileWriter(csvCatOut);
 		String sep = ";";
@@ -175,9 +175,9 @@ public class MapProcTest {
 
 		KmlUtils.procStylesFromCategories(cats, snippets, colorFrom, colorTo);
 		//TODO: dump cat
-		outputWriter.write("XXX;MIN;MAX;COLOR\n");
+		outputWriter.write("NAME;MIN;MAX;COLOR\n");
 		for(Category cat: cats) {
-			outputWriter.write(cat.getStyleId()+sep+cat.getStartVal()+sep+cat.getEndVal()+sep+cat.getStyleColor()+"\n");
+			outputWriter.write(cat.getName()+sep+cat.getStartVal()+sep+cat.getEndVal()+sep+cat.getStyleColor()+"\n");
 		}
 		outputWriter.close();
 	}
