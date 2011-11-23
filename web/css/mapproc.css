@@ -32,9 +32,16 @@ input.smaller {
 }
 .label {
 	padding: 3px;
+	margin: 2px;
 }
 .placeInfo {
 	font-weight: bold;
 	padding: 3px;
+	margin: 2px;
 	background-color: #eee;
+}
+
+#place_info {
+	background-color: #ccc;
+	padding: 3px; 
 }

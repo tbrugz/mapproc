@@ -38,7 +38,7 @@ import tbrugz.xml.DomUtils;
  * ~XXX: option to generate, or not, kml's <Styles>
  * TODOne: generate categories descriptions in a box next to the map
  * ~TODO: categories descriptions as folders...
- * TODO: add measure type to description
+ * TODOne: add measure type to description
  * TODOne: option to generate categories after checking which values from series exists in kml (2nd "pre"-pass needed)
  * XXX: (option to) round measures in placemarks' description
  */
@@ -307,7 +307,7 @@ public class MapProc {
 
 				}
 				else {
-					//TODO: remove if not found?
+					//TODOne: remove if not found?
 					//log.warn("id '"+id+"' not found in data");
 					if(removeIfNotFound) {
 						eElement.getParentNode().removeChild(eElement);

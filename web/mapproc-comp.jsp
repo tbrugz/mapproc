@@ -93,7 +93,8 @@ Remove not found? <input type="checkbox" class="smaller" name="removeIfNotFound"
 
 <div id="map_location" style="width: 800px; height: 60px; border: 1px solid black; background-color: #ddd; display:none;"></div>
 
-<div id="place_info" style="position: absolute; height: 11em; bottom: 4px; width: 15em; left: 4px; background-color: #ddd; border: 1px solid black; display: none;">
+<div id="place_info" style="position: absolute; height: 11em; bottom: 4px; width: 15em; left: 4px; border: 1px solid black; display: none;">
+<div id="place_info_close" style="float: right; top: 0px; right: 0px;"><a href="#" onclick="document.getElementById('place_info').style.display='none';">[x]</a></div>
 <span class="label">id: </span><span id="placeId" class="placeInfo"></span><br/>
 <span class="label">name: </span><span id="placeName" class="placeInfo"></span><br/>
 <span class="label">desc: <br/></span><div id="placeDesc" class="placeInfo"></div>
