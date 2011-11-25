@@ -1,6 +1,6 @@
 <project name="mapproc" default="war" basedir=".">
 	
-	<property name="dist.dir" value="dist"/>
+	<property name="dist.dir" value="${basedir}/dist"/>
 	<property name="war.file" value="${dist.dir}/mapproc.war"/>
 	<property name="war.dir" value="${dist.dir}/war"/>
 	
@@ -12,10 +12,10 @@
 		<mkdir dir="${dist.dir}" />
 	</target>
 
-	<target name="compile">
+	<target name="compile" depends="prepare">
 	</target>
 	
-	<target name="war" depends="prepare">
+	<target name="war" depends="gae-copyjars">
 		<war destfile="${war.file}" needxmlfile="false">
 			<webinf dir="web/WEB-INF"></webinf>
 			<lib dir="lib">
@@ -37,6 +37,17 @@
 		<unzip src="${war.file}" dest="${war.dir}"/>
 	</target>
 	
+	<target name="gae-copyjars" depends="prepare" description="Copies the App Engine JARs to the WAR.">
+		<copy todir="${war.dir}/WEB-INF/lib" flatten="true">
+			<fileset dir="${sdk.dir}/lib/user">
+				<include name="**/*.jar" />
+			</fileset>
+			<!--fileset dir="lib">
+				<include name="**/*.jar" />
+			</fileset-->
+		</copy>
+	</target>
+
 	<target name="gae-deps" depends="unwar" />
 
 	<target name="deploy-local" depends="war">

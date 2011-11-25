@@ -6,6 +6,8 @@
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript" src="js/mapproc.js"></script>
 <script type="text/javascript" src="js/jscolor/jscolor.js"></script>
+<!-- script type="text/javascript" src="js/analytics.js"></script -->
+<%@ include file="analytics.html" %>
 <script type="text/javascript">
 var map;
 var geoXml;

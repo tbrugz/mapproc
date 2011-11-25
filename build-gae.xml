@@ -4,7 +4,7 @@
 
   <target name="datanucleusenhance" depends="gae-deps"
       description="Performs JDO enhancement on compiled data classes.">
-    <!-- enhance_war war="war" /-->
+    <enhance_war war="${war.dir}" />
   </target>
 
   <target name="runserver" depends="datanucleusenhance"
@@ -16,6 +16,17 @@
   <target name="update" depends="datanucleusenhance"
       description="Uploads the application to App Engine.">
     <appcfg action="update" war="${war.dir}" />
+  </target>
+	
+  <!-- call of cmd.exe /c appcfg.cmd -->
+  <target name="update-windows-cmd" depends="datanucleusenhance">
+    <exec executable="cmd" dir="${sdk.dir}/bin">
+      <arg line="/c start appcfg.cmd update ${war.dir}"/>
+      <!--arg value="/c"/>
+      <arg value="appcfg.cmd"/>
+      <arg value="update"/>
+      <arg value="${dist.dir}/war"/-->
+    </exec>
   </target>
 
   <target name="update_indexes" depends="datanucleusenhance"
