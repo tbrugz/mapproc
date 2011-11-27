@@ -1,7 +1,7 @@
 <%@ page isErrorPage="true" import="java.io.*" %>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="/mapproc/css/mapproc.css" />
+<link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>css/mapproc.css" />
 </head>
 <body>
 <h2>Exception occured</h2>

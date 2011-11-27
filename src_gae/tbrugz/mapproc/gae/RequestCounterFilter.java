@@ -1,10 +1,7 @@
 package tbrugz.mapproc.gae;
 
 import java.io.IOException;
-import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -32,11 +29,13 @@ public class RequestCounterFilter implements Filter {
 		
 		chain.doFilter(req, resp);
 		
+		RequestCountSB rc = new RequestCountSB();
+		
 		String kmlResource = req.getParameter("kmlResource");
-		doCount(UrlType.MAP, kmlResource);
+		rc.doCount(UrlType.MAP, kmlResource);
 		
 		String csvResource = req.getParameter("csvResource");
-		doCount(UrlType.SERIES, csvResource);
+		rc.doCount(UrlType.SERIES, csvResource);
 
 		//TODO: call counter for MAP+SERIES
 		
@@ -59,29 +58,4 @@ public class RequestCounterFilter implements Filter {
 	public void init(FilterConfig arg0) throws ServletException {
 	}
 	
-	//----------- "business methods" -----------
-	
-	void doCount(URLAccessCount.UrlType type, String url) {
-		EntityManager em = EMF.get().createEntityManager();
-		
-		URLAccessCount uac = null;
-		
-		Query q = em.createQuery("select from " + URLAccessCount.class.getName()
-				+" where url = :url");
-		q.setParameter("url", url);
-				//+" and type = "+type);
-		List lo = q.getResultList();
-		if(lo==null || lo.size()==0) {
-			uac = new URLAccessCount();
-			uac.url = url;
-			uac.type = type;
-			uac.counter = 1;
-		}
-		else {
-			uac = (URLAccessCount) lo.get(0);
-			uac.counter++;
-		}
-		em.persist(uac);
-	}
-
 }

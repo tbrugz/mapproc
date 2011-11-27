@@ -37,17 +37,6 @@
 		<unzip src="${war.file}" dest="${war.dir}"/>
 	</target>
 	
-	<target name="gae-copyjars" depends="prepare" description="Copies the App Engine JARs to the WAR.">
-		<copy todir="${war.dir}/WEB-INF/lib" flatten="true">
-			<fileset dir="${sdk.dir}/lib/user">
-				<include name="**/*.jar" />
-			</fileset>
-			<!--fileset dir="lib">
-				<include name="**/*.jar" />
-			</fileset-->
-		</copy>
-	</target>
-
 	<target name="gae-deps" depends="unwar" />
 
 	<target name="deploy-local" depends="war">
@@ -72,5 +61,26 @@
 			</fileset>
 		</copy>
 	</target>
+
+	<target name="deploy-local-wardir">
+		<copy todir="${war.dir}" verbose="true">
+			<fileset dir="web">
+				<include name="**/*.jsp"/>
+				<include name="**/*.html"/>
+				<include name="**/*.js"/>
+				<include name="**/*.css"/>
+			</fileset>
+		</copy>
+		<!--copy todir="${deploy.dir}/mapproc/input" verbose="true">
+			<fileset dir="work/input">
+				<include name="csv/**"/>
+				<include name="csvcat/**"/>
+				<include name="json/**"/>
+				<include name="kml/**"/>
+			</fileset>
+		</copy-->
+	</target>
+	
+	<!-- TODO: clean -->
 	
 </project>

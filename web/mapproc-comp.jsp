@@ -6,8 +6,7 @@
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript" src="js/mapproc.js"></script>
 <script type="text/javascript" src="js/jscolor/jscolor.js"></script>
-<!-- script type="text/javascript" src="js/analytics.js"></script -->
-<%@ include file="analytics.html" %>
+<%@ include file="fragments/analytics.html" %>
 <script type="text/javascript">
 var map;
 var geoXml;
@@ -29,7 +28,7 @@ function loadMap() {
 </head>
 <body onload="changeColor('colorFromRGB', 'colorFrom');changeColor('colorToRGB', 'colorTo');map = initMap('map_canvas');">
 
-<h2>MapProc</h2>
+<h2>MapProc<sup style="color: #fa0; font-size: 10pt;">beta!</sup></h2>
 
 <div id="form">
 
@@ -78,7 +77,7 @@ Scale:
 </select><br/>
 Normalize Limits? <input type="checkbox" class="smaller" name="genCatLimitsFromExistingPlacemarks" value="1" checked/><br/>
 </div>
-Color Min: <input type="text" class="color small" id="colorFromRGB" name="colorFromRGB" value="00FF00" onchange="changeColor('colorFromRGB', 'colorFrom')"/> <input type="hidden" id="colorFrom" name="colorFrom"/><br/>
+Color Min: <input type="text" class="color small" id="colorFromRGB" name="colorFromRGB" value="FFFF00" onchange="changeColor('colorFromRGB', 'colorFrom')"/> <input type="hidden" id="colorFrom" name="colorFrom"/><br/>
 Color Max: <input type="text" class="color small" id="colorToRGB" name="colorToRGB" value="FF0000" onchange="changeColor('colorToRGB', 'colorTo')"/> <input type="hidden" id="colorTo" name="colorTo"/><br/>
 
 Remove not found? <input type="checkbox" class="smaller" name="removeIfNotFound" value="1"/><br/>
@@ -98,7 +97,7 @@ Remove not found? <input type="checkbox" class="smaller" name="removeIfNotFound"
 <div id="place_info" style="position: absolute; height: 11em; bottom: 4px; width: 15em; left: 4px; border: 1px solid black; display: none;">
 <div id="place_info_close" style="float: right; top: 0px; right: 0px;"><a href="#" onclick="document.getElementById('place_info').style.display='none';">[x]</a></div>
 <span class="label">id: </span><span id="placeId" class="placeInfo"></span><br/>
-<span class="label">name: </span><span id="placeName" class="placeInfo"></span><br/>
+<span class="label">name: </span><div id="placeName" class="placeInfo"></div>
 <span class="label">desc: <br/></span><div id="placeDesc" class="placeInfo"></div>
 </div>
 

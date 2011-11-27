@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="lib/test/junit-4.7.jar"/>
 	<classpathentry kind="lib" path="lib/geronimo-jpa_3.0_spec-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/appengine-api-1.0-sdk-1.6.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

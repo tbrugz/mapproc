@@ -2,6 +2,20 @@
 
   <import file="${sdk.dir}/config/user/ant-macros.xml" />
 
+  <!-- admin: http://localhost:8080/_ah/admin -->
+
+  <!-- XXX put into build-gae.xml? -->
+  <target name="gae-copyjars" depends="prepare" description="Copies the App Engine JARs to the WAR.">
+    <copy todir="${war.dir}/WEB-INF/lib" flatten="true">
+      <fileset dir="${sdk.dir}/lib/user">
+        <include name="**/*.jar" />
+      </fileset>
+      <!--fileset dir="lib">
+        <include name="**/*.jar" />
+      </fileset-->
+    </copy>
+  </target>
+
   <target name="datanucleusenhance" depends="gae-deps"
       description="Performs JDO enhancement on compiled data classes.">
     <enhance_war war="${war.dir}" />
