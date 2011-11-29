@@ -1,5 +1,6 @@
 package tbrugz.mapproc.gae;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -18,7 +19,7 @@ public class RequestCountSB {
 	
 	EntityManager em;
 	
-	void doCount(UrlType type, String url) {
+	void doCount(UrlType type, String url, String desc, int numOfElements, int httpStatus) {
 		EntityManager em = EMF.get().createEntityManager();
 		EntityTransaction t = em.getTransaction();
 		t.begin();
@@ -40,6 +41,7 @@ public class RequestCountSB {
 			uac.url = url;
 			uac.type = type;
 			uac.counter = 1;
+			updateInfo(uac, desc, numOfElements, httpStatus);
 			em.persist(uac);
 		}
 		else {
@@ -50,8 +52,9 @@ public class RequestCountSB {
 			//uac.counter++;
 			//boolean contains = em.contains(uac);
 			//log.info("existing UAC new value: count: "+uac.counter+" ; contains: "+contains);
-			URLAccessCount uac2 = em.merge(uac);
-			log.info("merged uac: "+uac2);
+			updateInfo(uac, desc, numOfElements, httpStatus);
+			em.merge(uac);
+			//log.info("merged uac: "+uac2);
 		}
 		//t.begin();
 		//em.flush();
@@ -59,6 +62,13 @@ public class RequestCountSB {
 		t.commit();
 		em.close();
 		log.info("persisted: "+uac);
+	}
+	
+	void updateInfo(URLAccessCount uac, String desc, int numOfElements, int httpStatus) {
+		uac.setDescription(desc);
+		uac.setNumOfElements(numOfElements);
+		uac.setHttpStatus(httpStatus);
+		uac.setLastAccess(new Date());
 	}
 	
 	public List getMostViewed(UrlType type) {

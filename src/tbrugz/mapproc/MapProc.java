@@ -51,6 +51,13 @@ public class MapProc {
 	
 	NumberFormat floatFormatter = getFloatFormatter("pt"); //XXX: defimalFormat locale: pt
 	
+	//------ meta info
+	int numOfSeriesElements = 0;
+	int numOfMapElements = 0;
+	String seriesDescription;
+	String mapDescription; //XXX: not (yet) updated;
+	//------ /meta info
+	
 	public MapProc() throws ParserConfigurationException {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		dBuilder = dbFactory.newDocumentBuilder();
@@ -230,6 +237,7 @@ public class MapProc {
 		int removesCount = 0;
 		NodeList nList = doc.getElementsByTagName("Placemark");
 		int initSize = nList.getLength();
+		
 		//log.debug("nsize: "+nList.getLength());
 		//for (int i = 0; i < nList.getLength(); i++) {
 		for (int i = nList.getLength()-1; i >= 0; i--) {
@@ -322,6 +330,11 @@ public class MapProc {
 		}
 
 		log.info("placemarks = "+placemarkCount+"; initSize = "+initSize+"; removesCount = "+removesCount);
+		
+		this.numOfMapElements = placemarkCount;
+		this.numOfSeriesElements = is.size();
+		//this.seriesDescription = is.metadata.objectLabel+" / "+is.metadata.valueLabel+" / "+is.metadata.measureUnit;
+		this.seriesDescription = is.metadata.valueLabel+", "+is.metadata.measureUnit;
 		//log.info("placemarks = "+placemarkCount+"; initSize = "+initSize+"; removesCount = "+removesCount+"; actualSize = "+doc.getElementsByTagName("Placemark").getLength());
 		
 		//NodeList newNodeList = doc.getElementsByTagName("Placemark");

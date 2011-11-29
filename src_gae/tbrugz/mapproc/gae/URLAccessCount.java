@@ -1,5 +1,7 @@
 package tbrugz.mapproc.gae;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,7 +12,7 @@ import com.google.appengine.api.datastore.Key;
 @Entity
 public class URLAccessCount {
 	
-	//TODO: add name, description (may be shown in "accessed list")
+	//TODOne: add name, description (may be shown in "accessed list")
 	
 	public enum UrlType {
 		MAP, SERIES, MAP_SERIES;
@@ -22,9 +24,14 @@ public class URLAccessCount {
 	
 	String url;
 	UrlType type; //MAP, SERIES, MAP+SERIES
-	//String type;
 	
 	Integer counter = 0;
+	
+	//XXXxx: add httpStatus (of latest request)?
+	int httpStatus;
+	String description;
+	Date lastAccess;
+	int numOfElements;
 	
 	public Key getId() {
 		return id;
@@ -56,6 +63,38 @@ public class URLAccessCount {
 
 	public void setCounter(Integer counter) {
 		this.counter = counter;
+	}
+	
+	public int getHttpStatus() {
+		return httpStatus;
+	}
+
+	public void setHttpStatus(int httpStatus) {
+		this.httpStatus = httpStatus;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Date getLastAccess() {
+		return lastAccess;
+	}
+
+	public void setLastAccess(Date lastAccess) {
+		this.lastAccess = lastAccess;
+	}
+	
+	public int getNumOfElements() {
+		return numOfElements;
+	}
+
+	public void setNumOfElements(int numOfElements) {
+		this.numOfElements = numOfElements;
 	}
 
 	@Override

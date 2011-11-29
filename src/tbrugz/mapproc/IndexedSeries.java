@@ -74,4 +74,8 @@ public class IndexedSeries {
 		return values.get(s)!=null?values.get(s).doubleValue():null;
 	}
 	
+	public int size() {
+		return values.keySet().size();
+	}
+	
 }

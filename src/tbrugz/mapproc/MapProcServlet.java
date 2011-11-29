@@ -27,6 +27,11 @@ public class MapProcServlet extends HttpServlet {
 	public static final String KML_MIMETYPE = "application/vnd.google-earth.kml+xml";
 	public static final String XML_MIMETYPE = "text/xml";
 	public static final String TXT_MIMETYPE = "text/plain";
+
+	public static final String numOfMapElements = "numOfMapElements";
+	public static final String numOfSeriesElements = "numOfSeriesElements";
+	public static final String mapDescription = "mapDescription";
+	public static final String seriesDescription = "seriesDescription";
 	
 	boolean kmlUrlAllowed = true;
 	boolean csvUrlAllowed = true;
@@ -104,6 +109,11 @@ public class MapProcServlet extends HttpServlet {
 				doc = lm.doIt(kmlStream, MapProc.getIndexedSeries(seriesReader), scaleType, numOfCategories, colorFrom, colorTo, removeIfNotFound, genCatLimitsFromExistingPlacemarks);
 			}
 
+			req.setAttribute(numOfMapElements, lm.numOfMapElements);
+			req.setAttribute(numOfSeriesElements, lm.numOfSeriesElements);
+			req.setAttribute(mapDescription, lm.mapDescription);
+			req.setAttribute(seriesDescription, lm.seriesDescription);
+			
 			XmlPrinter.serialize(doc, resp.getWriter());
 		} catch (ParserConfigurationException e) {
 			//resp.setContentType(TXT_MIMETYPE);

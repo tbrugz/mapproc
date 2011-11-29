@@ -3,6 +3,9 @@ body {
 	font: normal 15px Tahoma, Geneva, sans-serif; 
 	color: #222222;
 }
+pre {
+	background-color: #ddd;
+}
 input {
 	width: 30em;
 }
@@ -39,6 +42,9 @@ input.smaller {
 	padding: 3px;
 	margin: 2px;
 	background-color: #eee;
+}
+.small {
+	font-size: 10px;
 }
 
 #place_info {
