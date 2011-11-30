@@ -33,32 +33,19 @@ function loadMap() {
 <div id="form">
 
 <form id="theform" action="proc/">
-Map: 
-<select name="kml">
-<%
-//http://maps.google.com.br/maps?q=http:%2F%2Fdl.dropbox.com%2Fu%2F26206165%2Fmapproc.kml&hl=en&sll=-30.027704,-51.228735&sspn=0.827522,1.086273&vpsrc=0&t=h&z=6
-Properties p = new Properties();
-p.load(MapProc.class.getResourceAsStream("/paths.properties"));
-List l = new ArrayList(p.keySet());
-Collections.sort( l );
-for(Object o: l) {
-	String s = (String) o;
-	out.print("<option value=\""+p.getProperty(s)+"\">"+s+"</option>");
-}
-%>
-</select>
+
+<div id="urls" style="position: absolute; top: 4px; left: 16em;">
+Map URL: 
+<input type="text" name="kml"/><br/>
+Data URL:
+<input type="text" name="csv"/><br/>
+Categories URL:
+<input type="text" name="cat"/><br/>
+</div>
+
 <br/>
-Data:
-<select name="csv">
-<!-- option value="/input/csv/tabela-municipios_e_habitantes-parcial-100-RS.csv">Habitantes 100</option -->
-<option value="/input/csv/ha.csv">Habitantes</option>
-<option value="/input/csv/ha_por_area.csv">Habitantes por km^2</option>
-<option value="/input/csv/pib.csv">PIB</option>
-<option value="/input/csv/pib_por_ha.csv">PIB por habitante</option>
-<option value="/input/csv/pib_por_area.csv">PIB por km^2</option>
-<option value="/input/csv/area.csv">Area</option>
-</select>
-<br/>
+
+<div id="leftform" style="position: absolute; top: 6em;">
 
 <div id="categoriesGenComp" class="boxsmall">
 #Cat: 
@@ -86,11 +73,14 @@ Remove not found? <input type="checkbox" class="smaller" name="removeIfNotFound"
 <br/>
 <input type="button" value="Open in GMaps" class="medium" onClick="openInGoogleMaps('theform');"/><br/>
 <input type="submit" value="Download" class="small"/><br/>
+
+</div>
+
 </form>
 
 </div>
 
-<div id="map_canvas" style="position: absolute; top: 4px; bottom: 4px; left: 16em; right: 4px; border: 1px solid black;"></div>
+<div id="map_canvas" style="position: absolute; top: 6em; bottom: 4px; left: 16em; right: 4px; border: 1px solid black;"></div>
 
 <div id="map_location" style="width: 800px; height: 60px; border: 1px solid black; background-color: #ddd; display:none;"></div>
 

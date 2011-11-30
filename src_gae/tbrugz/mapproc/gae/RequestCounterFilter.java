@@ -37,8 +37,8 @@ public class RequestCounterFilter implements Filter {
 		RequestCountSB rc = new RequestCountSB();
 		HttpServletRequest hreq = (HttpServletRequest) req; 
 		
-		String kmlResource = req.getParameter("kmlResource");
-		String csvResource = req.getParameter("csvResource");
+		String kml = req.getParameter(MapProcServlet.PARAM_KML);
+		String csv = req.getParameter(MapProcServlet.PARAM_CSV);
 		
 		//String thisUrl = hreq.getProtocol()+hreq.getServerName()
 		//		+(hreq.getLocalPort()!=80?":"+hreq.getLocalPort():"")
@@ -54,11 +54,11 @@ public class RequestCounterFilter implements Filter {
 			chain.doFilter(req, resp);
 		}
 		catch(IOException e) {
-			doCounts(rc, (HttpServletRequest)req, (HttpServletResponse) resp, kmlResource, csvResource, thisUrl, 500);
+			doCounts(rc, (HttpServletRequest)req, (HttpServletResponse) resp, kml, csv, thisUrl, 500);
 			throw e;
 		}
 		catch(ServletException e) {
-			doCounts(rc, (HttpServletRequest)req, (HttpServletResponse) resp, kmlResource, csvResource, thisUrl, 500);
+			doCounts(rc, (HttpServletRequest)req, (HttpServletResponse) resp, kml, csv, thisUrl, 500);
 			throw e;
 		}
 		/*catch(Exception e) {
@@ -66,7 +66,7 @@ public class RequestCounterFilter implements Filter {
 		}*/
 
 		//XXX: new thread for doCounts()?
-		doCounts(rc, (HttpServletRequest)req, (HttpServletResponse) resp, kmlResource, csvResource, thisUrl, 200);
+		doCounts(rc, (HttpServletRequest)req, (HttpServletResponse) resp, kml, csv, thisUrl, 200);
 		
 		log.info("end doFilter()");
 	}

@@ -41,7 +41,7 @@ for(int i=0; i < maxLines; i++) {
 %>	
 <tr>
 <td>
-	<a href="<%= uac.getUrl() %>"><%= StringUtils.stringSnippet( uac.getUrl(), 70) %></a><span class="small">
+	<a href="<%= uac.getUrl() %>"><%= StringUtils.stringSnippet( uac.getUrl(), 70) %></a><span class="smalltext">
 	<%= (uac.getNumOfElements()>0?"[elements: "+uac.getNumOfElements()+"] ":"")
 	+(uac.getDescription()!=null?"[desc: "+uac.getDescription()+"] ":"")
 	+(uac.getHttpStatus()!=200?"[error-code: "+uac.getHttpStatus()+"] ":"")
@@ -74,7 +74,7 @@ for(int i=0; i < maxLines; i++) {
 %>	
 <tr>
 <td>
-	<a href="<%= uac.getUrl() %>"><%= StringUtils.stringSnippet( uac.getUrl(), 70) %></a><span class="small">
+	<a href="<%= uac.getUrl() %>"><%= StringUtils.stringSnippet( uac.getUrl(), 70) %></a><span class="smalltext">
 	<%= (uac.getNumOfElements()>0?"[elements: "+uac.getNumOfElements()+"] ":"")
 	+(uac.getDescription()!=null?"[desc: "+uac.getDescription()+"] ":"")
 	+(uac.getHttpStatus()!=200?"[error-code: "+uac.getHttpStatus()+"] ":"")
@@ -106,7 +106,7 @@ for(int i=0; i < maxLines; i++) {
 %>	
 <tr>
 <td>
-	<a href="<%= uac.getUrl() %>"><%= StringUtils.stringSnippet( uac.getUrl(), 70) %></a><span class="small">
+	<a href="<%= uac.getUrl() %>"><%= StringUtils.stringSnippet( uac.getUrl(), 70) %></a><span class="smalltext">
 	<%= (uac.getNumOfElements()>0?"[elements: "+uac.getNumOfElements()+"] ":"")
 	+(uac.getDescription()!=null?"[desc: "+uac.getDescription()+"] ":"")
 	+(uac.getHttpStatus()!=200?"[error-code: "+uac.getHttpStatus()+"] ":"")

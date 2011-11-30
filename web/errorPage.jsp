@@ -2,7 +2,7 @@
 <%@ page isErrorPage="true" import="java.io.*" %>
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="<%= request.getContextPath() %>css/mapproc.css" />
+<link rel="stylesheet" type="text/css" href="/<%= request.getContextPath() %>css/mapproc.css" />
 </head>
 
 <body>
@@ -10,8 +10,10 @@
 
 <div>
 Exception <code><%= exception.getClass() %></code> has been encountered<br/>
+<% if(exception.getMessage()!=null) { %>
 Message:<br/>
 <pre><%= StringEscapeUtils.escapeXml( exception.getMessage() ) %></pre>
+<% } %>
 </div>
 
 <h4>Stack trace:</h4>

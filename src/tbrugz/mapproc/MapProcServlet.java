@@ -33,6 +33,10 @@ public class MapProcServlet extends HttpServlet {
 	public static final String mapDescription = "mapDescription";
 	public static final String seriesDescription = "seriesDescription";
 	
+	public static final String PARAM_KML = "kml";
+	public static final String PARAM_CSV = "csv";
+	public static final String PARAM_CAT = "cat";
+	
 	boolean kmlUrlAllowed = true;
 	boolean csvUrlAllowed = true;
 
@@ -40,13 +44,26 @@ public class MapProcServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		
-		String kmlUrl = req.getParameter("kmlUrl");
-		String csvUrl = req.getParameter("csvUrl");
-		String categoriesUrl = req.getParameter("categoriesUrl");
+		String kml = req.getParameter(PARAM_KML);
+		String csv = req.getParameter(PARAM_CSV);
+		String cat = req.getParameter(PARAM_CAT);
 
-		String kmlResource = req.getParameter("kmlResource");
-		String csvResource = req.getParameter("csvResource");
-		String categoriesResource = req.getParameter("categoriesResource");
+		//deprecated params
+		if(kml==null) {
+			kml = req.getParameter("kmlResource");
+			if(kml==null) kml = req.getParameter("kmlUrl");
+			if(kml==null) throw new RuntimeException("parameter 'kml' undefined");
+		}
+		if(csv==null) {
+			csv = req.getParameter("csvResource");
+			if(csv==null) csv = req.getParameter("csvUrl");
+			if(csv==null) throw new RuntimeException("parameter 'csv' undefined");
+		}
+		if(cat==null) {
+			cat = req.getParameter("categoriesResource");
+			if(cat==null) cat = req.getParameter("categoriesUrl");
+		}
+		// /deprecated
 		
 		String removeIfNotFoundStr = req.getParameter("removeIfNotFound");
 		boolean removeIfNotFound = removeIfNotFoundStr!=null && !removeIfNotFoundStr.equals("");
@@ -66,7 +83,7 @@ public class MapProcServlet extends HttpServlet {
 			InputStream kmlStream = null;
 			InputStreamReader seriesReader = null;
 			
-			kmlStream = getStream(kmlResource, kmlUrlAllowed, kmlUrl, "KML");
+			kmlStream = getStream(kml, kmlUrlAllowed, "KML");
 			/*if(kmlResource!=null) {
 				kmlStream = getServletContext().getResourceAsStream(kmlResource);
 			}
@@ -77,7 +94,7 @@ public class MapProcServlet extends HttpServlet {
 				throw new RuntimeException("no KML defined");
 			}*/
 			
-			seriesReader = new InputStreamReader(getStream(csvResource, csvUrlAllowed, csvUrl, "CSV Data"));
+			seriesReader = new InputStreamReader(getStream(csv, csvUrlAllowed, "CSV Data"));
 			/*if(csvResource!=null) {
 				seriesReader = new InputStreamReader(getServletContext().getResourceAsStream(csvResource));
 			}
@@ -97,9 +114,9 @@ public class MapProcServlet extends HttpServlet {
 			}
 
 			Document doc = null;
-			if((categoriesResource!=null && !categoriesResource.equals("")) || (categoriesUrl!=null && categoriesUrl.equals(""))) {
+			if(cat!=null && !cat.equals("")) {
 				//BufferedReader catsReader = new BufferedReader(new InputStreamReader(new URL(categoriesUrl).openStream()));
-				BufferedReader catsReader = new BufferedReader(new InputStreamReader(getStream(categoriesResource, csvUrlAllowed, categoriesUrl, "CSV Categories")));
+				BufferedReader catsReader = new BufferedReader(new InputStreamReader(getStream(cat, csvUrlAllowed, "CSV Categories")));
 				
 				doc = lm.doIt(kmlStream, MapProc.getIndexedSeries(seriesReader), catsReader, colorFrom, colorTo, removeIfNotFound);
 			}
@@ -123,6 +140,9 @@ public class MapProcServlet extends HttpServlet {
 		} catch (SAXException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
+		} catch (RuntimeException e) {
+			e.printStackTrace();
+			throw e;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
@@ -130,15 +150,29 @@ public class MapProcServlet extends HttpServlet {
 		
 	}
 	
-	InputStream getStream(String resourcePath, boolean allowUrl, String url, String contentType) throws MalformedURLException, IOException {
-		if(resourcePath!=null) {
-			return getServletContext().getResourceAsStream(resourcePath);
+	InputStream getStream(String path, boolean allowUrl, String contentType) throws MalformedURLException, IOException {
+		if(path==null || path.equals("")) {
+			throw new RuntimeException("no "+contentType+" param defined");
+		}
+		
+		if(path.startsWith("/")) {
+			InputStream is = getServletContext().getResourceAsStream(path);
+			if(is==null) {
+				throw new RuntimeException(contentType+" resource not found");
+			}
+			return is;
 		}
 		else if(allowUrl){
-			return new URL(url).openStream();
+			//XXX: test for "http[s]://" ?
+			if(path.startsWith("http://") || path.startsWith("https://")) {
+				return new URL(path).openStream();
+			}
+			else {
+				throw new RuntimeException("malformed URL for "+contentType);
+			}
 		}
 		else {
-			throw new RuntimeException("no "+contentType+" defined");
+			throw new RuntimeException("malformed param "+contentType);
 		}
 	}
 	
