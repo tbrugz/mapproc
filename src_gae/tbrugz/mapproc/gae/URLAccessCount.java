@@ -28,10 +28,10 @@ public class URLAccessCount {
 	Integer counter = 0;
 	
 	//XXXxx: add httpStatus (of latest request)?
-	int httpStatus;
+	Integer httpStatus;
 	String description;
 	Date lastAccess;
-	int numOfElements;
+	Integer numOfElements;
 	
 	public Key getId() {
 		return id;
@@ -65,11 +65,11 @@ public class URLAccessCount {
 		this.counter = counter;
 	}
 	
-	public int getHttpStatus() {
-		return httpStatus;
+	public Integer getHttpStatus() {
+		return httpStatus!=null?httpStatus:200;
 	}
 
-	public void setHttpStatus(int httpStatus) {
+	public void setHttpStatus(Integer httpStatus) {
 		this.httpStatus = httpStatus;
 	}
 
@@ -89,11 +89,11 @@ public class URLAccessCount {
 		this.lastAccess = lastAccess;
 	}
 	
-	public int getNumOfElements() {
-		return numOfElements;
+	public Integer getNumOfElements() {
+		return numOfElements!=null?numOfElements:0;
 	}
 
-	public void setNumOfElements(int numOfElements) {
+	public void setNumOfElements(Integer numOfElements) {
 		this.numOfElements = numOfElements;
 	}
 

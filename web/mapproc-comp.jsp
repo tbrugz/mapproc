@@ -43,10 +43,9 @@ List l = new ArrayList(p.keySet());
 Collections.sort( l );
 for(Object o: l) {
 	String s = (String) o;
-	out.print("<option value=\""+p.getProperty(s)+"\">"+s+"</option>");
+	out.print("<option value=\""+p.getProperty(s)+"\">"+s+"</option>\n");
 }
-%>
-</select>
+%></select>
 <br/>
 Data:
 <select name="csv">
