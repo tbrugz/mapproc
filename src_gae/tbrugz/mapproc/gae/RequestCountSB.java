@@ -31,6 +31,8 @@ public class RequestCountSB {
 	EntityManager em;
 	
 	public void doCount(UrlType type, String url, String desc, int numOfElements, int httpStatus) {
+		url = url.replaceAll("%2F", "/"); //some browsers (firefox?) encodes "/", unencoding...
+		
 		EntityManager em = EMF.get().createEntityManager();
 		EntityTransaction t = em.getTransaction();
 		t.begin();

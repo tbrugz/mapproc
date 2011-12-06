@@ -8,5 +8,10 @@
     <datastore-index kind="URLAccessCount" ancestor="false" source="manual">
         <property name="type" direction="asc"/>
         <property name="counter" direction="desc"/>
-    </datastore-index>    
+    </datastore-index>
+    <datastore-index kind="DailyURLAccessCount" ancestor="false" source="manual">
+        <property name="type" direction="asc"/>
+        <property name="date" direction="asc"/>
+        <property name="counter" direction="desc"/>
+    </datastore-index>
 </datastore-indexes>
