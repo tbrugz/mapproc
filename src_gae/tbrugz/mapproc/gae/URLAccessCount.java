@@ -1,5 +1,6 @@
 package tbrugz.mapproc.gae;
 
+import java.util.Comparator;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -11,6 +12,19 @@ import com.google.appengine.api.datastore.Key;
 
 @Entity
 public class URLAccessCount {
+	
+	public static class URLAccessCountComparator implements Comparator<URLAccessCount>{
+		@Override
+		public int compare(URLAccessCount o1, URLAccessCount o2) {
+			return o1.counter - o2.counter;
+		}
+		
+		static URLAccessCountComparator comp = new URLAccessCountComparator();
+		
+		public static URLAccessCountComparator getIt() {
+			return comp;
+		}
+	}
 	
 	//TODOne: add name, description (may be shown in "accessed list")
 	
