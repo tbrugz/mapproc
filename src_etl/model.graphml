@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO8859_1"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:y="http://www.yworks.com/xml/graphml" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+<key for="node" id="d3" yfiles.type="nodegraphics"/>
+<key for="edge" id="d7" yfiles.type="edgegraphics"/>
+<graph id="G" edgedefault="directed">
+  <node id="public.area">
+    <data key="d1"/><data key="d2"><![CDATA[UMLClass]]></data><data key="d3"><y:UMLClassNode><y:Geometry height="95" width="320.0" x="526.5" y="300.0"/><y:Fill color="#FFCC00" transparent="false"/><y:BorderStyle color="#000000" type="line" width="1.0"/><y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.92626953125" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="38.68994140625" x="71.155029296875" y="3.0">public.area</y:NodeLabel><y:UML clipContent="true" constraint="" omitDetails="false" stereotype="" use3DEffect="false"><y:AttributeLabel>cod int4(10) not null
+area float8(17,17)
+nome text(2147483647)
+</y:AttributeLabel><y:MethodLabel></y:MethodLabel></y:UML></y:UMLClassNode></data>
+  </node>
+  <node id="public.mesorregioes">
+    <data key="d1"/><data key="d2"><![CDATA[UMLClass]]></data><data key="d3"><y:UMLClassNode><y:Geometry height="95" width="320.0" x="526.5" y="300.0"/><y:Fill color="#FFCC00" transparent="false"/><y:BorderStyle color="#000000" type="line" width="1.0"/><y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.92626953125" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="38.68994140625" x="71.155029296875" y="3.0">public.mesorregioes</y:NodeLabel><y:UML clipContent="true" constraint="" omitDetails="false" stereotype="" use3DEffect="false"><y:AttributeLabel>uf int2(5)
+mesorregiaogeografica int4(10) not null
+mesorregiaogeografica_nome text(2147483647)
+</y:AttributeLabel><y:MethodLabel></y:MethodLabel></y:UML></y:UMLClassNode></data>
+  </node>
+  <node id="public.microrregioes">
+    <data key="d1"/><data key="d2"><![CDATA[UMLClass]]></data><data key="d3"><y:UMLClassNode><y:Geometry height="110" width="320.0" x="526.5" y="300.0"/><y:Fill color="#FFCC00" transparent="false"/><y:BorderStyle color="#000000" type="line" width="1.0"/><y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.92626953125" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="38.68994140625" x="71.155029296875" y="3.0">public.microrregioes</y:NodeLabel><y:UML clipContent="true" constraint="" omitDetails="false" stereotype="" use3DEffect="false"><y:AttributeLabel>uf int2(5)
+mesorregiaogeografica int4(10)
+microrregiaogeografica int4(10) not null
+microrregiaogeografica_nome text(2147483647)
+</y:AttributeLabel><y:MethodLabel></y:MethodLabel></y:UML></y:UMLClassNode></data>
+  </node>
+  <node id="public.municipios">
+    <data key="d1"/><data key="d2"><![CDATA[UMLClass]]></data><data key="d3"><y:UMLClassNode><y:Geometry height="125" width="320.0" x="526.5" y="300.0"/><y:Fill color="#FFCC00" transparent="false"/><y:BorderStyle color="#000000" type="line" width="1.0"/><y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.92626953125" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="38.68994140625" x="71.155029296875" y="3.0">public.municipios</y:NodeLabel><y:UML clipContent="true" constraint="" omitDetails="false" stereotype="" use3DEffect="false"><y:AttributeLabel>uf int2(5)
+mesorregiaogeografica int4(10)
+microrregiaogeografica int4(10)
+municipio int4(10) not null
+municipio_nome text(2147483647)
+</y:AttributeLabel><y:MethodLabel></y:MethodLabel></y:UML></y:UMLClassNode></data>
+  </node>
+  <node id="public.pib">
+    <data key="d1"/><data key="d2"><![CDATA[UMLClass]]></data><data key="d3"><y:UMLClassNode><y:Geometry height="215" width="320.0" x="526.5" y="300.0"/><y:Fill color="#FFCC00" transparent="false"/><y:BorderStyle color="#000000" type="line" width="1.0"/><y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.92626953125" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="38.68994140625" x="71.155029296875" y="3.0">public.pib</y:NodeLabel><y:UML clipContent="true" constraint="" omitDetails="false" stereotype="" use3DEffect="false"><y:AttributeLabel>ano int2(5) not null
+cod_munic int8(19) not null
+munic text(2147483647)
+agro float8(17,17)
+ind float8(17,17)
+serv float8(17,17)
+apu float8(17,17)
+impostos float8(17,17)
+pib float8(17,17)
+pop float8(17,17)
+pib_pcap float8(17,17)
+</y:AttributeLabel><y:MethodLabel></y:MethodLabel></y:UML></y:UMLClassNode></data>
+  </node>
+  <node id="public.populacao">
+    <data key="d1"/><data key="d2"><![CDATA[UMLClass]]></data><data key="d3"><y:UMLClassNode><y:Geometry height="170" width="320.0" x="526.5" y="300.0"/><y:Fill color="#FFCC00" transparent="false"/><y:BorderStyle color="#000000" type="line" width="1.0"/><y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.92626953125" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="38.68994140625" x="71.155029296875" y="3.0">public.populacao</y:NodeLabel><y:UML clipContent="true" constraint="" omitDetails="false" stereotype="" use3DEffect="false"><y:AttributeLabel>cod_mun int8(19) not null
+nome_mun text(2147483647)
+pop_2000 float8(17,17)
+pop_homens float8(17,17)
+pop_mulheres float8(17,17)
+pop_urbana float8(17,17)
+pop_rural float8(17,17)
+pop_2010 float8(17,17)
+</y:AttributeLabel><y:MethodLabel></y:MethodLabel></y:UML></y:UMLClassNode></data>
+  </node>
+  <node id="public.ufs">
+    <data key="d1"/><data key="d2"><![CDATA[UMLClass]]></data><data key="d3"><y:UMLClassNode><y:Geometry height="95" width="320.0" x="526.5" y="300.0"/><y:Fill color="#FFCC00" transparent="false"/><y:BorderStyle color="#000000" type="line" width="1.0"/><y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="13" fontStyle="bold" hasBackgroundColor="false" hasLineColor="false" height="19.92626953125" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="38.68994140625" x="71.155029296875" y="3.0">public.ufs</y:NodeLabel><y:UML clipContent="true" constraint="" omitDetails="false" stereotype="" use3DEffect="false"><y:AttributeLabel>uf int2(5) not null
+nome_uf text(2147483647)
+sigla varchar(2)
+</y:AttributeLabel><y:MethodLabel></y:MethodLabel></y:UML></y:UMLClassNode></data>
+  </node>
+  <edge source="public.municipios" target="public.area">
+    <data key="d5"/><data key="d7"><y:PolyLineEdge><y:Path sx="0.0" sy="0.0" tx="0.0" ty="-5.0"/><y:LineStyle color="#999999" type="line" width="1.0"/><y:Arrows source="standard" target="none"/><y:EdgeLabel alignment="center" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="six_pos" modelPosition="tail" preferredPlacement="anywhere" ratio="0.5" textColor="#000000" visible="true" width="105.3671875" x="66.80389404296875" y="2.0"></y:EdgeLabel><y:BendStyle smoothed="false"/></y:PolyLineEdge></data>
+  </edge>
+  <edge source="public.ufs" target="public.mesorregioes">
+    <data key="d5"/><data key="d7"><y:PolyLineEdge><y:Path sx="0.0" sy="0.0" tx="0.0" ty="-5.0"/><y:LineStyle color="#999999" type="line" width="1.0"/><y:Arrows source="standard" target="none"/><y:EdgeLabel alignment="center" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="six_pos" modelPosition="tail" preferredPlacement="anywhere" ratio="0.5" textColor="#000000" visible="true" width="105.3671875" x="66.80389404296875" y="2.0"></y:EdgeLabel><y:BendStyle smoothed="false"/></y:PolyLineEdge></data>
+  </edge>
+  <edge source="public.mesorregioes" target="public.microrregioes">
+    <data key="d5"/><data key="d7"><y:PolyLineEdge><y:Path sx="0.0" sy="0.0" tx="0.0" ty="-5.0"/><y:LineStyle color="#999999" type="line" width="1.0"/><y:Arrows source="standard" target="none"/><y:EdgeLabel alignment="center" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="six_pos" modelPosition="tail" preferredPlacement="anywhere" ratio="0.5" textColor="#000000" visible="true" width="105.3671875" x="66.80389404296875" y="2.0"></y:EdgeLabel><y:BendStyle smoothed="false"/></y:PolyLineEdge></data>
+  </edge>
+  <edge source="public.microrregioes" target="public.municipios">
+    <data key="d5"/><data key="d7"><y:PolyLineEdge><y:Path sx="0.0" sy="0.0" tx="0.0" ty="-5.0"/><y:LineStyle color="#999999" type="line" width="1.0"/><y:Arrows source="standard" target="none"/><y:EdgeLabel alignment="center" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="six_pos" modelPosition="tail" preferredPlacement="anywhere" ratio="0.5" textColor="#000000" visible="true" width="105.3671875" x="66.80389404296875" y="2.0"></y:EdgeLabel><y:BendStyle smoothed="false"/></y:PolyLineEdge></data>
+  </edge>
+  <edge source="public.municipios" target="public.pib">
+    <data key="d5"/><data key="d7"><y:PolyLineEdge><y:Path sx="0.0" sy="0.0" tx="0.0" ty="-5.0"/><y:LineStyle color="#999999" type="line" width="1.0"/><y:Arrows source="standard" target="none"/><y:EdgeLabel alignment="center" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="six_pos" modelPosition="tail" preferredPlacement="anywhere" ratio="0.5" textColor="#000000" visible="true" width="105.3671875" x="66.80389404296875" y="2.0"></y:EdgeLabel><y:BendStyle smoothed="false"/></y:PolyLineEdge></data>
+  </edge>
+  <edge source="public.municipios" target="public.populacao">
+    <data key="d5"/><data key="d7"><y:PolyLineEdge><y:Path sx="0.0" sy="0.0" tx="0.0" ty="-5.0"/><y:LineStyle color="#999999" type="line" width="1.0"/><y:Arrows source="standard" target="none"/><y:EdgeLabel alignment="center" distance="2.0" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="six_pos" modelPosition="tail" preferredPlacement="anywhere" ratio="0.5" textColor="#000000" visible="true" width="105.3671875" x="66.80389404296875" y="2.0"></y:EdgeLabel><y:BendStyle smoothed="false"/></y:PolyLineEdge></data>
+  </edge>
+</graph></graphml>

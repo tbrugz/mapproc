@@ -66,6 +66,27 @@
   <modified_date>2011&#47;11&#47;08 09:22:05.941</modified_date>
   </info>
   <notepads>
+    <notepad>
+      <note>falta: distritos, subdistritos</note>
+      <xloc>141</xloc>
+      <yloc>650</yloc>
+      <width>137</width>
+      <heigth>22</heigth>
+      <fontname>Microsoft Sans Serif</fontname>
+      <fontsize>8</fontsize>
+      <fontbold>N</fontbold>
+      <fontitalic>N</fontitalic>
+      <fontcolorred>0</fontcolorred>
+      <fontcolorgreen>0</fontcolorgreen>
+      <fontcolorblue>0</fontcolorblue>
+      <backgroundcolorred>255</backgroundcolorred>
+      <backgroundcolorgreen>165</backgroundcolorgreen>
+      <backgroundcolorblue>0</backgroundcolorblue>
+      <bordercolorred>100</bordercolorred>
+      <bordercolorgreen>100</bordercolorgreen>
+      <bordercolorblue>100</bordercolorblue>
+      <drawshadow>Y</drawshadow>
+    </notepad>
   </notepads>
   <connection>
     <name>br_municipios</name>
@@ -90,7 +111,1334 @@
     </attributes>
   </connection>
   <order>
-  <hop> <from>xls pib</from><to>pib</to><enabled>Y</enabled> </hop>  <hop> <from>xls area</from><to>area</to><enabled>Y</enabled> </hop>  <hop> <from>xls populacao</from><to>Select values</to><enabled>Y</enabled> </hop>  <hop> <from>Select values</from><to>populacao</to><enabled>Y</enabled> </hop>  </order>
+  <hop> <from>xls pib</from><to>pib</to><enabled>Y</enabled> </hop>  <hop> <from>xls area</from><to>area</to><enabled>N</enabled> </hop>  <hop> <from>xls populacao</from><to>Select values</to><enabled>Y</enabled> </hop>  <hop> <from>Select values</from><to>populacao</to><enabled>Y</enabled> </hop>  <hop> <from>Localidades</from><to>renames</to><enabled>Y</enabled> </hop>  <hop> <from>renames</from><to>UF</to><enabled>Y</enabled> </hop>  <hop> <from>UF</from><to>Unique rows (HashSet)</to><enabled>Y</enabled> </hop>  <hop> <from>Unique rows (HashSet)</from><to>ufs</to><enabled>N</enabled> </hop>  <hop> <from>renames</from><to>meso</to><enabled>Y</enabled> </hop>  <hop> <from>meso</from><to>Unique rows (HashSet) 2</to><enabled>Y</enabled> </hop>  <hop> <from>Unique rows (HashSet) 2</from><to>mesorregioes</to><enabled>N</enabled> </hop>  <hop> <from>renames</from><to>micro</to><enabled>Y</enabled> </hop>  <hop> <from>micro</from><to>Unique rows (HashSet) 3</to><enabled>Y</enabled> </hop>  <hop> <from>Unique rows (HashSet) 3</from><to>microrregioes</to><enabled>N</enabled> </hop>  <hop> <from>renames</from><to>sel municipios</to><enabled>Y</enabled> </hop>  <hop> <from>sel municipios</from><to>Unique rows (HashSet) 4</to><enabled>Y</enabled> </hop>  <hop> <from>Unique rows (HashSet) 4</from><to>municipios</to><enabled>N</enabled> </hop>  <hop> <from>mapas-estados</from><to>Insert &#47; Update</to><enabled>N</enabled> </hop>  </order>
+  <step>
+    <name>Insert &#47; Update</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>br_municipios</connection>
+    <commit>100</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema/>
+      <table>ufs</table>
+      <key>
+        <name>id</name>
+        <field>uf</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>sigla</name>
+        <rename>sigla</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>uf</name>
+        <rename>id</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>733</xloc>
+      <yloc>329</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Localidades</name>
+    <type>ExcelInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <header>Y</header>
+    <noempty>Y</noempty>
+    <stoponempty>N</stoponempty>
+    <filefield/>
+    <sheetfield/>
+    <sheetrownumfield/>
+    <rownumfield/>
+    <sheetfield/>
+    <filefield/>
+    <limit>0</limit>
+    <encoding/>
+    <add_to_result_filenames>Y</add_to_result_filenames>
+    <accept_filenames>N</accept_filenames>
+    <accept_field/>
+    <accept_stepname/>
+    <file>
+      <name>D:\proj\mapproc\dados\DTB_05_05_2009.xls</name>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+    </file>
+    <fields>
+      <field>
+        <name>UF</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>Nome_UF</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>MesorregiãoGeográfica</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>MesorregiãoGeográfica_Nome</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>MicrorregiãoGeográfica</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>MicrorregiãoGeográfica_Nome</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>Município</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>Município_Nome</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>Distrito</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>Distrito_Nome</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>Subdistrito</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>Subdistrito_Nome</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+    </fields>
+    <sheets>
+      <sheet>
+        <name>DTB_05_05_2009n</name>
+        <startrow>0</startrow>
+        <startcol>0</startcol>
+        </sheet>
+    </sheets>
+    <strict_types>N</strict_types>
+    <error_ignored>N</error_ignored>
+    <error_line_skipped>N</error_line_skipped>
+    <bad_line_files_destination_directory/>
+    <bad_line_files_extension>warning</bad_line_files_extension>
+    <error_line_files_destination_directory/>
+    <error_line_files_extension>error</error_line_files_extension>
+    <line_number_files_destination_directory/>
+    <line_number_files_extension>line</line_number_files_extension>
+    <shortFileFieldName/>
+    <pathFieldName/>
+    <hiddenFieldName/>
+    <lastModificationTimeFieldName/>
+    <uriNameFieldName/>
+    <rootUriNameFieldName/>
+    <extensionFieldName/>
+    <sizeFieldName/>
+    <spreadsheet_type>JXL</spreadsheet_type>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>134</xloc>
+      <yloc>580</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Select values</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>Código do município</name>
+        <rename>cod_mun</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>Nome do município</name>
+        <rename>nome_mun</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>Total da população 2000</name>
+        <rename>pop_2000</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>Total de homens</name>
+        <rename>pop_homens</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>Total de mulheres</name>
+        <rename>pop_mulheres</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>Total da população urbana</name>
+        <rename>pop_urbana</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>Total da população rural</name>
+        <rename>pop_rural</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>Total da população 2010</name>
+        <rename>pop_2010</rename>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>271</xloc>
+      <yloc>338</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>UF</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>UF</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>Nome_UF</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>366</xloc>
+      <yloc>455</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Unique rows (HashSet)</name>
+    <type>UniqueRowsByHashSet</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <store_values>N</store_values>
+      <reject_duplicate_row>N</reject_duplicate_row>
+      <error_description/>
+    <fields>      </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>472</xloc>
+      <yloc>455</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Unique rows (HashSet) 2</name>
+    <type>UniqueRowsByHashSet</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <store_values>N</store_values>
+      <reject_duplicate_row>N</reject_duplicate_row>
+      <error_description/>
+    <fields>      </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>472</xloc>
+      <yloc>557</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Unique rows (HashSet) 3</name>
+    <type>UniqueRowsByHashSet</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <store_values>N</store_values>
+      <reject_duplicate_row>N</reject_duplicate_row>
+      <error_description/>
+    <fields>      </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>472</xloc>
+      <yloc>641</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>Unique rows (HashSet) 4</name>
+    <type>UniqueRowsByHashSet</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+      <store_values>N</store_values>
+      <reject_duplicate_row>N</reject_duplicate_row>
+      <error_description/>
+    <fields>      </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>474</xloc>
+      <yloc>727</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>area</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>br_municipios</connection>
+    <schema/>
+    <table>area</table>
+    <commit>1000</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+        <field>
+          <column_name>cod</column_name>
+          <stream_name>cod</stream_name>
+        </field>
+        <field>
+          <column_name>area</column_name>
+          <stream_name>area</stream_name>
+        </field>
+        <field>
+          <column_name>nome</column_name>
+          <stream_name>nome</stream_name>
+        </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>404</xloc>
+      <yloc>238</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>mapas-estados</name>
+    <type>ExcelInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <header>Y</header>
+    <noempty>Y</noempty>
+    <stoponempty>N</stoponempty>
+    <filefield/>
+    <sheetfield/>
+    <sheetrownumfield/>
+    <rownumfield/>
+    <sheetfield/>
+    <filefield/>
+    <limit>0</limit>
+    <encoding/>
+    <add_to_result_filenames>Y</add_to_result_filenames>
+    <accept_filenames>N</accept_filenames>
+    <accept_field/>
+    <accept_stepname/>
+    <file>
+      <name>D:\proj\mapproc\dados\mapas-estados.xls</name>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+    </file>
+    <fields>
+      <field>
+        <name>sigla</name>
+        <type>String</type>
+        <length>2</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>id</name>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+    </fields>
+    <sheets>
+      <sheet>
+        <name>Plan1</name>
+        <startrow>0</startrow>
+        <startcol>0</startcol>
+        </sheet>
+    </sheets>
+    <strict_types>N</strict_types>
+    <error_ignored>N</error_ignored>
+    <error_line_skipped>N</error_line_skipped>
+    <bad_line_files_destination_directory/>
+    <bad_line_files_extension>warning</bad_line_files_extension>
+    <error_line_files_destination_directory/>
+    <error_line_files_extension>error</error_line_files_extension>
+    <line_number_files_destination_directory/>
+    <line_number_files_extension>line</line_number_files_extension>
+    <shortFileFieldName/>
+    <pathFieldName/>
+    <hiddenFieldName/>
+    <lastModificationTimeFieldName/>
+    <uriNameFieldName/>
+    <rootUriNameFieldName/>
+    <extensionFieldName/>
+    <sizeFieldName/>
+    <spreadsheet_type>JXL</spreadsheet_type>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>551</xloc>
+      <yloc>329</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>meso</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>UF</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>MesorregiaoGeografica</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>MesorregiaoGeografica_Nome</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>362</xloc>
+      <yloc>558</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>mesorregioes</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>br_municipios</connection>
+    <schema/>
+    <table>mesorregioes</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+        <field>
+          <column_name>UF</column_name>
+          <stream_name>UF</stream_name>
+        </field>
+        <field>
+          <column_name>MesorregiaoGeografica</column_name>
+          <stream_name>MesorregiaoGeografica</stream_name>
+        </field>
+        <field>
+          <column_name>MesorregiaoGeografica_Nome</column_name>
+          <stream_name>MesorregiaoGeografica_Nome</stream_name>
+        </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>579</xloc>
+      <yloc>557</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>micro</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>UF</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>MesorregiaoGeografica</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>MicrorregiaoGeografica</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>MicrorregiaoGeografica_Nome</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>363</xloc>
+      <yloc>640</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>microrregioes</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>br_municipios</connection>
+    <schema/>
+    <table>microrregioes</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+        <field>
+          <column_name>UF</column_name>
+          <stream_name>UF</stream_name>
+        </field>
+        <field>
+          <column_name>MesorregiaoGeografica</column_name>
+          <stream_name>MesorregiaoGeografica</stream_name>
+        </field>
+        <field>
+          <column_name>MicrorregiaoGeografica</column_name>
+          <stream_name>MicrorregiaoGeografica</stream_name>
+        </field>
+        <field>
+          <column_name>MicrorregiaoGeografica_Nome</column_name>
+          <stream_name>MicrorregiaoGeografica_Nome</stream_name>
+        </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>579</xloc>
+      <yloc>642</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>municipios</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>br_municipios</connection>
+    <schema/>
+    <table>municipios</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+        <field>
+          <column_name>UF</column_name>
+          <stream_name>UF</stream_name>
+        </field>
+        <field>
+          <column_name>MesorregiaoGeografica</column_name>
+          <stream_name>MesorregiaoGeografica</stream_name>
+        </field>
+        <field>
+          <column_name>MicrorregiaoGeografica</column_name>
+          <stream_name>MicrorregiaoGeografica</stream_name>
+        </field>
+        <field>
+          <column_name>Municipio</column_name>
+          <stream_name>Municipio</stream_name>
+        </field>
+        <field>
+          <column_name>Municipio_Nome</column_name>
+          <stream_name>Municipio_Nome</stream_name>
+        </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>581</xloc>
+      <yloc>728</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>pib</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>br_municipios</connection>
+    <schema/>
+    <table>pib</table>
+    <commit>1000</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+        <field>
+          <column_name>ano</column_name>
+          <stream_name>ano</stream_name>
+        </field>
+        <field>
+          <column_name>cod_munic</column_name>
+          <stream_name>cod_munic</stream_name>
+        </field>
+        <field>
+          <column_name>munic</column_name>
+          <stream_name>munic</stream_name>
+        </field>
+        <field>
+          <column_name>agro</column_name>
+          <stream_name>agro</stream_name>
+        </field>
+        <field>
+          <column_name>ind</column_name>
+          <stream_name>ind</stream_name>
+        </field>
+        <field>
+          <column_name>serv</column_name>
+          <stream_name>serv</stream_name>
+        </field>
+        <field>
+          <column_name>apu</column_name>
+          <stream_name>apu</stream_name>
+        </field>
+        <field>
+          <column_name>impostos</column_name>
+          <stream_name>impostos</stream_name>
+        </field>
+        <field>
+          <column_name>pib</column_name>
+          <stream_name>pib</stream_name>
+        </field>
+        <field>
+          <column_name>pop</column_name>
+          <stream_name>pop</stream_name>
+        </field>
+        <field>
+          <column_name>pib_pcap</column_name>
+          <stream_name>pib_pcap</stream_name>
+        </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>404</xloc>
+      <yloc>140</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>populacao</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>br_municipios</connection>
+    <schema/>
+    <table>populacao</table>
+    <commit>1000</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+        <field>
+          <column_name>cod_mun</column_name>
+          <stream_name>cod_mun</stream_name>
+        </field>
+        <field>
+          <column_name>nome_mun</column_name>
+          <stream_name>nome_mun</stream_name>
+        </field>
+        <field>
+          <column_name>pop_2000</column_name>
+          <stream_name>pop_2000</stream_name>
+        </field>
+        <field>
+          <column_name>pop_homens</column_name>
+          <stream_name>pop_homens</stream_name>
+        </field>
+        <field>
+          <column_name>pop_mulheres</column_name>
+          <stream_name>pop_mulheres</stream_name>
+        </field>
+        <field>
+          <column_name>pop_urbana</column_name>
+          <stream_name>pop_urbana</stream_name>
+        </field>
+        <field>
+          <column_name>pop_rural</column_name>
+          <stream_name>pop_rural</stream_name>
+        </field>
+        <field>
+          <column_name>pop_2010</column_name>
+          <stream_name>pop_2010</stream_name>
+        </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>404</xloc>
+      <yloc>326</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>renames</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>N</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>UF</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>Nome_UF</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>MesorregiãoGeográfica</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>MesorregiãoGeográfica_Nome</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>MicrorregiãoGeográfica</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>MicrorregiãoGeográfica_Nome</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>Município</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>Município_Nome</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>Distrito</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>Distrito_Nome</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>Subdistrito</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>Subdistrito_Nome</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>        <select_unspecified>N</select_unspecified>
+      <meta>        <name>UF</name>
+        <rename>UF</rename>
+        <type>Number</type>
+        <length>3</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>Nome_UF</name>
+        <rename>Nome_UF</rename>
+        <type>-</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>MesorregiãoGeográfica</name>
+        <rename>MesorregiaoGeografica</rename>
+        <type>Number</type>
+        <length>8</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>MesorregiãoGeográfica_Nome</name>
+        <rename>MesorregiaoGeografica_Nome</rename>
+        <type>-</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>MicrorregiãoGeográfica</name>
+        <rename>MicrorregiaoGeografica</rename>
+        <type>Number</type>
+        <length>8</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>MicrorregiãoGeográfica_Nome</name>
+        <rename>MicrorregiaoGeografica_Nome</rename>
+        <type>-</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>Município</name>
+        <rename>Municipio</rename>
+        <type>Number</type>
+        <length>8</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>Município_Nome</name>
+        <rename>Municipio_Nome</rename>
+        <type>-</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>Distrito</name>
+        <rename>Distrito</rename>
+        <type>Number</type>
+        <length>8</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>Distrito_Nome</name>
+        <rename>Distrito_Nome</rename>
+        <type>-</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>Subdistrito</name>
+        <rename>Subdistrito</rename>
+        <type>Number</type>
+        <length>8</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>      <meta>        <name>Subdistrito_Nome</name>
+        <rename>Subdistrito_Nome</rename>
+        <type>-</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>259</xloc>
+      <yloc>580</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>sel municipios</name>
+    <type>SelectValues</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <fields>      <field>        <name>UF</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>MesorregiaoGeografica</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>MicrorregiaoGeografica</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>Municipio</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>      <field>        <name>Municipio_Nome</name>
+        <rename/>
+        <length>-2</length>
+        <precision>-2</precision>
+      </field>        <select_unspecified>N</select_unspecified>
+    </fields>     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>367</xloc>
+      <yloc>727</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>ufs</name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <connection>br_municipios</connection>
+    <schema/>
+    <table>ufs</table>
+    <commit>1000</commit>
+    <truncate>Y</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+        <field>
+          <column_name>UF</column_name>
+          <stream_name>UF</stream_name>
+        </field>
+        <field>
+          <column_name>Nome_UF</column_name>
+          <stream_name>Nome_UF</stream_name>
+        </field>
+    </fields>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>579</xloc>
+      <yloc>452</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
+  <step>
+    <name>xls area</name>
+    <type>ExcelInput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <copies>1</copies>
+         <partitioning>
+           <method>none</method>
+           <schema_name/>
+           </partitioning>
+    <header>Y</header>
+    <noempty>Y</noempty>
+    <stoponempty>N</stoponempty>
+    <filefield/>
+    <sheetfield/>
+    <sheetrownumfield/>
+    <rownumfield/>
+    <sheetfield/>
+    <filefield/>
+    <limit>0</limit>
+    <encoding/>
+    <add_to_result_filenames>Y</add_to_result_filenames>
+    <accept_filenames>N</accept_filenames>
+    <accept_field/>
+    <accept_stepname/>
+    <file>
+      <name>D:\proj\mapproc\dados\base_munic.xls</name>
+      <filemask/>
+      <exclude_filemask/>
+      <file_required>N</file_required>
+      <include_subfolders>N</include_subfolders>
+    </file>
+    <fields>
+      <field>
+        <name>cod</name>
+        <type>Integer</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>area</name>
+        <type>Number</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+      <field>
+        <name>nome</name>
+        <type>String</type>
+        <length>-1</length>
+        <precision>-1</precision>
+        <trim_type>none</trim_type>
+        <repeat>N</repeat>
+        <format/>
+        <currency/>
+        <decimal/>
+        <group/>
+      </field>
+    </fields>
+    <sheets>
+      <sheet>
+        <name>Area</name>
+        <startrow>0</startrow>
+        <startcol>0</startcol>
+        </sheet>
+    </sheets>
+    <strict_types>N</strict_types>
+    <error_ignored>N</error_ignored>
+    <error_line_skipped>N</error_line_skipped>
+    <bad_line_files_destination_directory/>
+    <bad_line_files_extension>warning</bad_line_files_extension>
+    <error_line_files_destination_directory/>
+    <error_line_files_extension>error</error_line_files_extension>
+    <line_number_files_destination_directory/>
+    <line_number_files_extension>line</line_number_files_extension>
+    <shortFileFieldName/>
+    <pathFieldName/>
+    <hiddenFieldName/>
+    <lastModificationTimeFieldName/>
+    <uriNameFieldName/>
+    <rootUriNameFieldName/>
+    <extensionFieldName/>
+    <sizeFieldName/>
+    <spreadsheet_type>JXL</spreadsheet_type>
+     <cluster_schema/>
+ <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
+      <xloc>133</xloc>
+      <yloc>238</yloc>
+      <draw>Y</draw>
+      </GUI>
+    </step>
+
   <step>
     <name>xls pib</name>
     <type>ExcelInput</type>
@@ -126,8 +1474,8 @@
     <fields>
       <field>
         <name>ano</name>
-        <type>String</type>
-        <length>-1</length>
+        <type>Integer</type>
+        <length>4</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
         <repeat>N</repeat>
@@ -138,8 +1486,8 @@
       </field>
       <field>
         <name>cod_uf</name>
-        <type>String</type>
-        <length>-1</length>
+        <type>Integer</type>
+        <length>2</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
         <repeat>N</repeat>
@@ -162,8 +1510,8 @@
       </field>
       <field>
         <name>cod_munic</name>
-        <type>String</type>
-        <length>-1</length>
+        <type>Integer</type>
+        <length>10</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
         <repeat>N</repeat>
@@ -315,239 +1663,6 @@
     </step>
 
   <step>
-    <name>pib</name>
-    <type>TableOutput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-    <connection>br_municipios</connection>
-    <schema/>
-    <table>pib</table>
-    <commit>1000</commit>
-    <truncate>N</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>Y</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
-    <partitioning_daily>N</partitioning_daily>
-    <partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field>
-    <tablename_field/>
-    <tablename_in_table>Y</tablename_in_table>
-    <return_keys>N</return_keys>
-    <return_field/>
-    <fields>
-        <field>
-          <column_name>ano</column_name>
-          <stream_name>ano</stream_name>
-        </field>
-        <field>
-          <column_name>cod_munic</column_name>
-          <stream_name>cod_munic</stream_name>
-        </field>
-        <field>
-          <column_name>munic</column_name>
-          <stream_name>munic</stream_name>
-        </field>
-        <field>
-          <column_name>agro</column_name>
-          <stream_name>agro</stream_name>
-        </field>
-        <field>
-          <column_name>ind</column_name>
-          <stream_name>ind</stream_name>
-        </field>
-        <field>
-          <column_name>serv</column_name>
-          <stream_name>serv</stream_name>
-        </field>
-        <field>
-          <column_name>apu</column_name>
-          <stream_name>apu</stream_name>
-        </field>
-        <field>
-          <column_name>impostos</column_name>
-          <stream_name>impostos</stream_name>
-        </field>
-        <field>
-          <column_name>pib</column_name>
-          <stream_name>pib</stream_name>
-        </field>
-        <field>
-          <column_name>pop</column_name>
-          <stream_name>pop</stream_name>
-        </field>
-        <field>
-          <column_name>pib_pcap</column_name>
-          <stream_name>pib_pcap</stream_name>
-        </field>
-    </fields>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>404</xloc>
-      <yloc>140</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>xls area</name>
-    <type>ExcelInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-    <header>Y</header>
-    <noempty>Y</noempty>
-    <stoponempty>N</stoponempty>
-    <filefield/>
-    <sheetfield/>
-    <sheetrownumfield/>
-    <rownumfield/>
-    <sheetfield/>
-    <filefield/>
-    <limit>0</limit>
-    <encoding/>
-    <add_to_result_filenames>Y</add_to_result_filenames>
-    <accept_filenames>N</accept_filenames>
-    <accept_field/>
-    <accept_stepname/>
-    <file>
-      <name>D:\proj\mapproc\dados\base_munic.xls</name>
-      <filemask/>
-      <exclude_filemask/>
-      <file_required>N</file_required>
-      <include_subfolders>N</include_subfolders>
-    </file>
-    <fields>
-      <field>
-        <name>cod</name>
-        <type>Number</type>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-      </field>
-      <field>
-        <name>area</name>
-        <type>Number</type>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-      </field>
-      <field>
-        <name>nome</name>
-        <type>String</type>
-        <length>-1</length>
-        <precision>-1</precision>
-        <trim_type>none</trim_type>
-        <repeat>N</repeat>
-        <format/>
-        <currency/>
-        <decimal/>
-        <group/>
-      </field>
-    </fields>
-    <sheets>
-      <sheet>
-        <name>Area</name>
-        <startrow>0</startrow>
-        <startcol>0</startcol>
-        </sheet>
-    </sheets>
-    <strict_types>N</strict_types>
-    <error_ignored>N</error_ignored>
-    <error_line_skipped>N</error_line_skipped>
-    <bad_line_files_destination_directory/>
-    <bad_line_files_extension>warning</bad_line_files_extension>
-    <error_line_files_destination_directory/>
-    <error_line_files_extension>error</error_line_files_extension>
-    <line_number_files_destination_directory/>
-    <line_number_files_extension>line</line_number_files_extension>
-    <shortFileFieldName/>
-    <pathFieldName/>
-    <hiddenFieldName/>
-    <lastModificationTimeFieldName/>
-    <uriNameFieldName/>
-    <rootUriNameFieldName/>
-    <extensionFieldName/>
-    <sizeFieldName/>
-    <spreadsheet_type>JXL</spreadsheet_type>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>133</xloc>
-      <yloc>238</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>area</name>
-    <type>TableOutput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-    <connection>br_municipios</connection>
-    <schema/>
-    <table>area</table>
-    <commit>1000</commit>
-    <truncate>N</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>Y</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
-    <partitioning_daily>N</partitioning_daily>
-    <partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field>
-    <tablename_field/>
-    <tablename_in_table>Y</tablename_in_table>
-    <return_keys>N</return_keys>
-    <return_field/>
-    <fields>
-        <field>
-          <column_name>cod</column_name>
-          <stream_name>cod</stream_name>
-        </field>
-        <field>
-          <column_name>area</column_name>
-          <stream_name>area</stream_name>
-        </field>
-        <field>
-          <column_name>nome</column_name>
-          <stream_name>nome</stream_name>
-        </field>
-    </fields>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>404</xloc>
-      <yloc>238</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
     <name>xls populacao</name>
     <type>ExcelInput</type>
     <description/>
@@ -582,8 +1697,8 @@
     <fields>
       <field>
         <name>Código do município</name>
-        <type>String</type>
-        <length>-1</length>
+        <type>Integer</type>
+        <length>10</length>
         <precision>-1</precision>
         <trim_type>none</trim_type>
         <repeat>N</repeat>
@@ -706,126 +1821,6 @@
  <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
       <xloc>133</xloc>
       <yloc>328</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>Select values</name>
-    <type>SelectValues</type>
-    <description/>
-    <distribute>Y</distribute>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-    <fields>      <field>        <name>Código do município</name>
-        <rename>cod_mun</rename>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>      <field>        <name>Nome do município</name>
-        <rename>nome_mun</rename>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>      <field>        <name>Total da população 2000</name>
-        <rename>pop_2000</rename>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>      <field>        <name>Total de homens</name>
-        <rename>pop_homens</rename>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>      <field>        <name>Total de mulheres</name>
-        <rename>pop_mulheres</rename>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>      <field>        <name>Total da população urbana</name>
-        <rename>pop_urbana</rename>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>      <field>        <name>Total da população rural</name>
-        <rename>pop_rural</rename>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>      <field>        <name>Total da população 2010</name>
-        <rename>pop_2010</rename>
-        <length>-2</length>
-        <precision>-2</precision>
-      </field>        <select_unspecified>N</select_unspecified>
-    </fields>     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>271</xloc>
-      <yloc>338</yloc>
-      <draw>Y</draw>
-      </GUI>
-    </step>
-
-  <step>
-    <name>populacao</name>
-    <type>TableOutput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <copies>1</copies>
-         <partitioning>
-           <method>none</method>
-           <schema_name/>
-           </partitioning>
-    <connection>br_municipios</connection>
-    <schema/>
-    <table>populacao</table>
-    <commit>1000</commit>
-    <truncate>N</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>Y</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
-    <partitioning_daily>N</partitioning_daily>
-    <partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field>
-    <tablename_field/>
-    <tablename_in_table>Y</tablename_in_table>
-    <return_keys>N</return_keys>
-    <return_field/>
-    <fields>
-        <field>
-          <column_name>cod_mun</column_name>
-          <stream_name>cod_mun</stream_name>
-        </field>
-        <field>
-          <column_name>nome_mun</column_name>
-          <stream_name>nome_mun</stream_name>
-        </field>
-        <field>
-          <column_name>pop_2000</column_name>
-          <stream_name>pop_2000</stream_name>
-        </field>
-        <field>
-          <column_name>pop_homens</column_name>
-          <stream_name>pop_homens</stream_name>
-        </field>
-        <field>
-          <column_name>pop_mulheres</column_name>
-          <stream_name>pop_mulheres</stream_name>
-        </field>
-        <field>
-          <column_name>pop_urbana</column_name>
-          <stream_name>pop_urbana</stream_name>
-        </field>
-        <field>
-          <column_name>pop_rural</column_name>
-          <stream_name>pop_rural</stream_name>
-        </field>
-        <field>
-          <column_name>pop_2010</column_name>
-          <stream_name>pop_2010</stream_name>
-        </field>
-    </fields>
-     <cluster_schema/>
- <remotesteps>   <input>   </input>   <output>   </output> </remotesteps>    <GUI>
-      <xloc>404</xloc>
-      <yloc>326</yloc>
       <draw>Y</draw>
       </GUI>
     </step>
