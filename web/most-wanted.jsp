@@ -1,3 +1,4 @@
+<%@page import="org.apache.commons.lang3.StringEscapeUtils"%>
 <%@page import="tbrugz.mapproc.gae.DailyURLAccessCount"%>
 <%@ page import="java.util.*, tbrugz.mapproc.*" %>
 

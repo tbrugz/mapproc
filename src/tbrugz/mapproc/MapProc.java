@@ -331,6 +331,11 @@ public class MapProc {
 
 		log.info("placemarks = "+placemarkCount+"; initSize = "+initSize+"; removesCount = "+removesCount);
 		
+		Element docName = DomUtils.getChildByTagName(doc.getDocumentElement(), "name");
+		if(docName!=null) {
+			this.mapDescription = docName.getTextContent();
+		}
+		
 		this.numOfMapElements = placemarkCount;
 		this.numOfSeriesElements = is.size();
 		//this.seriesDescription = is.metadata.objectLabel+" / "+is.metadata.valueLabel+" / "+is.metadata.measureUnit;

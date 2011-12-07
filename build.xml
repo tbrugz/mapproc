@@ -69,6 +69,7 @@
 				<include name="**/*.html"/>
 				<include name="**/*.js"/>
 				<include name="**/*.css"/>
+				<include name="**/*.inc"/>
 			</fileset>
 		</copy>
 		<!--copy todir="${deploy.dir}/mapproc/input" verbose="true">
