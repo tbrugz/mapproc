@@ -13,16 +13,31 @@ var geoXml;
 
 function loadMap() {
 	var kmlLayer = loadKmlInMap('theform',map,'map_location');
+	var timeoutmsec = 7000;
+	
 	google.maps.event.addListener(kmlLayer, 'click', function (kmlEvent) {
-        var id = kmlEvent.featureData.id;
-        var name = kmlEvent.featureData.name;
-        var desc = kmlEvent.featureData.description;
+		var id = kmlEvent.featureData.id;
+		var name = kmlEvent.featureData.name;
+		var desc = kmlEvent.featureData.description;
 		document.getElementById('placeId').innerHTML = id;
 		document.getElementById('placeName').innerHTML = name;
 		document.getElementById('placeDesc').innerHTML = desc;
 		//alert('id: '+id+'; name: '+name+'; desc: '+desc);
 		document.getElementById('place_info').style.display = 'block';
-    });
+	});
+
+	var timeout = setTimeout(function() {
+		console.log('timed-out: '+timeoutmsec);
+		//message: timed-out :P
+	}, timeoutmsec);
+	
+	google.maps.event.addListener(kmlLayer, 'metadata_changed', function () {
+		clearTimeout(timeout);
+		console.log('metadata changed!');
+		//message-fading: loaded
+	});
+	
+	//message: loading...
 }
 </script>
 </head>
@@ -32,7 +47,8 @@ function loadMap() {
 
 <div id="form">
 
-<form id="theform" action="proc/">
+<!-- TODO: change action to "proc/" -->
+<form id="theform" action="http://mapproc.appspot.com/proc/">
 Map: 
 <select name="kml">
 <%
