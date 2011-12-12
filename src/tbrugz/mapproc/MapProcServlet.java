@@ -67,6 +67,9 @@ public class MapProcServlet extends HttpServlet {
 		
 		String removeIfNotFoundStr = req.getParameter("removeIfNotFound");
 		boolean removeIfNotFound = removeIfNotFoundStr!=null && !removeIfNotFoundStr.equals("");
+
+		//String noCategoriesContainerStr = req.getParameter("noCatCont");
+		//boolean noCategoriesContainer = noCategoriesContainerStr!=null && !noCategoriesContainerStr.equals("");
 		
 		String genCatLimitsFromExistingPlacemarksStr = req.getParameter("genCatLimitsFromExistingPlacemarks");
 		boolean genCatLimitsFromExistingPlacemarks = genCatLimitsFromExistingPlacemarksStr!=null && !genCatLimitsFromExistingPlacemarksStr.equals("");

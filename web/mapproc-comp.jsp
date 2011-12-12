@@ -14,6 +14,7 @@ var geoXml;
 function loadMap() {
 	var kmlLayer = loadKmlInMap('theform',map,'map_location');
 	var timeoutmsec = 7000;
+	var messages = document.getElementById('messages');
 	
 	google.maps.event.addListener(kmlLayer, 'click', function (kmlEvent) {
 		var id = kmlEvent.featureData.id;
@@ -28,16 +29,24 @@ function loadMap() {
 
 	var timeout = setTimeout(function() {
 		console.log('timed-out: '+timeoutmsec);
-		//message: timed-out :P
+		messages.innerHTML = 'loading timed out. maybe you should try <a href="#" onclick="document.getElementById(\'theform\').submit();">downloading</a>';
+		messages.style.display = 'block';
+		//TODO: log timeout on server (ajax)
 	}, timeoutmsec);
 	
 	google.maps.event.addListener(kmlLayer, 'metadata_changed', function () {
 		clearTimeout(timeout);
 		console.log('metadata changed!');
-		//message-fading: loaded
+		messages.innerHTML = 'loaded';
+		messages.style.display = 'block';
+		
+		setTimeout(function() {
+			messages.style.display = 'none';
+		}, 3000);
 	});
 	
-	//message: loading...
+	messages.innerHTML = 'loading...';
+	messages.style.display = 'block';
 }
 </script>
 </head>
@@ -48,7 +57,7 @@ function loadMap() {
 <div id="form">
 
 <!-- TODO: change action to "proc/" -->
-<form id="theform" action="http://mapproc.appspot.com/proc/">
+<form id="theform" action="proc/">
 Map: 
 <select name="kml">
 <%
@@ -106,6 +115,8 @@ Remove not found? <input type="checkbox" class="smaller" name="removeIfNotFound"
 </div>
 
 <div id="map_canvas" style="position: absolute; top: 4px; bottom: 4px; left: 16em; right: 4px; border: 1px solid black;"></div>
+
+<div id="messages" style="position: absolute; bottom: 8px; left: 16.3em; border: 1px solid black; display: none;"></div>
 
 <div id="map_location" style="width: 800px; height: 60px; border: 1px solid black; background-color: #ddd; display:none;"></div>
 

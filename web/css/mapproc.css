@@ -52,6 +52,12 @@ input.smaller {
 	padding: 3px; 
 }
 
+#messages {
+	background-color: #ff5;
+	font-weight: bold;
+	padding: 3px;
+}
+
 table {
 	width: 70%;
 	background-color: #ccc;

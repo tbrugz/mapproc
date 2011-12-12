@@ -22,7 +22,7 @@ import tbrugz.xml.KmlBounds;
 public class KmlUtils {
 	static Log log = LogFactory.getLog(KmlUtils.class);
 	
-	static void addCategoriesLabels(Document doc, Element kmlElem, String catLabelsSnippet, List<Category> cats, String catElemSnippet, IndexedSeriesMetadata isMetadata, DocumentBuilder dBuilder) throws SAXException, IOException {
+	static void addCategoriesLabels(Document doc, Element kmlElem, String catLabelsSnippet, String catLabelsContainerSnippet, List<Category> cats, String catElemSnippet, IndexedSeriesMetadata isMetadata, DocumentBuilder dBuilder) throws SAXException, IOException {
 		KmlBounds kmlbounds = new KmlBounds();
 		
 		kmlbounds.grabMinMaxLatLong(doc.getDocumentElement());
@@ -34,8 +34,8 @@ public class KmlUtils {
 		double topLat = kmlbounds.getMaxLat() - latDist;
 		double bottomLat = kmlbounds.getMinLat() + latDist;
 		
-		String boundsCoords = KmlBounds.getBoundsCoordinates(rightLong, leftLong, topLat, bottomLat, -1); //-1 for being below other labels
-		catLabelsSnippet = catLabelsSnippet.replaceAll("\\{0\\}", Matcher.quoteReplacement(boundsCoords) );
+		//String boundsCoords = KmlBounds.getBoundsCoordinates(rightLong, leftLong, topLat, bottomLat, -1); //-1 for being below other labels
+		//catLabelsSnippet = catLabelsSnippet.replaceAll("\\{0\\}", Matcher.quoteReplacement(boundsCoords) );
 
 		Element catLabelsElem = DomUtils.getDocumentNodeFromString(catLabelsSnippet, dBuilder).getDocumentElement();
 		Node catLabelsElemNew = doc.importNode(catLabelsElem, true);
@@ -72,6 +72,15 @@ public class KmlUtils {
 			catLabelsElemNew.appendChild(catElemNew);
 			
 			i+=2;
+		}
+		
+		if(catLabelsContainerSnippet!=null) {
+			String boundsCoords = KmlBounds.getBoundsCoordinates(rightLong, leftLong, topLat, bottomLat, -1); //-1: putting below other labels
+			catLabelsContainerSnippet = catLabelsContainerSnippet.replaceAll("\\{0\\}", Matcher.quoteReplacement(boundsCoords) );
+	
+			Element catLabelsContainerElem = DomUtils.getDocumentNodeFromString(catLabelsContainerSnippet, dBuilder).getDocumentElement();
+			Node catLabelsContainerNew = doc.importNode(catLabelsContainerElem, true);
+			catLabelsElemNew.appendChild(catLabelsContainerNew);
 		}
 	}
 	

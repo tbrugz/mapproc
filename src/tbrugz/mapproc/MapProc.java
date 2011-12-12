@@ -359,7 +359,9 @@ public class MapProc {
 		Element catElem = DomUtils.getDocumentNodeFromString(categoriesStr, dBuilder).getDocumentElement();
 		Node catElemNew = doc.importNode(catElem, true);
 		kmldoc.appendChild(catElemNew);*/
-		KmlUtils.addCategoriesLabels(doc, kmldoc, snippets.getProperty("Categories.Feature"), cats, snippets.getProperty("Categories.Elem"), is.metadata, dBuilder);
+
+		KmlUtils.addCategoriesLabels(doc, kmldoc, snippets.getProperty("Categories.Feature"), snippets.getProperty("Categories.Container"), cats, snippets.getProperty("Categories.Elem"), is.metadata, dBuilder);
+		//KmlUtils.addCategoriesLabels(doc, kmldoc, snippets.getProperty("Categories.Feature"), null, cats, snippets.getProperty("Categories.Elem"), is.metadata, dBuilder);
 		
 		//DOMUtilExt.sortChildNodes(placemarksFolder, false, 1, new DOMUtilExt.IdAttribComparator());
 		
