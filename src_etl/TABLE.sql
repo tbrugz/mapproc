@@ -63,3 +63,19 @@ create table ufs ( -- type=TABLE
 	constraint ufs_pk primary key (uf)
 );
 
+create table violencia ( -- type=TABLE
+	municipio varchar(100),
+	uf text,
+	populacao2008 int8(19),
+	media int4(10),
+	homic2006 int4(10),
+	homic2007 int4(10),
+	homic2008 int4(10),
+	taxa int4(10),
+	pos_nacional int4(10),
+	pos_estadual int4(10),
+	nr_uf int2(5),
+	nr_municipio int4(10) not null,
+	constraint violencia_pk primary key (nr_municipio)
+);
+

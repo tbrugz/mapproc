@@ -22,3 +22,7 @@ alter table populacao
 	add constraint pop_munic_fk foreign key (cod_mun)
 	references municipios (municipio);
 
+alter table violencia
+	add constraint vio_munic_fk foreign key (nr_municipio)
+	references municipios (municipio);
+
