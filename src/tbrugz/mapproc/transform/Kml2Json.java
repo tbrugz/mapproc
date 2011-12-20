@@ -36,18 +36,18 @@ public class Kml2Json {
 
 		int idEstado = 43;
 		FileInputStream kmlFile = new FileInputStream("work/input/kml/"+idEstado+"Mun.kml");
-		FileWriter writer = new FileWriter("work/output/"+idEstado+"Mun.json");
+		FileWriter writer = new FileWriter("work/output/"+idEstado+"-mun.json");
 		kml2json(kmlFile, writer);
 		writer.close();
 		
 		BufferedReader csvFile = new BufferedReader(new FileReader("work/input/csv/ha.csv"));
-		FileWriter csvWriter = new FileWriter("work/output/"+idEstado+"MunSeries.json");
+		FileWriter csvWriter = new FileWriter("work/output/series-ha.json");
 		indexedSeries2json(csvFile, csvWriter);
 		csvWriter.close();
 		
 		BufferedReader csvCatFile = new BufferedReader(new FileReader("work/input/csvcat/tabela_categorias_vereadores-por-municipio-cor.csv"));
 		List<Category> cats = Category.getCategoriesFromCSVStream(csvCatFile, ";");
-		FileWriter csvCatWriter = new FileWriter("work/output/"+idEstado+"MunCat.json");
+		FileWriter csvCatWriter = new FileWriter("work/output/cat-vereadores-mun.json");
 		categories2json(cats, csvCatWriter);
 		csvCatWriter.close();
 	}
@@ -131,7 +131,7 @@ public class Kml2Json {
 		}
 		os.write("\n\t}\n}");
 
-		log.info("wrote "+outCount+" placemarks");
+		log.info("wrote "+outCount+" elements");
 	}
 	
 	static void categories2json(List<Category> cats, Writer os) throws IOException {
@@ -143,7 +143,7 @@ public class Kml2Json {
 					+"\n\t"+QUOT+c.getStyleId()+QUOT+": {\n"
 					+"\t\t"+QUOT+"startval"+QUOT+": "+c.getStartVal()+",\n"
 					+"\t\t"+QUOT+"endval"+QUOT+": "+c.getEndVal()+",\n"
-					+"\t\t"+QUOT+"color"+QUOT+": "+QUOT+""+c.getStyleColor()+""+QUOT+",\n"
+					+"\t\t"+QUOT+"kmlcolor"+QUOT+": "+QUOT+""+c.getStyleColor()+""+QUOT+",\n"
 					+"\t\t"+QUOT+"description"+QUOT+": "+QUOT+""+c.getDescription()+""+QUOT+"\n"
 					+"\t\t}"
 					);
@@ -151,7 +151,7 @@ public class Kml2Json {
 		}
 		os.write("\n}");
 
-		log.info("[cat] wrote "+outCount+" placemarks");
+		log.info("[cat] wrote "+outCount+" elements");
 	}
 	
 }

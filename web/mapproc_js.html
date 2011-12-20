@@ -1,0 +1,324 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="css/mapproc.css" />
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="js/jquery-1.7.js"></script>
+<script type="text/javascript" src="js/jquery.dump.js"></script>
+<script type="text/javascript" src="js/mapproc.js"></script>
+<script type="text/javascript" src="js/jscolor/jscolor.js"></script>
+<script>
+var okNumber = 0;
+var places, catData, seriesData;
+var gmapsPlaces = {};
+var map;
+
+var jqxhrPlaces = $.getJSON("input/json/35-mun.json", function(data) {
+	okNumber++;
+	places = data;
+	if(okNumber==3) { doIt(); }
+})
+.error(function() { alert("error Places"); })
+
+var jqxhrCats = $.getJSON("input/json/cat-vereadores-mun.json", function(data) {
+	okNumber++;
+	catData = data;
+	if(okNumber==3) { doIt(); }
+})
+.error(function() { alert("error Categories"); })
+
+var jqxhrSeries = $.getJSON("input/json/ha.json", function(data) {
+	okNumber++;
+	seriesData = data;
+	if(okNumber==3) { doIt(); }
+})
+.error(function() { alert("error Series"); })
+
+function doIt() {
+	//see: http://code.google.com/intl/en/apis/maps/documentation/javascript/overlays.html#Polygons
+	//alert('OK');
+	var debug = document.getElementById('debug');
+	
+	var myOptions = {
+			zoom: 6,
+			//TODO: automatico?
+			position: new google.maps.LatLng(-22, -48),
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		};
+	map = new google.maps.Map(document.getElementById('map_canvas'), myOptions);
+	
+	map.setCenter(myOptions.position);
+	
+	//[new google.maps.LatLng(25.774252, -80.190262)];
+	
+	var count = 0;
+	for(id in places) {
+		//debug.innerHTML += "\n\n>> "+places[id].name+":: ";
+		var coords = new Array();
+		//$("#debug").append("["+$.dump(places[id].coordinates)+"]");
+		for(c in places[id].coordinates) {
+			coords.push( new google.maps.LatLng(places[id].coordinates[c][0], places[id].coordinates[c][1]) );
+			//$("#debug").append("\n["+$.dump(places[id].coordinates[c][0])+","+$.dump(places[id].coordinates[c][1])+"]");
+			
+			//debug.innerHTML += c+";; "+coords[coords.length-1]+", ";
+			//debug.innerHTML += c[0]+":"+c[1]; //coords[coords.length-1]+", ";
+		}
+		var theplace = new google.maps.Polygon({
+			paths: coords,
+			strokeColor: "#000000",
+			strokeOpacity: 0.8,
+			strokeWeight: 1,
+			fillColor: "#FF0000",
+			fillOpacity: 0.7
+		});
+		theplace.id = id;
+		theplace.name = places[id].name;
+		theplace.dataValue = seriesData.series[id];
+		theplace.catId = getCat(theplace.dataValue, catData);
+		theplace.kmlColor = catData[theplace.catId].kmlcolor;
+		theplace.fillColor = theplace.kmlColor.substring(6,8)+theplace.kmlColor.substring(4,6)+theplace.kmlColor.substring(2,4); 
+		//$("#debug").append(theplace.id+":"+theplace.name+":: ["+theplace.dataValue+";"+theplace.catId+";"+theplace.kmlColor+";"+theplace.fillColor+"]\n");
+		//$("#debug").append("[c: "+$.dump(coords)+"]");
+		theplace.setMap(map);
+		//gmapsPlaces[id] = {};
+		gmapsPlaces[theplace.id] = theplace;
+		count++;
+		//if(count>10) { break; }
+	}
+	
+	/*var bermudaTriangle;
+
+	var triangleCoords = [
+		//new google.maps.LatLng(-54.112761022,-31.429314841),
+		//new google.maps.LatLng(-54.0982072825,-31.4365537224),
+		//new google.maps.LatLng(-54.0933016419,-31.4358827699),
+		//new google.maps.LatLng(-54.0933041073,-31.4468651549)
+		new google.maps.LatLng( -54.112, -31.429),
+		new google.maps.LatLng( -54.098, -31.436),
+		new google.maps.LatLng( -54.093, -31.435),
+		new google.maps.LatLng( -54.093, -31.446)
+		//new google.maps.LatLng(25.774252, -80.190262),
+		//new google.maps.LatLng(18.466465, -66.118292),
+		//new google.maps.LatLng(32.321384, -64.75737)
+	];
+
+	bermudaTriangle = new google.maps.Polygon({
+		paths: triangleCoords,
+		strokeColor: "#FF0000",
+		strokeOpacity: 0.8,
+		strokeWeight: 1,
+		fillColor: "#FF0000",
+		fillOpacity: 0.35
+	});
+	$("#debug").append($.dump(triangleCoords));
+	//map.setCenter(new google.maps.LatLng( -54.112, -31.429));
+	//map.setZoom(13);
+
+	bermudaTriangle.setMap(map);*/
+	
+}
+
+function getCat(value, catData) {
+	for(id in catData) {
+		//$("#debug").append("id: "+id+"; v:"+value+":"+catData[id].startval+"-"+catData[id].endval+"\n");
+		if(value >= catData[id].startval && value < catData[id].endval) {
+			return id;
+		}
+	}
+	return null;
+}
+
+function test() {
+	//console.log(seriesData.series);
+	var maxval = max(seriesData.series);
+	var minval = min(seriesData.series);
+	//alert('max: '+maxval);
+	//alert('min: '+minval);
+	var catLimits = getLogCategoriesLimits(minval, maxval, 5);
+	//alert('cats-lin: '+getLinearCategoriesLimits(minval, maxval, 5) );
+	//alert('cats-log: '+catLimits );
+	//console.log(catLimits);
+	
+	var cats = genCategoriesFromLimits(catLimits);
+
+	console.log(cats);
+	
+	procStylesFromCategories(cats, 'aa00ffff', 'aa0000ff');
+	console.log("hex:: "+hexString(2)+"; "+hexString(9)+"; "+hexString(10)+"; "+hexString(11)+"; "+hexString(250)+"; "+hexString(255));
+	//KmlUtils.procStylesFromCategories
+	
+	applyStyleColor(gmapsPlaces, cats);
+	applySeriesData(gmapsPlaces, seriesData);
+
+}
+
+//---------------- stats functions
+
+function getLinearCategoriesLimits(min, max, numCategories) {
+	var list = [];
+	var amplitude = max-min;
+	var interval = amplitude/numCategories;
+	for(var i = 0;i<=numCategories;i++) {
+		list.push(min+interval*i);
+	}
+	return list;
+}
+
+function getLogCategoriesLimits(min, max, numCategories) {
+	var negativeDiff = 0;
+	if(min<1) {
+		negativeDiff = min-1;
+	}
+	var newMin = Math.log(min-negativeDiff);
+	var newMax = Math.log(max-negativeDiff);
+	var list = [];
+	
+	var amplitude = newMax-newMin;
+	var interval = amplitude/numCategories;
+	for(var i = 0;i<=numCategories;i++) {
+		list.push(Math.exp(newMin+interval*i)+negativeDiff);
+	}
+	return list;
+}
+
+function max(series) {
+	var max = -Number.MAX_VALUE;
+	for(var i in series) {
+		if(series[i]>max) { max = series[i]; }
+	}
+	return max;
+}
+
+function min(series) {
+	var min = Number.MAX_VALUE;
+	for(var i in series) {
+		//console.log("i:"+i+" / "+series[i]);
+		if(series[i]<min) { min = series[i]; }
+	}
+	return min;
+}
+
+function hexString(number) {
+	var hex = number.toString(16);
+	if(hex.length==1) { hex = "0"+hex; }
+	return hex;
+}
+
+//----
+
+function genCategoriesFromLimits(vals) {
+	var cats = {};
+	for(var i=1;i<vals.length;i++) {
+		var cat = {};
+		cat.startval = vals[i-1];
+		cat.endval = vals[i];
+		//cat.name = getNameFromId(i);
+		cat.styleId = i;
+		//cats.push(cat);
+		cats[i] = cat;
+	}
+	return cats;
+}
+
+function procStylesFromCategories(cats, colorFrom, colorTo) {
+	//console.log(colorFrom);
+	//console.log(colorTo);
+
+	var numCat = Object.keys(cats).length - 1;
+	var colorsA = getLinearCategoriesLimits(parseInt(colorFrom.substring(0, 2), 16), parseInt(colorTo.substring(0, 2), 16), numCat);
+	var colorsB = getLinearCategoriesLimits(parseInt(colorFrom.substring(2, 4), 16), parseInt(colorTo.substring(2, 4), 16), numCat);
+	var colorsG = getLinearCategoriesLimits(parseInt(colorFrom.substring(4, 6), 16), parseInt(colorTo.substring(4, 6), 16), numCat);
+	var colorsR = getLinearCategoriesLimits(parseInt(colorFrom.substring(6, 8), 16), parseInt(colorTo.substring(6, 8), 16), numCat);
+	
+	//console.log(colorsA);
+	//console.log(colorsB);
+	//console.log(colorsG);
+	//console.log(colorsR);
+
+	var i=0;
+	for(var c in cats) {
+		cats[c].kmlcolor = hexString(Math.round(colorsA[i])) + hexString(Math.round(colorsB[i])) + hexString(Math.round(colorsG[i])) + hexString(Math.round(colorsR[i]));
+		//console.log('cat: '+c+'/'+colorsA[i]+'/'+colorsB[i]);
+		//console.log(cats[c].kmlcolor);
+		i++;
+	}
+	
+	return cats;
+}
+
+function applyStyleColor(gPlaceMarks, cats) {
+	var count = 0;
+	for(var id in gPlaceMarks) {
+		var placemark = gPlaceMarks[id];
+		//var bef = placemark.fillColor;
+		
+		placemark.catId = getCat(placemark.dataValue, cats);
+		var cat = cats[placemark.catId];
+		if(cat==undefined) {
+			console.log('undefined id: '+id+' / '+placemark+' / '+placemark.catId);
+			continue;
+		}
+		placemark.kmlColor = cats[placemark.catId].kmlcolor;
+		placemark.fillColor = placemark.kmlColor.substring(6,8) + placemark.kmlColor.substring(4,6) + placemark.kmlColor.substring(2,4);
+		//console.log('b: '+bef+' / a: '+placemark.fillColor);
+		placemark.setMap(map); //atualiza placemark no mapa - 'null' retira elemento do mapa
+		count++;
+		//if(count>10) { break; }
+	}
+	//console.log(count+' / '+Object.keys(gmapsPlaces).length+' / '+Object.keys(places).length);
+	//console.log(gmapsPlaces);
+}
+
+function applySeriesData(gPlaceMarks, seriesData) {
+	var count = 0;
+	for(var id in gPlaceMarks) {
+		var placemark = gPlaceMarks[id];
+		placemark.dataValue = seriesData.series[id];
+		count++;
+	}
+	console.log('applySeriesDataCount: '+count);
+}
+</script>
+
+</head>
+
+<body onload="changeColor('colorFromRGB', 'colorFrom');changeColor('colorToRGB', 'colorTo');">
+
+<h2>MapProc.js full - SP</h2>
+
+<a href="#" onclick="javascript:test();">test</a>
+
+<div id="form">
+
+<form id="theform" action="proc">
+KML Resource: <input type="text" name="kmlResource"/><br/>
+Data (CSV) Resource: <input type="text" name="csvResource"/><br/>
+Number of categories: <input type="text" name="numOfCategories"/><br/>
+Scale Type: 
+<select name="scaleType">
+	<option value="LINEAR">LINEAR</option>
+	<option value="LOG">LOG</option>
+	<option value="PERCENTILE">PERCENTILE</option>
+</select><br/>
+Color From: <input type="text" class="color small" id="colorFromRGB" name="colorFromRGB" value="FF0000" onchange="changeColor('colorFromRGB', 'colorFrom')"/> <input type="hidden" id="colorFrom" name="colorFrom"/><br/>
+Color To: <input type="text" class="color small" id="colorToRGB" name="colorToRGB" value="00FF00" onchange="changeColor('colorToRGB', 'colorTo')"/> <input type="hidden" id="colorTo" name="colorTo"/><br/>
+<br/>
+</form>
+<input type="button" value="Load KML" onClick="loadKml();"/>
+
+</div>
+
+<div id="map_canvas" style="width: 800px; height: 600; border: 1px solid black">
+</div>
+
+<br/>
+
+<div id="map_location" style="width: 800px; height: 60px; border: 1px solid black; background-color: #ddd; display: none;">
+</div>
+
+<br/>
+
+<pre id="debug" style="width: 800px; height: 600px; border: 1px solid black; background-color: #ddd; display: none;">
+</pre>
+
+</body>
+</html>
