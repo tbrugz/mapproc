@@ -150,3 +150,14 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 	}
 	console.log('applySeriesDataCount: '+count);
 }
+
+function removeSeriesDataWhenPlacemarkNotFound(gPlaceMarks, seriesData) {
+	var count = 0;
+	console.log('before: '+Object.keys(seriesData.series).length+" / "+Object.keys(gPlaceMarks).length);
+	for(var id in seriesData.series) {
+		//console.log(gPlaceMarks[id]);
+		if(gPlaceMarks[id]==undefined) { delete seriesData.series[id]; }
+	}
+	console.log('after: '+Object.keys(seriesData.series).length+" / "+Object.keys(gPlaceMarks).length);
+	
+}

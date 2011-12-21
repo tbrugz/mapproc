@@ -79,7 +79,13 @@ function loadData() {
 
 function loadDataCallback() {
 	//console.log(seriesData.series);
-	//TODO: remove (or not) data elements not present in map	
+	//TODOne: remove (or not) data elements not present in map
+	var genCatLimitsFromExistingPlacemarks = document.getElementById('genCatLimitsFromExistingPlacemarks').checked;
+	console.log('genCatLimitsFromExistingPlacemarks: '+genCatLimitsFromExistingPlacemarks)
+	if(genCatLimitsFromExistingPlacemarks) {
+		removeSeriesDataWhenPlacemarkNotFound(gmapsPlaces, seriesData);
+	}
+	
 	var maxval = max(seriesData.series);
 	var minval = min(seriesData.series);
 	var numOfCategories = document.getElementById('numOfCategories').value;
@@ -113,7 +119,8 @@ function loadDataCallback() {
 	//applyStyleColor(gmapsPlaces, cats);
 	
 	//TODO: divs para categorias
-	//TODO: Option to select (show only) placemarks from given category 
+	//TODO: option to select (show only) placemarks from given category
+	//TODO: remove placemark not found? nah...
 }
 </script>
 </head>
@@ -151,7 +158,7 @@ Scale:
 	<option value="LOG" selected>LOG</option>
 	<!-- option value="PERCENTILE">PERCENTILE</option -->
 </select><br/>
-<!-- Normalize Limits? <input type="checkbox" class="smaller" name="genCatLimitsFromExistingPlacemarks" value="1" checked/><br/ -->
+Normalize Limits? <input type="checkbox" class="smaller" name="genCatLimitsFromExistingPlacemarks" id="genCatLimitsFromExistingPlacemarks" value="1" checked/><br/>
 </div>
 Color Min: <input type="text" class="color small" id="colorFromRGB" name="colorFromRGB" value="FFFF00" onchange="changeColor('colorFromRGB', 'colorFrom')"/> <input type="hidden" id="colorFrom" name="colorFrom"/><br/>
 Color Max: <input type="text" class="color small" id="colorToRGB" name="colorToRGB" value="FF0000" onchange="changeColor('colorToRGB', 'colorTo')"/> <input type="hidden" id="colorTo" name="colorTo"/><br/>
