@@ -31,6 +31,7 @@ public class IndexedSeries {
 		metadata.objectLabel = headers[0];
 		String[] valueFields = headers[1].split(":");
 		metadata.valueLabel = valueFields[0];
+		//TODO: valueType can be: float, integer (and maybe date)
 		metadata.valueType = IndexedSeriesMetadata.ValueType.FLOAT;
 
 		if(valueFields.length>1) {

@@ -130,11 +130,12 @@ public class Kml2Json {
 		os.write("\t"+QUOT+"objectLabel"+QUOT+": "+QUOT+""+is.metadata.objectLabel+""+QUOT+",\n");
 		os.write("\t"+QUOT+"valueLabel"+QUOT+": "+QUOT+""+is.metadata.valueLabel+""+QUOT+",\n");
 		os.write("\t"+QUOT+"valueType"+QUOT+": "+QUOT+""+is.metadata.valueType+""+QUOT+",\n");
+		os.write("\t"+QUOT+"measureUnit"+QUOT+": "+QUOT+""+is.metadata.measureUnit+""+QUOT+",\n");
 		os.write("\t"+QUOT+"series"+QUOT+": {\n");
 		for(String key: keys) {
 			//XXX: only works for integer/float values
-			os.write((outCount!=0?",":"")
-					+"\n\t\t"+QUOT+key+QUOT+": "+is.getValue(key));
+			os.write((outCount!=0?",\n":"")
+					+"\t\t"+QUOT+key+QUOT+": "+is.getValue(key));
 			outCount++;
 		}
 		os.write("\n\t}\n}");

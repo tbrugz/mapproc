@@ -15,7 +15,7 @@ var gmapsPlaces = {};
 var map;
 
 function loadNakedMap(map_canvas_id) {
-	var jqxhrPlaces = $.getJSON("input/json/35-mun.json", function(data) {
+	var jqxhrPlaces = $.getJSON("input/json/map-35-mun.json", function(data) {
 		//okNumber++;
 		places = data;
 		loadNakedMapCallback(map_canvas_id);
@@ -57,6 +57,7 @@ function loadNakedMapCallback(map_canvas_id) {
 		});
 		theplace.id = id;
 		theplace.name = places[id].name;
+		theplace.description = places[id].description;
 		theplace.setMap(map);
 		gmapsPlaces[theplace.id] = theplace;
 		count++;
@@ -120,7 +121,7 @@ function loadDataCallback() {
 	
 	//TODO: divs para categorias
 	//TODO: option to select (show only) placemarks from given category
-	//TODO: remove placemark not found? nah...
+	//TODO: remove placemark not found? nah... add all not found to 'unknown' category
 }
 </script>
 </head>

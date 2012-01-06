@@ -134,6 +134,8 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 		//set data
 		placemark.dataValue = seriesData.series[id];
 		placemark.catId = getCat(placemark.dataValue, catData);
+		//TODO: numberFormat (grouping char, ...)
+		placemark.description = seriesData.valueLabel + ': '+seriesData.series[id] + ' ' + seriesData.measureUnit;
 		if(placemark.catId==undefined) {
 			console.warn('undefined id: '+placemark+' / '+placemark.catId);
 			//TODO: option to remove element from map
@@ -145,6 +147,13 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 		placemark.fillColor = placemark.kmlColor.substring(6,8) + placemark.kmlColor.substring(4,6) + placemark.kmlColor.substring(2,4);
 		//console.log('b: '+bef+' / a: '+placemark.fillColor);
 		placemark.setMap(map); //atualiza placemark no mapa - 'null' retira elemento do mapa
+		
+		google.maps.event.addListener(placemark, 'click', function(event) {
+			//console.log('click!');
+			//console.log(placemark);
+			//console.log(this);
+			showPlaceInfo(this.id, this.name, this.description);
+		});		
 		
 		count++;
 	}
@@ -159,5 +168,13 @@ function removeSeriesDataWhenPlacemarkNotFound(gPlaceMarks, seriesData) {
 		if(gPlaceMarks[id]==undefined) { delete seriesData.series[id]; }
 	}
 	console.log('after: '+Object.keys(seriesData.series).length+" / "+Object.keys(gPlaceMarks).length);
-	
+}
+
+function showPlaceInfo(id, name, description) {
+	console.log(id+" / "+name);
+	//console.log(placemark);
+	document.getElementById('placeId').innerHTML = id;
+	document.getElementById('placeName').innerHTML = name;
+	document.getElementById('placeDesc').innerHTML = description;
+	document.getElementById('place_info').style.display = 'block';
 }
