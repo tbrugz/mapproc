@@ -95,6 +95,8 @@ function procStylesFromCategories(cats, colorFrom, colorTo) {
 	var i=0;
 	for(var c in cats) {
 		cats[c].kmlcolor = hexString(Math.round(colorsA[i])) + hexString(Math.round(colorsB[i])) + hexString(Math.round(colorsG[i])) + hexString(Math.round(colorsR[i]));
+		//XXX: color -> rgbcolor?
+		cats[c].color = hexString(Math.round(colorsR[i])) + hexString(Math.round(colorsG[i])) + hexString(Math.round(colorsB[i]));
 		//console.log('cat: '+c+'/'+colorsA[i]+'/'+colorsB[i]);
 		//console.log(cats[c].kmlcolor);
 		i++;
@@ -135,6 +137,7 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 		placemark.dataValue = seriesData.series[id];
 		placemark.catId = getCat(placemark.dataValue, catData);
 		//TODO: numberFormat (grouping char, ...)
+		//TODO: add category in description
 		placemark.description = seriesData.valueLabel + ': '+seriesData.series[id] + ' ' + seriesData.measureUnit;
 		if(placemark.catId==undefined) {
 			console.warn('undefined id: '+placemark+' / '+placemark.catId);
@@ -144,7 +147,9 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 		
 		//set style & map
 		placemark.kmlColor = catData[placemark.catId].kmlcolor;
-		placemark.fillColor = placemark.kmlColor.substring(6,8) + placemark.kmlColor.substring(4,6) + placemark.kmlColor.substring(2,4);
+		placemark.fillColor = catData[placemark.catId].color;
+		//placemark.fillColor = placemark.kmlColor.substring(6,8) + placemark.kmlColor.substring(4,6) + placemark.kmlColor.substring(2,4);
+		
 		//console.log('b: '+bef+' / a: '+placemark.fillColor);
 		placemark.setMap(map); //atualiza placemark no mapa - 'null' retira elemento do mapa
 		
@@ -171,7 +176,7 @@ function removeSeriesDataWhenPlacemarkNotFound(gPlaceMarks, seriesData) {
 }
 
 function showPlaceInfo(id, name, description) {
-	console.log(id+" / "+name);
+	//console.log(id+" / "+name);
 	//console.log(placemark);
 	document.getElementById('placeId').innerHTML = id;
 	document.getElementById('placeName').innerHTML = name;

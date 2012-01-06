@@ -10,6 +10,7 @@
 <script type="text/javascript" src="js/jscolor/jscolor.js"></script>
 <%@ include file="fragments/analytics.html" %>
 <script type="text/javascript">
+//TODO: reset button; constants for default place color & map center position
 var places, catData, seriesData;
 var gmapsPlaces = {};
 var map;
@@ -78,6 +79,25 @@ function loadData() {
 	.error(function() { alert("error Series"); })
 }
 
+function createCatElements() {
+	//TODO: clickable cat elements; resize map_canvas
+	//console.log(catData);
+	var ncats = Object.keys(catData).length;
+	var divLimits = getLinearCategoriesLimits(0, 100, ncats);
+	var catheight = 100/ncats;
+	var container = document.getElementById('categories_canvas');
+	console.log(ncats+" ; "+divLimits);
+	for(var id in catData) {
+	//for(var i=0; i<ncats; i++) {
+		var cat = document.createElement('div');
+		cat.setAttribute('id', 'cat'+id);
+		cat.setAttribute('style', 'background-color: #'+catData[id].color+'; height: '+catheight+'%;');
+		console.log(cat);
+		container.appendChild(cat);
+	}
+	container.style.display = 'block';
+}
+
 function loadDataCallback() {
 	//console.log(seriesData.series);
 	//TODOne: remove (or not) data elements not present in map
@@ -103,6 +123,7 @@ function loadDataCallback() {
 	//console.log(catLimits);
 	
 	var cats = genCategoriesFromLimits(catLimits);
+	catData = cats;
 
 	//console.log('cats::');
 	//console.log(cats);
@@ -118,6 +139,7 @@ function loadDataCallback() {
 	applySeriesDataAndStyle(gmapsPlaces, seriesData, cats, map);
 	//applySeriesData(gmapsPlaces, seriesData, cats);
 	//applyStyleColor(gmapsPlaces, cats);
+	createCatElements();
 	
 	//TODO: divs para categorias
 	//TODO: option to select (show only) placemarks from given category
@@ -176,9 +198,11 @@ Remove not found? <input type="checkbox" class="smaller" name="removeIfNotFound"
 
 <div id="map_canvas" style="position: absolute; top: 4px; bottom: 4px; left: 16em; right: 4px; border: 1px solid black;"></div>
 
+<div id="categories_canvas" style="position: absolute; top: 4px; bottom: 4px; width: 4em; right: 4px; border: 1px solid black; z-index: 2; display: none;"></div>
+
 <div id="messages" style="position: absolute; bottom: 8px; left: 16.3em; border: 1px solid black; display: none;"></div>
 
-<div id="map_location" style="width: 800px; height: 60px; border: 1px solid black; background-color: #ddd; display:none;"></div>
+<div id="map_location" style="width: 800px; height: 60px; border: 1px solid black; background-color: #ddd; display: none;"></div>
 
 <div id="place_info" style="position: absolute; height: 11em; bottom: 4px; width: 15em; left: 4px; border: 1px solid black; display: none;">
 <div id="place_info_close" style="float: right; top: 0px; right: 0px;"><a href="#" onclick="document.getElementById('place_info').style.display='none';">[x]</a></div>
