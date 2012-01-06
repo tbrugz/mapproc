@@ -33,14 +33,14 @@ public class Kml2Json {
 	
 	public static void main(String[] args) throws SAXException, IOException, ParserConfigurationException {
 		//maps
-		/*
-		int idEstado = 43;
-		FileInputStream kmlFile = new FileInputStream("work/input/kml/"+idEstado+"Mun.kml");
-		FileWriter writer = new FileWriter("work/output/map-"+idEstado+"-mun.json");
-		kml2json(kmlFile, writer);
-		writer.close();
-		*/
-		
+		int[] idEstados = {35, 43};
+		for(int idEstado: idEstados) {
+			FileInputStream kmlFile = new FileInputStream("work/input/kml/"+idEstado+"Mun.kml");
+			FileWriter writer = new FileWriter("work/output/map-"+idEstado+"-mun.json");
+			kml2json(kmlFile, writer);
+			writer.close();
+		}
+				
 		//series
 		String[] series = {"area", "ha_por_area", "ha", "pib_por_area", "pib_por_ha", "pib"}; 
 		for(String s: series) {
@@ -52,7 +52,7 @@ public class Kml2Json {
 		
 		//categories
 		/*
-		BufferedReader csvCatFile = new BufferedReader(new FileReader("work/input/csvcat/tabela_categorias_vereadores-por-municipio-cor.csv"));
+		BufferedReader csvCatFile = new BufferedReader(new FileReader("work/input/csvcat/tabela_categorias_vereadores-por-municipio.csv"));
 		List<Category> cats = Category.getCategoriesFromCSVStream(csvCatFile, ";");
 		FileWriter csvCatWriter = new FileWriter("work/output/cat-vereadores-mun.json");
 		categories2json(cats, csvCatWriter);

@@ -52,11 +52,18 @@ function hexString(number) {
 
 //----
 
+var DEFAULT_FILL_COLOR = "#cccccc";
+
+function normalizeNum(float) {
+	return Math.round(float * 100);
+	//return float; //float.toFixed(0);
+}
 
 function getCat(value, catData) {
+	value = normalizeNum(value);
 	for(id in catData) {
 		//$("#debug").append("id: "+id+"; v:"+value+":"+catData[id].startval+"-"+catData[id].endval+"\n");
-		if(value >= catData[id].startval && value < catData[id].endval) {
+		if(value >= normalizeNum(catData[id].startval) && value <= normalizeNum(catData[id].endval)) {
 			return id;
 		}
 	}
@@ -77,7 +84,7 @@ function genCategoriesFromLimits(vals) {
 	return cats;
 }
 
-function procStylesFromCategories(cats, colorFrom, colorTo) {
+function procStylesFromCategories(cats, colorFrom, colorTo, valueLabel) {
 	//console.log(colorFrom);
 	//console.log(colorTo);
 
@@ -97,6 +104,8 @@ function procStylesFromCategories(cats, colorFrom, colorTo) {
 		cats[c].kmlcolor = hexString(Math.round(colorsA[i])) + hexString(Math.round(colorsB[i])) + hexString(Math.round(colorsG[i])) + hexString(Math.round(colorsR[i]));
 		//XXX: color -> rgbcolor?
 		cats[c].color = hexString(Math.round(colorsR[i])) + hexString(Math.round(colorsG[i])) + hexString(Math.round(colorsB[i]));
+		//TODO: format numbers! integer, float, ...
+		cats[c].description = cats[c].startval + " &lt; # " + valueLabel + " &lt; " + cats[c].endval;
 		//console.log('cat: '+c+'/'+colorsA[i]+'/'+colorsB[i]);
 		//console.log(cats[c].kmlcolor);
 		i++;
@@ -137,10 +146,11 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 		placemark.dataValue = seriesData.series[id];
 		placemark.catId = getCat(placemark.dataValue, catData);
 		//TODO: numberFormat (grouping char, ...)
-		//TODO: add category in description
 		placemark.description = seriesData.valueLabel + ': '+seriesData.series[id] + ' ' + seriesData.measureUnit;
 		if(placemark.catId==undefined) {
-			console.warn('undefined id: '+placemark+' / '+placemark.catId);
+			console.warn('undefined cat: '+id+' / '+placemark.name); //+' / '+placemark.catId);
+			placemark.fillColor = DEFAULT_FILL_COLOR;
+			placemark.setMap(map);
 			//TODO: option to remove element from map
 			continue;
 		}
@@ -149,11 +159,12 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 		placemark.kmlColor = catData[placemark.catId].kmlcolor;
 		placemark.fillColor = catData[placemark.catId].color;
 		//placemark.fillColor = placemark.kmlColor.substring(6,8) + placemark.kmlColor.substring(4,6) + placemark.kmlColor.substring(2,4);
+		//TODO: add category in description
 		
 		//console.log('b: '+bef+' / a: '+placemark.fillColor);
 		placemark.setMap(map); //atualiza placemark no mapa - 'null' retira elemento do mapa
 		
-		google.maps.event.addListener(placemark, 'click', function(event) {
+		placemark.listener = google.maps.event.addListener(placemark, 'click', function(event) {
 			//console.log('click!');
 			//console.log(placemark);
 			//console.log(this);
@@ -176,10 +187,19 @@ function removeSeriesDataWhenPlacemarkNotFound(gPlaceMarks, seriesData) {
 }
 
 function showPlaceInfo(id, name, description) {
+	//TODO: do not show id (?); do not show name if null
 	//console.log(id+" / "+name);
 	//console.log(placemark);
 	document.getElementById('placeId').innerHTML = id;
 	document.getElementById('placeName').innerHTML = name;
 	document.getElementById('placeDesc').innerHTML = description;
+	if(name==null) {
+		document.getElementById('placeName').style.display = 'none';
+		document.getElementById('placeNameLabel').style.display = 'none';
+	}
+	else {
+		document.getElementById('placeName').style.display = 'inherit';
+		document.getElementById('placeNameLabel').style.display = 'inherit';
+	}
 	document.getElementById('place_info').style.display = 'block';
 }

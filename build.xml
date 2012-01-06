@@ -72,14 +72,14 @@
 				<include name="**/*.inc"/>
 			</fileset>
 		</copy>
-		<!--copy todir="${deploy.dir}/mapproc/input" verbose="true">
+		<copy todir="${war.dir}/input" verbose="true">
 			<fileset dir="work/input">
 				<include name="csv/**"/>
 				<include name="csvcat/**"/>
 				<include name="json/**"/>
 				<include name="kml/**"/>
 			</fileset>
-		</copy-->
+		</copy>
 	</target>
 	
 	<!-- TODO: clean -->

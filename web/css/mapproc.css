@@ -47,11 +47,22 @@ input.smaller {
 	font-size: 10px;
 }
 
+.canvas {
+	margin: 2px;
+}
+.debug {
+	/*display: none;*/
+}
+.category {
+	/* TODO: margin... */
+	/*border: 2px solid #bbb;*/
+	/*margin: 10px;*/
+}
+
 #place_info {
 	background-color: #ccc;
 	padding: 3px; 
 }
-
 #messages {
 	background-color: #ff5;
 	font-weight: bold;
