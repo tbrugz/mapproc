@@ -100,13 +100,17 @@ function createCatElements() {
 	//for(var i=0; i<ncats; i++) {
 		var id = catDataIndexes[idx];
 		var cat = document.createElement('div');
-		cat.setAttribute('id', 'cat'+id);
+		cat.setAttribute('id', id);
 		cat.setAttribute('class', 'category');
-		cat.setAttribute('style', 'background-color: #'+catData[id].color+'; height: '+catheight+'%;');
-		cat.setAttribute('onclick', 'showPlaceInfo("'+id+'", null, "'+catData[id].description+'")'); //catData[id].description
+		cat.setAttribute('style', 'height: '+catheight+'%;');
+		var catInt = document.createElement('div');
+		catInt.setAttribute('class', 'categoryInternal');
+		catInt.setAttribute('style', 'background-color: #'+catData[id].color+'; height: 100%; width: 100%;');
+		catInt.setAttribute('onclick', 'showCategoryInfo("'+id+'", null, "'+catData[id].description+'")'); //catData[id].description
 		//cat.setAttribute('onclick', 'showPlaceInfo(id, "'+catData[id].name+'", "'+catData[id].description+'")'); //catData[id].description
 		//cat.setAttribute('onclick', function() { showPlaceInfo(id, "", ""); }); //catData[id].description
 		//console.log(cat);
+		cat.appendChild(catInt);
 		container.appendChild(cat);
 	}
 	var mapcanvas = document.getElementById('map_canvas');
@@ -130,6 +134,9 @@ function resetMap() {
 	container.style.display = 'none';
 	var mapcanvas = document.getElementById('map_canvas');
 	mapcanvas.style.right = 0;
+	
+	global_selectCatIdElements = 0;
+	closeCatInfo();
 }
 	
 function loadDataCallback() {
@@ -243,6 +250,15 @@ Remove not found? <input type="checkbox" class="smaller" name="removeIfNotFound"
 <span class="label debug" id="placeIdLabel">id: </span><span id="placeId" class="placeInfo debug"></span><br/>
 <span class="label" id="placeNameLabel">name: </span><div id="placeName" class="placeInfo"></div>
 <span class="label">desc: <br/></span><div id="placeDesc" class="placeInfo"></div>
+</div>
+
+<div id="category_info" style="position: absolute; bottom: 0; height: 1em; left: 16em; right: 4.3em; border: 1px solid black; display: none;">
+	<div id="category_info_contents">
+		<div id="category_info_close" style="float: right; top: 0px; right: 0px;"><a href="#" onclick="closeCatInfo();">[x]</a></div>
+		<span>cat #</span><span id="category_info_id"></span>
+		<span>| info: </span><span id="category_info_text"></span>
+		<span id="category_info_button_container"></span>
+	</div>
 </div>
 
 </body>

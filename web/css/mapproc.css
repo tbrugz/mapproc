@@ -57,6 +57,13 @@ input.smaller {
 	/* TODO: margin... */
 	/*border: 2px solid #bbb;*/
 	/*margin: 10px;*/
+	background-color: #000;
+	padding: 0 0 1px 0;
+}
+.categoryInternal {
+	/* TODO: margin... */
+	/*border: 2px solid #bbb;
+	margin: 1px;*/
 }
 
 #place_info {
@@ -67,6 +74,15 @@ input.smaller {
 	background-color: #ff5;
 	font-weight: bold;
 	padding: 3px;
+}
+#category_info {
+	margin: 2px; 
+	background-color: #ffa;
+	font-weight: bold;
+	padding: 1px;
+}
+#category_info_contents {
+	font-size: 10px; 
 }
 
 table {

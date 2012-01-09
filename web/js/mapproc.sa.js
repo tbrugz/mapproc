@@ -50,9 +50,19 @@ function hexString(number) {
 	return hex;
 }
 
+function formatNumber(n, c, d, t) {
+	var c = isNaN(c = Math.abs(c)) ? 2 : c, d = d == undefined ? "," : d, t = t == undefined ? "." : t, s = n < 0 ? "-" : "", i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", j = (j = i.length) > 3 ? j % 3 : 0;
+	return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+};
+
+function formatFloat(n) {
+	return formatNumber(n, 0, ',', '.');
+};
+
 //----
 
 var DEFAULT_FILL_COLOR = "#cccccc";
+var global_selectCatIdElements = 0;
 
 function normalizeNum(float) {
 	return Math.round(float * 100);
@@ -105,7 +115,9 @@ function procStylesFromCategories(cats, colorFrom, colorTo, valueLabel) {
 		//XXX: color -> rgbcolor?
 		cats[c].color = hexString(Math.round(colorsR[i])) + hexString(Math.round(colorsG[i])) + hexString(Math.round(colorsB[i]));
 		//TODO: format numbers! integer, float, ...
-		cats[c].description = cats[c].startval + " &lt; # " + valueLabel + " &lt; " + cats[c].endval;
+		//cats[c].description = cats[c].startval + " &lt; # " + valueLabel + " &lt; " + cats[c].endval;
+		cats[c].description = formatFloat(cats[c].startval) + " &lt; # " + valueLabel + " &lt; " + formatFloat(cats[c].endval);
+		
 		//console.log('cat: '+c+'/'+colorsA[i]+'/'+colorsB[i]);
 		//console.log(cats[c].kmlcolor);
 		i++;
@@ -146,7 +158,7 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 		placemark.dataValue = seriesData.series[id];
 		placemark.catId = getCat(placemark.dataValue, catData);
 		//TODO: numberFormat (grouping char, ...)
-		placemark.description = seriesData.valueLabel + ': '+seriesData.series[id] + ' ' + seriesData.measureUnit;
+		placemark.description = seriesData.valueLabel + ': '+formatFloat(seriesData.series[id]) + ' ' + seriesData.measureUnit;
 		if(placemark.catId==undefined) {
 			console.warn('undefined cat: '+id+' / '+placemark.name); //+' / '+placemark.catId);
 			placemark.fillColor = DEFAULT_FILL_COLOR;
@@ -157,7 +169,8 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 		
 		//set style & map
 		placemark.kmlColor = catData[placemark.catId].kmlcolor;
-		placemark.fillColor = catData[placemark.catId].color;
+		placemark.rgbColor = catData[placemark.catId].color;
+		placemark.fillColor = placemark.rgbColor;
 		//placemark.fillColor = placemark.kmlColor.substring(6,8) + placemark.kmlColor.substring(4,6) + placemark.kmlColor.substring(2,4);
 		//TODO: add category in description
 		
@@ -202,4 +215,89 @@ function showPlaceInfo(id, name, description) {
 		document.getElementById('placeNameLabel').style.display = 'inherit';
 	}
 	document.getElementById('place_info').style.display = 'block';
+}
+
+function showCategoryInfo(id, name, description) {
+	document.getElementById('category_info_id').innerHTML = id;
+	document.getElementById('category_info_text').innerHTML = description;
+	document.getElementById('category_info').style.display = 'block';
+	document.getElementById('map_canvas').style.bottom = 
+		"" + (parseInt(document.getElementById('category_info').style.height) + 0.4) + "em";
+	//mapcanvas.style.right = "" + (parseInt(container.style.width) + 0.3) + "em";
+	
+	//TODOne: remove old buttons!
+	var container = document.getElementById('category_info_button_container');
+	/*while (container.hasChildNodes()) {
+		container.removeChild(container.lastChild);
+	}
+
+	var catbutton = document.createElement('a');
+	catbutton.setAttribute('href', '#');
+	catbutton.setAttribute('class', 'medium');
+	catbutton.innerHTML = ;
+	catbutton.setAttribute('onClick', 'selectFromCategory('+id+');');
+	container.appendChild(catbutton);*/
+	container.innerHTML = "[<a href='#' onClick='selectFromCategory("+id+");'>select elements from cat #"+id+"</a>]";
+}
+
+function closeCatInfo() {
+	document.getElementById('category_info').style.display='none';
+	document.getElementById('map_canvas').style.bottom = 0;
+	if(global_selectCatIdElements>0) {
+		selectFromAllCategories();
+	}
+}
+
+function selectFromCategory(selectCatId) {
+	//XXX: gmapsPlaces as parameter
+	console.log('selectCatId: '+selectCatId);
+	var countIn = 0, countOut = 0;
+	for(var id in gmapsPlaces) {
+		var placemark = gmapsPlaces[id];
+		
+		if(placemark.catId==undefined) {
+			continue;
+		}
+		
+		if(placemark.catId==selectCatId) {
+			placemark.fillColor = placemark.rgbColor;
+			placemark.setMap(map);
+			countIn++;
+		}
+		else {
+			placemark.fillColor = DEFAULT_FILL_COLOR;
+			placemark.setMap(map);
+			countOut++;
+		}
+	}
+	console.log('selectFromCategory.count: '+countIn+' / '+countOut);
+
+	var container = document.getElementById('category_info_button_container');
+	container.innerHTML = "[<a href='#' onClick='selectFromAllCategories("+selectCatId+");'>select all elements</a>]";
+	
+	global_selectCatIdElements = selectCatId;
+}
+
+function selectFromAllCategories(oldSelectCatId) {
+	//XXX: gmapsPlaces as parameter
+	var countIn = 0, countOut = 0;
+	for(var id in gmapsPlaces) {
+		var placemark = gmapsPlaces[id];
+		
+		if(placemark.catId==undefined) {
+			continue;
+		}
+		
+		placemark.fillColor = placemark.rgbColor;
+		placemark.setMap(map);
+		countIn++;
+	}
+	console.log('selectFromAllCategories.count: '+countIn);
+	
+	if(oldSelectCatId) {
+		var container = document.getElementById('category_info_button_container');
+		container.innerHTML = "[<a href='#' onClick='selectFromCategory("+oldSelectCatId+");'>select elements from cat #"+oldSelectCatId+"</a>]";
+	}
+	
+	global_selectCatIdElements = 0;
 }
