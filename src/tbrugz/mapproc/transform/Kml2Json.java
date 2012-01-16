@@ -77,21 +77,28 @@ public class Kml2Json {
 			pp.id = eElement.getAttribute("id");
 			pp.name = getTagContent(eElement, "name");
 			pp.description = getTagContent(eElement, "description");
-			String coords = getTagContent(eElement, "coordinates");
-			String[] coord = coords.split("\\s+");
-			String newCoords = "";
-			for(int j=0;j<coord.length;j++) {
-				String ss = coord[j];
-				String s[] = ss.split(",");
-				if(s.length>1) {
-					newCoords += (j==0?"":", ") + "["+s[1]+", "+s[0]+"]";
-					//newCoords += (j==0?"":", ") + "["+s[0]+", "+s[1]+"]";
+			
+			NodeList coordsl = eElement.getElementsByTagName("coordinates");
+			
+			for(int ij=0;ij<coordsl.getLength(); ij++) {
+				String coords = ((Element)coordsl.item(ij)).getTextContent();;
+				
+				String[] coord = coords.split("\\s+");
+				String newCoords = "";
+				for(int j=0;j<coord.length;j++) {
+					String ss = coord[j];
+					String s[] = ss.split(",");
+					if(s.length>1) {
+						newCoords += (j==0?"":", ") + "["+s[1]+", "+s[0]+"]";
+						//newCoords += (j==0?"":", ") + "["+s[0]+", "+s[1]+"]";
+					}
+					else {
+						log.warn("ss: "+ss);
+					}
 				}
-				else {
-					log.warn("ss: "+ss);
-				}
+				pp.coordinates.add( newCoords );
 			}
-			pp.coordinates = newCoords;
+			
 			pols.add(pp);
 		}
 		

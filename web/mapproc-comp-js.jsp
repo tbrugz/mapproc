@@ -43,13 +43,17 @@ function loadNakedMapCallback(map_canvas_id) {
 	var count = 0;
 	for(id in places) {
 		//debug.innerHTML += "\n\n>> "+places[id].name+":: ";
-		var coords = new Array();
 		//$("#debug").append("["+$.dump(places[id].coordinates)+"]");
-		for(c in places[id].coordinates) {
-			coords.push( new google.maps.LatLng(places[id].coordinates[c][0], places[id].coordinates[c][1]) );
+		var polygons = new Array();
+		for(polyid in places[id].coordinates) {
+			var coords = new Array();
+			for(c in places[id].coordinates[polyid]) {
+				coords.push( new google.maps.LatLng(places[id].coordinates[polyid][c][0], places[id].coordinates[polyid][c][1]) );
+			}
+			polygons.push(coords);
 		}
 		var theplace = new google.maps.Polygon({
-			paths: coords,
+			paths: polygons,
 			strokeColor: "#444444",
 			strokeOpacity: 0.8,
 			strokeWeight: 1,
