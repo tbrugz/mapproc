@@ -41,7 +41,29 @@ public class StatsUtils {
 		}
 		return min;
 	}
+
+	public static int maxIndex(double[] vals) {
+		double max = -Double.MAX_VALUE;
+		int index = -1;
+		
+		for(int i=0;i<vals.length;i++) {
+			double d = vals[i];
+			if(d>max) { max=d; index=i; }
+		}
+		return index;
+	}
 	
+	public static int minIndex(double[] vals) {
+		double min = Double.MAX_VALUE;
+		int index = -1;
+		
+		for(int i=0;i<vals.length;i++) {
+			double d = vals[i];
+			if(d<min) { min=d; index=i; }
+		}
+		return index;
+	}
+
 	public static List<Double> getCategoriesLimits(ScaleType type, List<Double> vals, int numCategories) {
 		if(type==ScaleType.PERCENTILE) {
 			return getPercentileCategoriesLimits(vals, numCategories);

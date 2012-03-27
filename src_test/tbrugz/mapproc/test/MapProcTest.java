@@ -54,9 +54,30 @@ public class MapProcTest {
 	@Test
 	public void testCategoriesFile() throws IOException, ParserConfigurationException, SAXException {
 		String colorFrom = "aaff0000"; String colorTo = "aa0000ff";
+		String csvFile = "work/input/csv/tabela-municipios_e_habitantes-RS.csv";
+		seriesFile = new FileReader(csvFile);
+		log.info("testCatsFile: csv="+csvFile);
 		
 		MapProc lm = new MapProc();
 		Document doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), catsFile, colorFrom, colorTo, false);
+		XmlPrinter.serialize(doc, new FileWriter("work/output/MapCats.kml"));
+	}
+
+	@Test
+	public void testCategoriesFilePartialMap() throws IOException, ParserConfigurationException, SAXException {
+		String colorFrom = "aaff0000"; String colorTo = "aa0000ff";
+		String csvFile = "work/input/csv/tabela-municipios_e_habitantes-RS.csv";
+		FileReader seriesFile = new FileReader(csvFile);
+		FileInputStream kmlFile = new FileInputStream("work/input/kml/Municipalities_of_RS-parcial.kml");
+		//log.info("testCatsFile: csv="+csvFile);
+		
+		MapProc lm = new MapProc();
+		Document doc = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), catsFile, colorFrom, colorTo, false);
+		log.warn("------------------");
+		seriesFile = new FileReader(csvFile);
+		kmlFile = new FileInputStream("work/input/kml/Municipalities_of_RS-parcial.kml");
+		
+		Document doc2 = lm.doIt(kmlFile, MapProc.getIndexedSeries(seriesFile), scaleType, numOfCategories, colorFrom, colorTo, false, false);
 		XmlPrinter.serialize(doc, new FileWriter("work/output/MapCats.kml"));
 	}
 	
