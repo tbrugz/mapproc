@@ -1,6 +1,7 @@
 package tbrugz.mapproc.transform;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -207,8 +208,9 @@ public class MapProcBatch {
 			 * http://www.complex-a5.ru/polyboolean/comp.html
 			 */
 			
-			LatLongMinMaxPolygonGrouper spg = new LatLongMinMaxPolygonGrouper();
-			List<LngLat> bounds = spg.getPolygon(groupPoints);
+			//PolygonGrouper pg = new LatLongMinMaxPolygonGrouper();
+			PolygonGrouper pg = new PolygonGrouper.ConvexHullPolygonGrouper();
+			List<LngLat> bounds = pg.getPolygon(groupPoints);
 			String coordinates = getCoordinates(bounds);
 
 			Properties snippets = new Properties();
@@ -228,9 +230,9 @@ public class MapProcBatch {
 			
 			String filename = "work/output/t1/"+group+".kml";
 			FileWriter outputWriter = new FileWriter(filename);
-			log.info("group="+group+"; count="+countElem);
 			XmlPrinter.serialize(outDoc, outputWriter);
-			log.info("count="+countElem+"; wrote: "+filename);
+			log.info("polygon grouper: id="+group+"; #elements="+countElem+"; #bounds="+bounds.size());
+			log.info("wrote to '"+new File(filename).getAbsolutePath()+"'");
 			
 			outDoc = null;
 			nList = null;

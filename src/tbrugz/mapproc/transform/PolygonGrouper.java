@@ -3,6 +3,7 @@ package tbrugz.mapproc.transform;
 import java.util.ArrayList;
 import java.util.List;
 
+import tbrugz.mapproc.transform.GrahamScan.Point;
 import tbrugz.stats.StatsUtils;
 
 public abstract class PolygonGrouper {
@@ -36,6 +37,33 @@ public abstract class PolygonGrouper {
 			return ret;
 		}
 	}
+	
+	public static class ConvexHullPolygonGrouper extends PolygonGrouper {
+		@Override
+		public List<LngLat> getPolygon(List<List<LngLat>> points) {
+			GrahamScan gs = new GrahamScan();
+			//return getLngLat( gs.order( getPoints(points) ) ); //XXX: should use convexHull() 
+			return getLngLat( gs.convexHull( getPoints(points) ) );
+		}
+		
+		List<Point> getPoints(List<List<LngLat>> points) {
+			List<LngLat> flatlist = getFlatList(points);
+			List<Point> ret = new ArrayList<GrahamScan.Point>();
+			for(LngLat ll: flatlist) {
+				ret.add(new Point(ll.lng, ll.lat, 0));
+			}
+			return ret;
+		}
+
+		List<LngLat> getLngLat(List<Point> points) {
+			List<LngLat> ret = new ArrayList<LngLat>();
+			for(Point p: points) {
+				ret.add(new LngLat(p.x, p.y));
+			}
+			return ret;
+		}
+	}
+	
 	
 	public static List<LngLat> getFlatList(List<List<LngLat>> points) {
 		List<LngLat> flatlist = new ArrayList<LngLat>();
