@@ -3,6 +3,7 @@ package tbrugz.mapproc.transform;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -37,6 +38,9 @@ public class MapProcBatch {
 
 	public final static String PROP_SNIPPETS = "/"+"snippets.properties";
 	
+	final static String BASE_KML_PATH = "work/input/baseKml.kml";
+	final static String ALL_PLACEMARKS_PATH = "work/input/AllNormMun2.kml";
+	
 	FileReader seriesFile;
 	BufferedReader catsFile;
 	InputStream kmlFile;
@@ -44,11 +48,28 @@ public class MapProcBatch {
 	
 	public static void main(String[] args) throws IOException, ParserConfigurationException, SAXException {
 		MapProcBatch mpb = new MapProcBatch();
-		//mpb.splitKmlByState();
+
+		//--- split by mapping ---
+		////Properties p = getMunicipios();
+		//Properties p = new Properties();
+		//p.load(new FileInputStream("work/input/mapping/municipios-mesorregiao.properties"));
+		////municipios.store(new FileOutputStream("work/output/municipios-estado.properties"), "");
+		//mpb.splitKmlByMapping(p);
+
+
+		//--- group plygons ---
 		Properties p = new Properties();
-		//p.load(new FileInputStream("work/input/mapping/municipios-estado.properties"));
+		p.load(new FileInputStream("work/input/mapping/municipios-estado.properties"));
+		mpb.groupKmlPolygons("estados", p, true);
+		
 		p.load(new FileInputStream("work/input/mapping/municipios-mesorregiao.properties"));
-		mpb.groupKmlPolygons(p, true);
+		mpb.groupKmlPolygons("mesorregioes", p, true);
+		
+		//p.load(new FileInputStream("work/input/mapping/municipios-microrregiao.properties"));
+		//mpb.groupKmlPolygons("microrregioes", p, false);
+
+
+		//--- normalize ---
 		//mpb.normalize();
 		//mpb.normalizeAll();
 	}
@@ -70,19 +91,24 @@ public class MapProcBatch {
 		
 	}
 	
-	void splitKmlByState() throws ParserConfigurationException, SAXException, IOException {
+	void splitKmlByMapping(String kmlname, Map<Object, Object> map) throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
 
 		//kmlFile = new FileInputStream("shapefiles/55mu2500gsd.kml");
-		kmlFile = new FileInputStream("work/input/AllNormMun2.kml");
+		kmlFile = new FileInputStream(ALL_PLACEMARKS_PATH);
 		Document doc = dBuilder.parse(kmlFile);
 
-		for(int idEstado=11;idEstado<=60;idEstado++) {
+		Set<String> groups = getValuesSet(map);
+		
+		log.info("splitKmlByMapping init");
+		
+		for(String group: groups) {
+		//for(int idEstado=11;idEstado<=60;idEstado++) {
 			
-			int countMun = 0;
+			int countElem = 0;
 	
-			FileInputStream baseKmlFile = new FileInputStream("work/input/baseKml.kml");
+			FileInputStream baseKmlFile = new FileInputStream(BASE_KML_PATH);
 			Document outDoc = dBuilder.parse(baseKmlFile);
 			NodeList nListzz = outDoc.getElementsByTagName("Folder");
 			Element outFolder = (Element) nListzz.item(0);
@@ -105,22 +131,15 @@ public class MapProcBatch {
 					}*/
 					
 					//String startWith = "mun_"+idEstado;
-					String startWith = ""+idEstado;
 					
-					if(!id.startsWith(startWith)) {
-						//Node n = placemarksFolder.removeChild(eElement);
-						//log.info("removed: id: "+id+"; startWith: "+startWith);//+"; n: "+n);
-						
-						//doc.removeChild(oldChild)
-						//nList.
-					}
-					else {
+					if(map.get(id)==null) { continue; }
+					if(map.get(id).equals(group)) {
 						//root3.appendChild(doc3.importNode(root1, true));
 						eElement.getElementsByTagName("styleUrl").item(0).setTextContent("#styleNULL");
 						outFolder.appendChild(outDoc.importNode(eElement, true));
 						//id = noId(id, eElement);
-						log.debug("ok: id: "+id+"; startWith: "+startWith);
-						countMun++;
+						log.debug("ok: id: "+id+"; group: "+group);
+						countElem++;
 					}
 				}
 			}
@@ -131,17 +150,17 @@ public class MapProcBatch {
 				continue;
 			}*/
 	
-			if(countMun==0) { 
-				log.info("0 mun on state = "+idEstado);
+			if(countElem==0) { 
+				log.info("0 elements on group = "+group);
 				continue;
 			}
 			//DOMUtilExt.sortChildNodes(placemarksFolder, false, 1, new DOMUtilExt.IdAttribComparator());
 			
-			String filename = "work/output/t1/"+idEstado+"Mun.kml";
+			String filename = "work/output/t1/"+kmlname+"_"+group+".kml";
 			FileWriter outputWriter = new FileWriter(filename);
-			log.info("idEstado="+idEstado+"; count="+countMun);
+			log.info("group id = "+group+"; count="+countElem);
 			XmlPrinter.serialize(outDoc, outputWriter);
-			log.info("count="+countMun+"; wrote: "+filename);
+			log.info("wrote to '"+new File(filename).getAbsolutePath()+"'");
 			
 			outDoc = null;
 			nList = null;
@@ -150,19 +169,16 @@ public class MapProcBatch {
 	}
 
 	//TODO: add param: name mapping
-	void groupKmlPolygons(Map<Object, Object> map, boolean uniqueKml) throws ParserConfigurationException, SAXException, IOException {
+	void groupKmlPolygons(String kmlname, Map<Object, Object> map, boolean uniqueKml) throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-		String baseKmlFileStr = "work/input/baseKml.kml";
+		//String baseKmlFileStr = "work/input/baseKml.kml";
 
 		//kmlFile = new FileInputStream("shapefiles/55mu2500gsd.kml");
-		kmlFile = new FileInputStream("work/input/AllNormMun2.kml");
+		kmlFile = new FileInputStream(ALL_PLACEMARKS_PATH);
 		Document doc = dBuilder.parse(kmlFile);
 
-		Set<String> groups = new HashSet<String>(); 
-		for(Object o: map.keySet()) {
-			groups.add((String) map.get(o));
-		}
+		Set<String> groups = getValuesSet(map);
 		
 		log.info("start group proc [#group="+groups.size()+"]");
 		
@@ -172,7 +188,7 @@ public class MapProcBatch {
 			int countElem = 0;
 
 			//XXX: clone 'outDoc'
-			FileInputStream baseKmlFile = new FileInputStream(baseKmlFileStr);
+			FileInputStream baseKmlFile = new FileInputStream(BASE_KML_PATH);
 				
 			List<List<LngLat>> groupPoints = new ArrayList<List<LngLat>>();
 			
@@ -227,7 +243,7 @@ public class MapProcBatch {
 			log.info("polygon grouper: id="+group+"; #elements="+countElem+"; #bounds="+bounds.size());
 			
 			if(!uniqueKml) {
-				writeKml(dBuilder, baseKmlFile, placemark, group);
+				writeKml(dBuilder, baseKmlFile, kmlname, placemark, group);
 			}
 			else {
 				groupCoordinatesElement.setProperty(group, placemark);
@@ -237,7 +253,7 @@ public class MapProcBatch {
 		}
 
 		if(uniqueKml) {
-			Document outDoc = dBuilder.parse(new FileInputStream(baseKmlFileStr));
+			Document outDoc = dBuilder.parse(new FileInputStream(BASE_KML_PATH));
 			NodeList nListzz = outDoc.getElementsByTagName("Folder");
 			Element outFolder = (Element) nListzz.item(0);
 
@@ -248,7 +264,7 @@ public class MapProcBatch {
 				outFolder.appendChild(outDoc.importNode(eElement, true));
 				
 			}
-			String filename = "work/output/t1/"+"all_groups"+".kml";
+			String filename = "work/output/t1/"+kmlname+".kml";
 			FileWriter outputWriter = new FileWriter(filename);
 			XmlPrinter.serialize(outDoc, outputWriter);
 			
@@ -258,14 +274,14 @@ public class MapProcBatch {
 		log.info("end group proc [#group="+groups.size()+"]");
 	}
 	
-	void writeKml(DocumentBuilder dBuilder, FileInputStream baseKmlFile, String placemark, String group) throws SAXException, IOException {
+	void writeKml(DocumentBuilder dBuilder, FileInputStream baseKmlFile, String kmlname, String placemark, String group) throws SAXException, IOException {
 		Document outDoc = dBuilder.parse(baseKmlFile);
 		NodeList nListzz = outDoc.getElementsByTagName("Folder");
 		Element outFolder = (Element) nListzz.item(0);
 		Element eElement = DomUtils.getDocumentNodeFromString(placemark, dBuilder).getDocumentElement();
 		outFolder.appendChild(outDoc.importNode(eElement, true));
 		
-		String filename = "work/output/t1/"+group+".kml";
+		String filename = "work/output/t1/"+kmlname+"_"+group+".kml";
 		FileWriter outputWriter = new FileWriter(filename);
 		XmlPrinter.serialize(outDoc, outputWriter);
 		log.info("wrote to '"+new File(filename).getAbsolutePath()+"'");
@@ -367,6 +383,25 @@ public class MapProcBatch {
 			log.warn("placemark: object id not found");
 		}
 		return null;
+	}
+	
+	static Set<String> getValuesSet(Map<Object,Object> map) {
+		Set<String> set = new HashSet<String>();
+		for(Object o: map.keySet()) {
+			set.add((String)map.get(o));
+		}
+		return set;
+	}
+	
+	static Properties getMunicipios() throws FileNotFoundException, IOException {
+		Properties p = new Properties();
+		p.load(new FileInputStream("work/input/mapping/municipios-mesorregiao.properties"));
+		Properties ret = new Properties();
+		for(Object o: p.keySet()) {
+			String id = (String) o;
+			ret.setProperty(id, id.substring(0, 2));
+		}
+		return ret;
 	}
 	
 }
