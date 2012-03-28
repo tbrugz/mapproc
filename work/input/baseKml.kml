@@ -3,7 +3,7 @@
 <Document id="MunicipiosDoc">
     <name>Municipios</name>
     <visibility>0</visibility>
-	<Style id="styleNULL">
+    <Style id="styleNULL">
       <IconStyle>
         <Icon>
           <href>http://maps.google.com/mapfiles/ms/micons/red-dot.png</href>
@@ -18,9 +18,9 @@
         <fill>1</fill>
       </PolyStyle>
     </Style>
-  <Folder id="MunicipiosFolder">
-    <name>Municipios</name>
-    <visibility>0</visibility>
-  </Folder>
+    <Folder id="mainFolder">
+      <name>MainFolder</name>
+      <visibility>0</visibility>
+    </Folder>
 </Document>
 </kml>

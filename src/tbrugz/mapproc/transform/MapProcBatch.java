@@ -29,8 +29,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import tbrugz.mapproc.MapProc;
-import tbrugz.mapproc.transform.PolygonGrouper.LatLongMinMaxPolygonGrouper;
-import tbrugz.stats.StatsUtils;
 import tbrugz.xml.DomUtils;
 import tbrugz.xml.XmlPrinter;
 
@@ -48,8 +46,9 @@ public class MapProcBatch {
 		MapProcBatch mpb = new MapProcBatch();
 		//mpb.splitKmlByState();
 		Properties p = new Properties();
-		p.load(new FileInputStream("dados/mapping/municipios-estado.properties"));
-		mpb.groupKmlPolygons(p);
+		//p.load(new FileInputStream("work/input/mapping/municipios-estado.properties"));
+		p.load(new FileInputStream("work/input/mapping/municipios-mesorregiao.properties"));
+		mpb.groupKmlPolygons(p, true);
 		//mpb.normalize();
 		//mpb.normalizeAll();
 	}
@@ -150,9 +149,11 @@ public class MapProcBatch {
 		}
 	}
 
-	void groupKmlPolygons(Map<Object, Object> map) throws ParserConfigurationException, SAXException, IOException {
+	//TODO: add param: name mapping
+	void groupKmlPolygons(Map<Object, Object> map, boolean uniqueKml) throws ParserConfigurationException, SAXException, IOException {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+		String baseKmlFileStr = "work/input/baseKml.kml";
 
 		//kmlFile = new FileInputStream("shapefiles/55mu2500gsd.kml");
 		kmlFile = new FileInputStream("work/input/AllNormMun2.kml");
@@ -165,12 +166,13 @@ public class MapProcBatch {
 		
 		log.info("start group proc [#group="+groups.size()+"]");
 		
+		Properties groupCoordinatesElement = new Properties();
+		
 		for(String group: groups) {
-			//int idEstado=11;idEstado<=60;idEstado++
-			
 			int countElem = 0;
-	
-			FileInputStream baseKmlFile = new FileInputStream("work/input/baseKml.kml");
+
+			//XXX: clone 'outDoc'
+			FileInputStream baseKmlFile = new FileInputStream(baseKmlFileStr);
 				
 			List<List<LngLat>> groupPoints = new ArrayList<List<LngLat>>();
 			
@@ -222,22 +224,51 @@ public class MapProcBatch {
 			placemark = placemark.replaceAll("\\{coordinates\\}", coordinates );
 			//placemark = placemark.replaceAll("\\{style\\}", "#style..." );
 
-			Document outDoc = dBuilder.parse(baseKmlFile);
-			NodeList nListzz = outDoc.getElementsByTagName("Folder");
-			Element outFolder = (Element) nListzz.item(0);
-			Element eElement = DomUtils.getDocumentNodeFromString(placemark, dBuilder).getDocumentElement();
-			outFolder.appendChild(outDoc.importNode(eElement, true));
-			
-			String filename = "work/output/t1/"+group+".kml";
-			FileWriter outputWriter = new FileWriter(filename);
-			XmlPrinter.serialize(outDoc, outputWriter);
 			log.info("polygon grouper: id="+group+"; #elements="+countElem+"; #bounds="+bounds.size());
-			log.info("wrote to '"+new File(filename).getAbsolutePath()+"'");
 			
-			outDoc = null;
+			if(!uniqueKml) {
+				writeKml(dBuilder, baseKmlFile, placemark, group);
+			}
+			else {
+				groupCoordinatesElement.setProperty(group, placemark);
+			}
 			nList = null;
 			System.gc();
 		}
+
+		if(uniqueKml) {
+			Document outDoc = dBuilder.parse(new FileInputStream(baseKmlFileStr));
+			NodeList nListzz = outDoc.getElementsByTagName("Folder");
+			Element outFolder = (Element) nListzz.item(0);
+
+			for(Object groupId: groupCoordinatesElement.keySet()) {
+				//writeKml(dBuilder, new FileInputStream(baseKmlFileStr), groupCoordinatesElement.getProperty((String)groupId), (String)groupId);
+				
+				Element eElement = DomUtils.getDocumentNodeFromString(groupCoordinatesElement.getProperty((String)groupId), dBuilder).getDocumentElement();
+				outFolder.appendChild(outDoc.importNode(eElement, true));
+				
+			}
+			String filename = "work/output/t1/"+"all_groups"+".kml";
+			FileWriter outputWriter = new FileWriter(filename);
+			XmlPrinter.serialize(outDoc, outputWriter);
+			
+			log.info("wrote to '"+new File(filename).getAbsolutePath()+"'");
+		}
+		
+		log.info("end group proc [#group="+groups.size()+"]");
+	}
+	
+	void writeKml(DocumentBuilder dBuilder, FileInputStream baseKmlFile, String placemark, String group) throws SAXException, IOException {
+		Document outDoc = dBuilder.parse(baseKmlFile);
+		NodeList nListzz = outDoc.getElementsByTagName("Folder");
+		Element outFolder = (Element) nListzz.item(0);
+		Element eElement = DomUtils.getDocumentNodeFromString(placemark, dBuilder).getDocumentElement();
+		outFolder.appendChild(outDoc.importNode(eElement, true));
+		
+		String filename = "work/output/t1/"+group+".kml";
+		FileWriter outputWriter = new FileWriter(filename);
+		XmlPrinter.serialize(outDoc, outputWriter);
+		log.info("wrote to '"+new File(filename).getAbsolutePath()+"'");
 	}
 	
 	void normalizeAll() throws ParserConfigurationException, SAXException, IOException {

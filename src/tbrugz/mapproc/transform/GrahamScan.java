@@ -15,6 +15,10 @@ import java.util.logging.Logger;
  * vertices of the convex hull ordered along its boundary. It may also be easily
  * modified to report all input points that lie on the boundary of their convex
  * hull.
+ * 
+ * See also:
+ * http://en.wikipedia.org/wiki/Convex_hull
+ * http://en.wikipedia.org/wiki/Convex_hull_algorithms
  */
 public class GrahamScan {
 
@@ -140,13 +144,16 @@ public class GrahamScan {
 		// neg.sortOn("cotangent", Array.NUMERIC | Array.DESCENDING);
 		// log.info("pos: "+pos);
 		// log.info("neg: "+neg);
+		sorted.add(p);
 		sorted.addAll(pos);
 		sorted.addAll(neg);
+		return sorted;
+		
 		// log.info("sorted: "+sorted);
 		// sorted = neg.addAll(pos);
 
 		// adds upper/lower point to 1st place
-		List<Point> ordered = new ArrayList<Point>();
+		/*List<Point> ordered = new ArrayList<Point>();
 		ordered.add(p);
 		for (int i = 0; i < n - 1; i++) {
 			// if(p == sorted.get(i)) {
@@ -155,7 +162,7 @@ public class GrahamScan {
 			}
 			ordered.add(sorted.get(i));
 		}
-		return ordered;
+		return ordered;*/
 	}
 
 	/**
