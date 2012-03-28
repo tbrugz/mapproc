@@ -28,13 +28,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import tbrugz.mapproc.MapProc;
+import tbrugz.mapproc.transform.PolygonGrouper.LatLongMinMaxPolygonGrouper;
 import tbrugz.stats.StatsUtils;
 import tbrugz.xml.DomUtils;
 import tbrugz.xml.XmlPrinter;
-
-class LngLat {
-	double lng, lat;
-}
 
 public class MapProcBatch {
 	static Log log = LogFactory.getLog(MapProcBatch.class);
@@ -210,7 +207,8 @@ public class MapProcBatch {
 			 * http://www.complex-a5.ru/polyboolean/comp.html
 			 */
 			
-			List<LngLat> bounds = getPolygon(groupPoints);
+			LatLongMinMaxPolygonGrouper spg = new LatLongMinMaxPolygonGrouper();
+			List<LngLat> bounds = spg.getPolygon(groupPoints);
 			String coordinates = getCoordinates(bounds);
 
 			Properties snippets = new Properties();
@@ -290,35 +288,6 @@ public class MapProcBatch {
 			l.add(ll);
 		}
 		return l;
-	}
-	
-	static List<LngLat> getPolygon(List<List<LngLat>> points) {
-		List<LngLat> flatlist = new ArrayList<LngLat>();
-		for(List<LngLat> l: points) {
-			flatlist.addAll(l);
-		}
-		return getPolygonSimple(flatlist);
-	}
-	
-	static List<LngLat> getPolygonSimple(List<LngLat> points) {
-		//TODO: get max/min lat/long - then go clockwise
-		//InitialVersion: just get the 4 extreme points
-		double[] lat = new double[points.size()];
-		double[] lng = new double[points.size()];
-		List<LngLat> ret = new ArrayList<LngLat>();
-		
-		for(int i=0;i<points.size();i++) {
-			LngLat ll = points.get(i);
-			lat[i] = ll.lat;
-			lng[i] = ll.lng;
-		}
-
-		ret.add(points.get(StatsUtils.maxIndex(lat)));
-		ret.add(points.get(StatsUtils.minIndex(lng)));
-		ret.add(points.get(StatsUtils.minIndex(lat)));
-		ret.add(points.get(StatsUtils.maxIndex(lng)));
-		
-		return ret;
 	}
 	
 	static String getCoordinates(List<LngLat> list) {
