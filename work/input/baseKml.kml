@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" standalone="no"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
-<Document id="MunicipiosDoc">
-    <name>Municipios</name>
+<Document>
+    <name>{kmlname}</name>
     <visibility>0</visibility>
     <Style id="styleNULL">
       <IconStyle>
@@ -18,8 +18,8 @@
         <fill>1</fill>
       </PolyStyle>
     </Style>
-    <Folder id="mainFolder">
-      <name>MainFolder</name>
+    <Folder>
+      <name>{kmlname}</name>
       <visibility>0</visibility>
     </Folder>
 </Document>

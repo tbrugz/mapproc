@@ -60,7 +60,7 @@ public class MapProcBatch {
 		//--- group plygons ---
 		Properties p = new Properties();
 		p.load(new FileInputStream("work/input/mapping/municipios-estado.properties"));
-		mpb.groupKmlPolygons("estados", p, true);
+		mpb.groupKmlPolygons("estados", p, false);
 		
 		p.load(new FileInputStream("work/input/mapping/municipios-mesorregiao.properties"));
 		mpb.groupKmlPolygons("mesorregioes", p, true);
@@ -110,6 +110,7 @@ public class MapProcBatch {
 	
 			FileInputStream baseKmlFile = new FileInputStream(BASE_KML_PATH);
 			Document outDoc = dBuilder.parse(baseKmlFile);
+			setAllTagTextByTagName(outDoc, "name", kmlname);
 			NodeList nListzz = outDoc.getElementsByTagName("Folder");
 			Element outFolder = (Element) nListzz.item(0);
 				
@@ -254,6 +255,7 @@ public class MapProcBatch {
 
 		if(uniqueKml) {
 			Document outDoc = dBuilder.parse(new FileInputStream(BASE_KML_PATH));
+			setAllTagTextByTagName(outDoc, "name", kmlname);
 			NodeList nListzz = outDoc.getElementsByTagName("Folder");
 			Element outFolder = (Element) nListzz.item(0);
 
@@ -276,6 +278,7 @@ public class MapProcBatch {
 	
 	void writeKml(DocumentBuilder dBuilder, FileInputStream baseKmlFile, String kmlname, String placemark, String group) throws SAXException, IOException {
 		Document outDoc = dBuilder.parse(baseKmlFile);
+		setAllTagTextByTagName(outDoc, "name", kmlname+"_"+group);
 		NodeList nListzz = outDoc.getElementsByTagName("Folder");
 		Element outFolder = (Element) nListzz.item(0);
 		Element eElement = DomUtils.getDocumentNodeFromString(placemark, dBuilder).getDocumentElement();
@@ -402,6 +405,14 @@ public class MapProcBatch {
 			ret.setProperty(id, id.substring(0, 2));
 		}
 		return ret;
+	}
+	
+	static void setAllTagTextByTagName(Document doc, String tag, String text) {
+		NodeList nlist = doc.getElementsByTagName(tag);
+		for(int i=0;i<nlist.getLength();i++) {
+			Element e = (Element) nlist.item(i);
+			e.setTextContent(text);
+		}
 	}
 	
 }
