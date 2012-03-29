@@ -76,7 +76,7 @@ public class GrahamScan {
 
 	}
 
-	public class PointCotangentComparator implements Comparator<Point> {
+	public static class PointCotangentComparator implements Comparator<Point> {
 		@Override
 		public int compare(Point o1, Point o2) {
 			// return (int) (10000 * (o1.cot - o2.cot));
@@ -89,14 +89,14 @@ public class GrahamScan {
 	/**
 	 * Returns a convex hull given an unordered array of points.
 	 */
-	public List<Point> convexHull(List<Point> data) {
+	public static List<Point> convexHull(List<Point> data) {
 		return findHull(order(data));
 	}
 
 	/**
 	 * Orders an array of points counterclockwise.
 	 */
-	public List<Point> order(List<Point> data) {
+	public static List<Point> order(List<Point> data) {
 		// log.info("GrahamScan::order()");
 		// first run through all the points and find the upper left [lower left]
 		Point p = data.get(0);
@@ -170,7 +170,7 @@ public class GrahamScan {
 	 * the points and return an array containing the vertices of a convex
 	 * polygon that envelopes those points.
 	 */
-	public List<Point> findHull(List<Point> data) {
+	public static List<Point> findHull(List<Point> data) {
 		// log.info("GrahamScan::findHull()");
 		int n = data.size();
 		List<Point> hull = new ArrayList<Point>();
@@ -178,11 +178,11 @@ public class GrahamScan {
 		hull.add(data.get(1)); // makes first vector
 
 		for (int i = 2; i < n; i++) {
-			// log.info("hull size: "+hull.size());
+			// we *want* left turns, so when a right turn is found we remove the
+			// preceding point from the hull
 			while (direction(hull.get(hull.size() - 2),
 					hull.get(hull.size() - 1), data.get(i)) <= 0) {
 				hull.remove(hull.size() - 1);
-				// log.info("hull size.b: "+hull.size());
 				if (hull.size() < 2) {
 					break;
 				}
@@ -201,9 +201,6 @@ public class GrahamScan {
 		// we only want -right- (left!) turns, usually we want -right- (left!)
 		// turns, but
 		// flash's grid is flipped on y.
-
-		// we *want* left turns, so when a right turn is found we remove the
-		// preceding point from the hull
 		return (p2.x - p1.x) * (p3.y - p1.y) - (p2.y - p1.y) * (p3.x - p1.x);
 	}
 }

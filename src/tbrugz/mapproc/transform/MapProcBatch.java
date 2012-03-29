@@ -9,11 +9,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,7 +29,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import tbrugz.mapproc.MapProc;
 import tbrugz.xml.DomUtils;
 import tbrugz.xml.XmlPrinter;
 
@@ -40,6 +39,16 @@ public class MapProcBatch {
 	
 	final static String BASE_KML_PATH = "work/input/baseKml.kml";
 	final static String ALL_PLACEMARKS_PATH = "work/input/AllNormMun2.kml";
+
+	static final Properties snippets = new Properties();
+	
+	static {
+		try {
+			snippets.load(MapProcBatch.class.getResourceAsStream(PROP_SNIPPETS));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	FileReader seriesFile;
 	BufferedReader catsFile;
@@ -50,7 +59,7 @@ public class MapProcBatch {
 		MapProcBatch mpb = new MapProcBatch();
 
 		//--- split by mapping ---
-		////Properties p = getMunicipios();
+		////Properties p = getMunicipiosEstadoMap();
 		//Properties p = new Properties();
 		//p.load(new FileInputStream("work/input/mapping/municipios-mesorregiao.properties"));
 		////municipios.store(new FileOutputStream("work/output/municipios-estado.properties"), "");
@@ -62,8 +71,8 @@ public class MapProcBatch {
 		p.load(new FileInputStream("work/input/mapping/municipios-estado.properties"));
 		mpb.groupKmlPolygons("estados", p, false);
 		
-		p.load(new FileInputStream("work/input/mapping/municipios-mesorregiao.properties"));
-		mpb.groupKmlPolygons("mesorregioes", p, true);
+		//p.load(new FileInputStream("work/input/mapping/municipios-mesorregiao.properties"));
+		//mpb.groupKmlPolygons("mesorregioes", p, true);
 		
 		//p.load(new FileInputStream("work/input/mapping/municipios-microrregiao.properties"));
 		//mpb.groupKmlPolygons("microrregioes", p, false);
@@ -205,7 +214,7 @@ public class MapProcBatch {
 				if(map.get(id).equals(group)) {
 					//eElement.getElementsByTagName("styleUrl").item(0).setTextContent("#styleNULL");
 					String coords = eElement.getElementsByTagName("coordinates").item(0).getTextContent();
-					List<LngLat> lls = getPoints(coords);
+					List<LngLat> lls = getLngLatList(coords);
 					groupPoints.add(lls);
 					//outFolder.appendChild(outDoc.importNode(eElement, true));
 					log.debug("ok: id: "+id+"; group: "+group);
@@ -229,12 +238,11 @@ public class MapProcBatch {
 			
 			//PolygonGrouper pg = new LatLongMinMaxPolygonGrouper();
 			PolygonGrouper pg = new PolygonGrouper.ConvexHullPolygonGrouper();
+			//PolygonGrouper pg = new BorderTravelerGrouper(); //XXX: BorderTravelerGrouper: experimental
 			List<LngLat> bounds = pg.getPolygon(groupPoints);
 			String coordinates = getCoordinates(bounds);
-
-			Properties snippets = new Properties();
-			snippets.load(MapProc.class.getResourceAsStream(PROP_SNIPPETS));
-			String placemark = snippets.getProperty("generic-placemark");
+			
+			String placemark = snippets.getProperty("generic-polygon");
 			placemark = placemark.replaceAll("\\{id\\}", Matcher.quoteReplacement(group) );
 			placemark = placemark.replaceAll("\\{name\\}", Matcher.quoteReplacement(group) );
 			placemark = placemark.replaceAll("\\{desc\\}", Matcher.quoteReplacement(group) );
@@ -244,7 +252,7 @@ public class MapProcBatch {
 			log.info("polygon grouper: id="+group+"; #elements="+countElem+"; #bounds="+bounds.size());
 			
 			if(!uniqueKml) {
-				writeKml(dBuilder, baseKmlFile, kmlname, placemark, group);
+				writeKml(dBuilder, baseKmlFile, kmlname, placemark, group, bounds);
 			}
 			else {
 				groupCoordinatesElement.setProperty(group, placemark);
@@ -276,13 +284,30 @@ public class MapProcBatch {
 		log.info("end group proc [#group="+groups.size()+"]");
 	}
 	
-	void writeKml(DocumentBuilder dBuilder, FileInputStream baseKmlFile, String kmlname, String placemark, String group) throws SAXException, IOException {
+	void writeKml(DocumentBuilder dBuilder, FileInputStream baseKmlFile, String kmlname, String placemark, String group, List<LngLat> bounds) throws SAXException, IOException {
 		Document outDoc = dBuilder.parse(baseKmlFile);
 		setAllTagTextByTagName(outDoc, "name", kmlname+"_"+group);
 		NodeList nListzz = outDoc.getElementsByTagName("Folder");
 		Element outFolder = (Element) nListzz.item(0);
 		Element eElement = DomUtils.getDocumentNodeFromString(placemark, dBuilder).getDocumentElement();
 		outFolder.appendChild(outDoc.importNode(eElement, true));
+		
+		/*
+		//experimental: add Point to 'special' (stereotype?) coordinates 
+		int count = 0;
+		for(LngLat ll: bounds) {
+			if(ll.special) {
+				List<LngLat> list = new ArrayList<LngLat>();
+				list.add(ll);
+				String point = snippets.getProperty("generic-point");
+				point = point.replaceAll("\\{id\\}", "p"+count );
+				point = point.replaceAll("\\{name\\}", "p"+count );
+				point = point.replaceAll("\\{coordinates\\}", getCoordinates(list) );
+				Element ePoint = DomUtils.getDocumentNodeFromString(point, dBuilder).getDocumentElement();
+				outFolder.appendChild(outDoc.importNode(ePoint, true));
+				count++;
+			}
+		}*/
 		
 		String filename = "work/output/t1/"+kmlname+"_"+group+".kml";
 		FileWriter outputWriter = new FileWriter(filename);
@@ -329,7 +354,7 @@ public class MapProcBatch {
 		System.out.println("wrote: "+filename);
 	}
 	
-	static List<LngLat> getPoints(String coords) {
+	public static List<LngLat> getLngLatList(String coords) {
 		String points[] = coords.split("\\s+");
 		List<LngLat> l = new ArrayList<LngLat>();
 		for(String s: points) {
@@ -342,7 +367,7 @@ public class MapProcBatch {
 		return l;
 	}
 	
-	static String getCoordinates(List<LngLat> list) {
+	public static String getCoordinates(List<LngLat> list) {
 		//-62.1820888570,-11.8668597878,0 -62.1622953938,-11.8713991426,0
 		StringBuffer sb = new StringBuffer();
 		for(LngLat ll: list) {
@@ -389,14 +414,14 @@ public class MapProcBatch {
 	}
 	
 	static Set<String> getValuesSet(Map<Object,Object> map) {
-		Set<String> set = new HashSet<String>();
+		Set<String> set = new TreeSet<String>();
 		for(Object o: map.keySet()) {
 			set.add((String)map.get(o));
 		}
 		return set;
 	}
 	
-	static Properties getMunicipios() throws FileNotFoundException, IOException {
+	static Properties getMunicipiosEstadoMap() throws FileNotFoundException, IOException {
 		Properties p = new Properties();
 		p.load(new FileInputStream("work/input/mapping/municipios-mesorregiao.properties"));
 		Properties ret = new Properties();

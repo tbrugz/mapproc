@@ -2,6 +2,7 @@ package tbrugz.mapproc.transform;
 
 public class LngLat {
 	double lng, lat;
+	boolean special = false;
 	
 	public LngLat() {
 	}
@@ -36,6 +37,11 @@ public class LngLat {
 		if (Double.doubleToLongBits(lng) != Double.doubleToLongBits(other.lng))
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString() {
+		return "["+lng+", "+lat+"]";
 	}
 	
 }

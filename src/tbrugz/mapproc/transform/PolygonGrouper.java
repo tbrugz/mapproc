@@ -41,21 +41,20 @@ public abstract class PolygonGrouper {
 	public static class ConvexHullPolygonGrouper extends PolygonGrouper {
 		@Override
 		public List<LngLat> getPolygon(List<List<LngLat>> points) {
-			GrahamScan gs = new GrahamScan();
+			//GrahamScan gs = new GrahamScan();
 			//return getLngLat( gs.order( getPoints(points) ) ); //XXX: should use convexHull() 
-			return getLngLat( gs.convexHull( getPoints(points) ) );
+			return getLngLat( GrahamScan.convexHull( getPoints( getFlatList( points) ) ) );
 		}
 		
-		List<Point> getPoints(List<List<LngLat>> points) {
-			List<LngLat> flatlist = getFlatList(points);
+		public static List<Point> getPoints(List<LngLat> points) {
 			List<Point> ret = new ArrayList<GrahamScan.Point>();
-			for(LngLat ll: flatlist) {
+			for(LngLat ll: points) {
 				ret.add(new Point(ll.lng, ll.lat, 0));
 			}
 			return ret;
 		}
 
-		List<LngLat> getLngLat(List<Point> points) {
+		public static List<LngLat> getLngLat(List<Point> points) {
 			List<LngLat> ret = new ArrayList<LngLat>();
 			for(Point p: points) {
 				ret.add(new LngLat(p.x, p.y));
@@ -64,10 +63,9 @@ public abstract class PolygonGrouper {
 		}
 	}
 	
-	
-	public static List<LngLat> getFlatList(List<List<LngLat>> points) {
-		List<LngLat> flatlist = new ArrayList<LngLat>();
-		for(List<LngLat> l: points) {
+	public static <T extends Object> List<T> getFlatList(List<List<T>> points) {
+		List<T> flatlist = new ArrayList<T>();
+		for(List<T> l: points) {
 			flatlist.addAll(l);
 		}
 		return flatlist;
