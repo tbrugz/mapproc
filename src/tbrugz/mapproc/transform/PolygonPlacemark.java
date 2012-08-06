@@ -27,5 +27,22 @@ public class PolygonPlacemark {
 				+" "+QUOT+"coordinates"+QUOT+": ["+coords.toString()+"]"
 				+"}";
 	}
+
+	String getGeoJSON() {
+		StringBuffer coords = new StringBuffer();
+		int i=0;
+		for(String s: coordinates) {
+			if(i>0) { coords.append(", "); }
+			coords.append("["+s+"]");
+			i++;
+		}
+		return "{"
+				+" "+QUOT+"type"+QUOT+": "+QUOT+"Feature"+QUOT+","
+				+" "+QUOT+"properties"+QUOT+": {"+QUOT+"id"+QUOT+": "+QUOT+id+QUOT+","
+					+" "+QUOT+"name"+QUOT+": "+QUOT+name+QUOT+","
+					+" "+QUOT+"description"+QUOT+": "+QUOT+description+QUOT+"},"
+				+" "+QUOT+"geometry"+QUOT+": { "+QUOT+"type"+QUOT+": "+QUOT+"Polygon"+QUOT+", "+QUOT+"coordinates"+QUOT+": ["+coords.toString()+"] }"
+				+"}";
+	}
 	
 }

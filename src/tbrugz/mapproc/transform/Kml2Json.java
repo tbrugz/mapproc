@@ -32,15 +32,21 @@ public class Kml2Json {
 	final static String QUOT = "\"";
 	
 	public static void main(String[] args) throws SAXException, IOException, ParserConfigurationException {
+		genMaps();
+	}
+	
+	static void genMaps() throws SAXException, IOException, ParserConfigurationException {
 		//maps
 		int[] idEstados = {35, 43};
 		for(int idEstado: idEstados) {
 			FileInputStream kmlFile = new FileInputStream("work/input/kml/"+idEstado+"Mun.kml");
-			FileWriter writer = new FileWriter("work/output/map-"+idEstado+"-mun.json");
+			FileWriter writer = new FileWriter("work/output/geojs-"+idEstado+"-mun.json");
 			kml2json(kmlFile, writer);
 			writer.close();
 		}
-				
+	}
+	
+	static void genSeries() throws IOException {
 		//series
 		String[] series = {"area", "ha_por_area", "ha", "pib_por_area", "pib_por_ha", "pib"}; 
 		for(String s: series) {
@@ -50,14 +56,15 @@ public class Kml2Json {
 			csvWriter.close();
 		}
 		
+	}
+	
+	static void genCats() throws IOException {
 		//categories
-		/*
 		BufferedReader csvCatFile = new BufferedReader(new FileReader("work/input/csvcat/tabela_categorias_vereadores-por-municipio.csv"));
 		List<Category> cats = Category.getCategoriesFromCSVStream(csvCatFile, ";");
 		FileWriter csvCatWriter = new FileWriter("work/output/cat-vereadores-mun.json");
 		categories2json(cats, csvCatWriter);
 		csvCatWriter.close();
-		*/
 	}
 
 	static void kml2json(InputStream is, Writer os) throws SAXException, IOException, ParserConfigurationException {
@@ -102,9 +109,16 @@ public class Kml2Json {
 			pols.add(pp);
 		}
 		
-		int outCount = 0;
+		//int outCount = writeJson(pols, os);
+		int outCount = writeGeoJson(pols, os);
+		
+		log.info("wrote "+outCount+" placemarks");
+	}
+	
+	static int writeJson(List<PolygonPlacemark> pols, Writer os) throws IOException {
 		os.write("{");
 		//os.write("[ \n");
+		int outCount = 0;
 		for(PolygonPlacemark pp: pols) {
 			if(pp.name!=null && !pp.name.equals("")) {
 				os.write((outCount!=0?",":"")+ 
@@ -114,9 +128,26 @@ public class Kml2Json {
 			}
 		}
 		os.write("\n}");
+		return outCount;
 		//os.write("]");
 		
-		log.info("wrote "+outCount+" placemarks");
+	}
+
+	/*
+	 * see: http://en.wikipedia.org/wiki/GeoJSON
+	 */
+	static int writeGeoJson(List<PolygonPlacemark> pols, Writer os) throws IOException {
+		os.write("{ "+QUOT+"type"+QUOT+": "+QUOT+"FeatureCollection"+QUOT+", "+QUOT+"features"+QUOT+": [ ");
+		int outCount = 0;
+		for(PolygonPlacemark pp: pols) {
+			if(pp.name!=null && !pp.name.equals("")) {
+				os.write((outCount!=0?",":"")+ 
+						"\n\t"+pp.getGeoJSON());
+				outCount++;
+			}
+		}
+		os.write("\n] }");
+		return outCount;
 	}
 	
 	static String getTagContent(Element element, String tagname) {
