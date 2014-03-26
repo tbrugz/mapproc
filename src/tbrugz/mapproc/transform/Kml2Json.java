@@ -32,17 +32,21 @@ public class Kml2Json {
 	final static String QUOT = "\"";
 	
 	public static void main(String[] args) throws SAXException, IOException, ParserConfigurationException {
-		genMaps();
+		int[] idEstados = {35, 43};
+		genMaps(idEstados);
 	}
 	
-	static void genMaps() throws SAXException, IOException, ParserConfigurationException {
+	static void genMaps(int[] idEstados) throws SAXException, IOException, ParserConfigurationException {
 		//maps
-		int[] idEstados = {35, 43};
 		for(int idEstado: idEstados) {
+			log.info("idEstado: "+idEstado);
 			FileInputStream kmlFile = new FileInputStream("work/input/kml/"+idEstado+"Mun.kml");
-			FileWriter writer = new FileWriter("work/output/geojs-"+idEstado+"-mun.json");
+			String jsonfile = "work/output/geojs-"+idEstado+"-mun.json";
+			FileWriter writer = new FileWriter(jsonfile);
+			
 			kml2json(kmlFile, writer);
 			writer.close();
+			log.info("wrote file: "+jsonfile);
 		}
 	}
 	
@@ -109,6 +113,7 @@ public class Kml2Json {
 			pols.add(pp);
 		}
 		
+		//XXX: geojson or "previous-json"?
 		//int outCount = writeJson(pols, os);
 		int outCount = writeGeoJson(pols, os);
 		
