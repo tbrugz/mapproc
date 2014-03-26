@@ -292,7 +292,6 @@ public class MapProcBatch {
 		Element eElement = DomUtils.getDocumentNodeFromString(placemark, dBuilder).getDocumentElement();
 		outFolder.appendChild(outDoc.importNode(eElement, true));
 		
-		/*
 		//experimental: add Point to 'special' (stereotype?) coordinates 
 		int count = 0;
 		for(LngLat ll: bounds) {
@@ -307,7 +306,7 @@ public class MapProcBatch {
 				outFolder.appendChild(outDoc.importNode(ePoint, true));
 				count++;
 			}
-		}*/
+		}
 		
 		String filename = "work/output/t1/"+kmlname+"_"+group+".kml";
 		FileWriter outputWriter = new FileWriter(filename);

@@ -8,7 +8,11 @@ import java.util.logging.Logger;
 
 import tbrugz.mapproc.transform.GrahamScan.Point;
 
-//XXX: idea: hibrid border-traveler/convex-hull: convex of each component and then boprder-traveler
+/*
+ * XXX: idea: hibrid border-traveler/convex-hull: convex of each component and then border-traveler
+ * 
+ * see: http://stackoverflow.com/questions/2667748/union-of-complex-polygons
+ */
 public class BorderTravelerGrouper extends PolygonGrouper {
 
 	static Logger log = Logger.getLogger(BorderTravelerGrouper.class.getName());
@@ -72,7 +76,7 @@ public class BorderTravelerGrouper extends PolygonGrouper {
 						
 						changedList = true;
 						firstLngLatIndexInList = currLngLatIndex;
-						currLngLat.special = true;
+						//currLngLat.special = true;
 						//log.warning("changed: li:"+currListIndex+", lnglat:"+currLngLatIndex+", "+currLngLat+" count=="+count);
 						break POINTS_LOOP;
 					}
