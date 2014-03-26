@@ -63,6 +63,7 @@ function formatFloat(n) {
 //----
 
 var DEFAULT_FILL_COLOR = "#cccccc";
+var ERROR_FILL_COLOR = "#444444";
 var global_selectCatIdElements = 0;
 
 function normalizeNum(float) {
@@ -162,7 +163,7 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 		placemark.description = seriesData.valueLabel + ': '+formatFloat(seriesData.series[id]) + ' ' + seriesData.measureUnit;
 		if(placemark.catId==undefined) {
 			console.warn('undefined cat: '+id+' / '+placemark.name); //+' / '+placemark.catId);
-			placemark.fillColor = DEFAULT_FILL_COLOR;
+			placemark.fillColor = ERROR_FILL_COLOR;
 			placemark.setMap(map);
 			//TODO: option to remove element from map
 			continue;
@@ -171,12 +172,15 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 		//set style & map
 		placemark.kmlColor = catData[placemark.catId].kmlcolor;
 		placemark.rgbColor = catData[placemark.catId].color;
-		placemark.fillColor = placemark.rgbColor;
+		placemark.fillColor = '#'+placemark.rgbColor;
 		//placemark.fillColor = placemark.kmlColor.substring(6,8) + placemark.kmlColor.substring(4,6) + placemark.kmlColor.substring(2,4);
 		//TODO: add category in description
 		
-		//console.log('b: '+bef+' / a: '+placemark.fillColor);
-		placemark.setMap(map); //atualiza placemark no mapa - 'null' retira elemento do mapa
+		//console.log('placemark: '+id+' cat: '+placemark.catId+' color: '+placemark.fillColor+" map: "+map);
+		
+		//atualiza placemark no mapa - 'null' retira elemento do mapa
+		placemark.setMap(null);
+		placemark.setMap(map);
 		
 		placemark.listener = google.maps.event.addListener(placemark, 'click', function(event) {
 			//console.log('click!');
