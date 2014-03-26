@@ -39,17 +39,19 @@
 	
 	<target name="gae-deps" depends="unwar" />
 
-	<target name="deploy-local" depends="war">
+	<target name="deploy-war-local" depends="war">
 		<copy file="${dist.dir}/mapproc.war" todir="${deploy.dir}"></copy>
 	</target>
 
-	<target name="deploy-local-web">
+	<target name="deploy-web-local">
 		<copy todir="${deploy.dir}/mapproc" verbose="true">
 			<fileset dir="web">
 				<include name="**/*.jsp"/>
 				<include name="**/*.html"/>
 				<include name="**/*.js"/>
 				<include name="**/*.css"/>
+				<include name="**/*.png"/>
+				<include name="**/*.gif"/>
 			</fileset>
 		</copy>
 		<copy todir="${deploy.dir}/mapproc/input" verbose="true">
@@ -62,7 +64,7 @@
 		</copy>
 	</target>
 
-	<target name="deploy-local-wardir">
+	<target name="deploy-web-localwardir">
 		<copy todir="${war.dir}" verbose="true">
 			<fileset dir="web">
 				<include name="**/*.jsp"/>
