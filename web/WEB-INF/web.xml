@@ -5,7 +5,7 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 
-	<filter>
+	<!-- filter>
 		<filter-name>gaecounter</filter-name>
 		<filter-class>tbrugz.mapproc.gae.RequestCounterFilter</filter-class>
 	</filter>
@@ -13,7 +13,7 @@
 	<filter-mapping>
 		<filter-name>gaecounter</filter-name>
 		<servlet-name>mapproc</servlet-name>
-	</filter-mapping>
+	</filter-mapping-->
 
 	<servlet>
 		<servlet-name>mapproc</servlet-name>
