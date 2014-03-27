@@ -164,6 +164,7 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 		if(placemark.catId==undefined) {
 			console.warn('undefined cat: '+id+' / '+placemark.name); //+' / '+placemark.catId);
 			placemark.fillColor = ERROR_FILL_COLOR;
+			placemark.setMap(null);
 			placemark.setMap(map);
 			//TODO: option to remove element from map
 			continue;
@@ -266,11 +267,13 @@ function selectFromCategory(selectCatId) {
 		
 		if(placemark.catId==selectCatId) {
 			placemark.fillColor = placemark.rgbColor;
+			placemark.setMap(null);
 			placemark.setMap(map);
 			countIn++;
 		}
 		else {
 			placemark.fillColor = DEFAULT_FILL_COLOR;
+			placemark.setMap(null);
 			placemark.setMap(map);
 			countOut++;
 		}
@@ -294,6 +297,7 @@ function selectFromAllCategories(oldSelectCatId) {
 		}
 		
 		placemark.fillColor = placemark.rgbColor;
+		placemark.setMap(null);
 		placemark.setMap(map);
 		countIn++;
 	}
