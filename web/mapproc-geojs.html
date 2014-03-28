@@ -22,12 +22,31 @@ function loadNakedMap(map_canvas_id) {
 		//okNumber++;
 		//XXX search all features of Polygon type? 
 		places = data.features;
-		loadNakedMapCallback(map_canvas_id);
+		var mymap = loadNakedMapCallback(map_canvas_id);
 		//if(okNumber==3) { doIt(); }
+		
+		//http://stackoverflow.com/questions/11029948/enabling-event-propogation-effectively-in-google-maps-api-v3
+		//addMapMouseListeners(mymap, document.getElementById('position'));
 	})
 	.error(function() { alert("error Places ["+dataPlaces+"]"); })
 }
+
+function addMapMouseListeners(map, element) {
+	google.maps.event.addListener(map, 'mousemove', function(event) {
+		updatePosition(event, element);
+	});
+	google.maps.event.addListener(map, 'mouseover', function(event) {
+		element.style.display = 'block';
+	});
+	google.maps.event.addListener(map, 'mouseout', function(event) {
+		element.style.display = 'none';
+	});	
+}
 	
+function updatePosition(event, element) {
+	element.innerHTML = (''+event.latLng.lat()).substr(0,8)+"; "+(''+event.latLng.lng()).substr(0,8);
+}
+
 function loadNakedMapCallback(map_canvas_id) {
 	
 	var myOptions = {
@@ -75,7 +94,7 @@ function loadNakedMapCallback(map_canvas_id) {
 	
 	map.fitBounds(box);
 	//console.log(box);
-	//return map;
+	return map;
 }
 
 function loadData(dataUrl) {
@@ -255,6 +274,8 @@ Remove not found? <input type="checkbox" class="smaller" name="removeIfNotFound"
 </div>
 
 <div id="map_canvas" class="canvas" style="position: absolute; top: 0; bottom: 0; left: 16em; right: 0; border: 1px solid black;"></div>
+
+<div id="position" style=""></div>
 
 <div id="categories_canvas" class="canvas" style="position: absolute; top: 0; bottom: 0; width: 4em; right: 0; border: 1px solid black; z-index: 2; display: none;"></div>
 

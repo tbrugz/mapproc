@@ -84,6 +84,12 @@ input.smaller {
 #category_info_contents {
 	font-size: 10px; 
 }
+#position {
+	background-color: #ccc;
+	padding: 3px;
+	font-size: 11pt;
+	position: absolute; bottom: 2px; left: 16.6em; width: 9em; border: 1px solid black; display: none;
+}
 
 table {
 	width: 70%;
