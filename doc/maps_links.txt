@@ -1,0 +1,48 @@
+
+ftp://geoftp.ibge.gov.br/mapas/malhas_digitais/municipio_2005/E500/Proj_Geografica/ArcView_shp/Uf/
+ftp://geoftp.ibge.gov.br/mapas/malhas_digitais/municipio_2005/E500/Proj_Geografica/ArcView_shp/Uf/RS/
+ftp://geoftp.ibge.gov.br/mapas/malhas_digitais/municipio_2005/
+shapefile, microstation, MGE_MicroStation
+
+shapefile -> kml
+http://arcscripts.esri.com/details.asp?dbid=14273
+http://bbs.keyhole.com/ubb/ubbthreads.php?ubb=showthreaded&Number=350573
+http://shape2earth.com/shp2e.aspx
+
+http://freegeographytools.com/2007/a-free-and-easy-shapefile-coordinate-converter
+http://www.mapwindow.com/
+http://www.spatialytics.org/projects/geokettle/
+! http://www.zonums.com/shp2kml.html
+http://www.freegis.org/database/?cat=14
+http://wiki.pentaho.com/display/EAI/Shape+File+Reader+3+plugin+page
+http://code.google.com/p/happy-kml-tool/
+http://fwtools.maptools.org/
+http://www.perrygeo.net/wordpress/?p=56
+google://shapefile+to+kml
+
+RS-43
+SC-42
+PR-41
+SP-35
+RJ-33
+ES-?
+MG-?
+
+ftp://geoftp.ibge.gov.br/mapas/malhas_digitais/municipio_2005/E1000/Proj_Geografica/ArcView_shp/Brasil/
+
+regiao sul:
+ftp://geoftp.ibge.gov.br/mapas/malhas_digitais/municipio_2007/Malha_Municipal_Digital_2007_2500/Disseminacao_2007/Proj_Geografica/SAD_69/ArcView_Shp/2007/E2500/Regiao/Sul/
+
+microrregioes:
+http://mapas.fee.tche.br/microrregioes-geograficas-ibge-rio-grande-do-sul-2009.html
+- pdf, png, ai (Adobe Illustrator)
+%!PS-Adobe-3.0 EPSF-3.0
+%%Creator: ESRI ArcMap 9.2.0.1324
+%%CreationDate: 07/25/09 01:40
+%%Title: (ESRI ArcMap 9.2.0.1324 export file)
+
+??
+ftp://geoftp.ibge.gov.br/mapas/malhas_digitais/setor_rural_2007/shape/2500/Geografica_SAD69/Brasil/
+
+TODO: fazer "merge" de placemarks KML
+
