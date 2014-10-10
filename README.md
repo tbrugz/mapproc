@@ -20,6 +20,11 @@ kml -> json
 see `tbrugz.mapproc.transform.Kml2Json`
 
 
+csv -> json
+-----------
+see `tbrugz.mapproc.transform.Csv2Json`
+
+
 misc kml batch processing
 -------------------------
 see `tbrugz.mapproc.transform.MapProcBatch`
