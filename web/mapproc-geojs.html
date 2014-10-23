@@ -14,9 +14,9 @@ var gmapsPlaces = {};
 var map;
 var mapCenter = [-16, -48];
 //var mapUrl = "input/json/geojs-35-mun.json"; //SP
-var mapUrl = "input/json/geojs-43-mun.json"; //RS
+//var mapUrl = "input/json/geojs-43-mun.json"; //RS
 
-function loadNakedMap(map_canvas_id) {
+function loadNakedMap(map_canvas_id, mapUrl) {
 	var dataPlaces = mapUrl;
 	var jqxhrPlaces = $.getJSON(dataPlaces, function(data) {
 		//okNumber++;
@@ -48,16 +48,6 @@ function updatePosition(event, element) {
 }
 
 function loadNakedMapCallback(map_canvas_id) {
-	
-	var myOptions = {
-			zoom: 5,
-			//TODOne: posicionamento automatico... ?
-			position: new google.maps.LatLng(mapCenter[0], mapCenter[1]),
-			mapTypeId: google.maps.MapTypeId.ROADMAP
-		};
-
-	map = new google.maps.Map(document.getElementById(map_canvas_id), myOptions);
-	map.setCenter(myOptions.position);
 	
 	var count = 0;
 	var box = new google.maps.LatLngBounds();
@@ -218,6 +208,18 @@ function loadDataCallback() {
 	//TODO: remove placemark not found? nah... add all not found to 'unknown' category
 }
 
+function loadGoogleMaps(map_canvas_id) {
+	var myOptions = {
+			zoom: 5,
+			//TODOne: posicionamento automatico... ?
+			position: new google.maps.LatLng(mapCenter[0], mapCenter[1]),
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		};
+
+	map = new google.maps.Map(document.getElementById(map_canvas_id), myOptions);
+	map.setCenter(myOptions.position);
+}
+
 $.ajax({
 	url: 'datasources.json',
 	success: function(data) {
@@ -230,20 +232,44 @@ $.ajax({
 	}
 });
 
+$.ajax({
+	url: 'maps.json',
+	success: function(data) {
+		var sources = JSON.parse(data);
+		console.log(sources);
+		var select = document.getElementById('mapUrl');
+		for(var i=0;i<sources.length;i++) {
+			select.innerHTML += "<option value='"+sources[i].url+"'>"+sources[i].name+"</option>\n";
+		}
+	}
+});
+
 </script>
 </head>
-<body onload="changeColor('colorFromRGB', 'colorFrom');changeColor('colorToRGB', 'colorTo');loadNakedMap('map_canvas');">
+<body onload="changeColor('colorFromRGB', 'colorFrom');changeColor('colorToRGB', 'colorTo');loadGoogleMaps('map_canvas');">
 
 <h2>MapProc<sup style="color: #fa0; font-size: 10pt;">beta!</sup></h2>
 
 <div id="form">
 
-<!-- TODO: change action to "proc/" -->
+<div class="boxsmall">
+Map:
+<select name="mapUrl" id="mapUrl">
+</select>
+<br/>
+<input value="Load" type="button" style="width: auto;"
+	onclick="loadNakedMap('map_canvas', document.getElementById('mapUrl').options[document.getElementById('mapUrl').selectedIndex].value);">
+<input value="Reset" type="button" style="width: auto;"
+	onclick="loadGoogleMaps('map_canvas');gmapsPlaces = {};">
+</div>
+
 <form id="theform" action="proc/">
+
+<div class="boxsmall">
 Data:
 <select name="dataUrl" id="dataUrl">
 </select>
-<br/>
+</div>
 
 <div id="categoriesGenComp" class="boxsmall">
 #Cat: 

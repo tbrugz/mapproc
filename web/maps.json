@@ -1,0 +1,4 @@
+[
+	{ "name": "Municipios RS", "url": "input/json/geojs-43-mun.json" },
+	{ "name": "Municipios SP", "url": "input/json/geojs-35-mun.json" }
+]
