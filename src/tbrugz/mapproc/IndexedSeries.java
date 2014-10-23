@@ -28,9 +28,9 @@ public class IndexedSeries {
 	public void readFromStream(BufferedReader reader, String delimiter) throws IOException {
 		String header = reader.readLine();
 		String[] headers = header.split(delimiter);
-		metadata.objectLabel = headers[0];
+		metadata.objectLabel = normalize(headers[0]);
 		String[] valueFields = headers[1].split(":");
-		metadata.valueLabel = valueFields[0];
+		metadata.valueLabel = normalize(valueFields[0]);
 		//TODO: valueType can be: float, integer (and maybe date)
 		metadata.valueType = IndexedSeriesMetadata.ValueType.FLOAT;
 
@@ -46,7 +46,7 @@ public class IndexedSeries {
 				metadata.measureUnit = valueFields[2];
 			}
 		}
-		log.info("IndexedSeries: objLabel: "+metadata.objectLabel+"; valueLabel: "+metadata.valueLabel+"; valueType: "+metadata.valueType+"; measureUnit: "+metadata.measureUnit);
+		log.info("IndexedSeries: objLabel: ["+metadata.objectLabel+"]; valueLabel: ["+metadata.valueLabel+"]; valueType: ["+metadata.valueType+"]; measureUnit: ["+metadata.measureUnit+"]");
 		
 		String line = reader.readLine();
 		//TODO: non-double values... like Date or String
@@ -77,6 +77,10 @@ public class IndexedSeries {
 	
 	public int size() {
 		return values.keySet().size();
+	}
+	
+	String normalize(String s) {
+		return s.replaceAll("['\"]", "");
 	}
 	
 }
