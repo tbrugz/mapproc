@@ -49,6 +49,7 @@
 				<include name="**/*.jsp"/>
 				<include name="**/*.html"/>
 				<include name="**/*.js"/>
+				<include name="**/*.json"/>
 				<include name="**/*.css"/>
 				<include name="**/*.png"/>
 				<include name="**/*.gif"/>

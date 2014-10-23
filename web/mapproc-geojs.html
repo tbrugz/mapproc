@@ -217,6 +217,19 @@ function loadDataCallback() {
 	//TODO: option to select (show only) placemarks from given category
 	//TODO: remove placemark not found? nah... add all not found to 'unknown' category
 }
+
+$.ajax({
+	url: 'datasources.json',
+	success: function(data) {
+		var sources = JSON.parse(data);
+		console.log(sources);
+		var select = document.getElementById('dataUrl');
+		for(var i=0;i<sources.length;i++) {
+			select.innerHTML += "<option value='"+sources[i].url+"'>"+sources[i].name+"</option>\n";
+		}
+	}
+});
+
 </script>
 </head>
 <body onload="changeColor('colorFromRGB', 'colorFrom');changeColor('colorToRGB', 'colorTo');loadNakedMap('map_canvas');">
@@ -229,12 +242,6 @@ function loadDataCallback() {
 <form id="theform" action="proc/">
 Data:
 <select name="dataUrl" id="dataUrl">
-<option value="input/json/series-ha.json">Habitantes</option>
-<option value="input/json/series-ha_por_area.json">Habitantes por km^2</option>
-<option value="input/json/series-pib.json">PIB</option>
-<option value="input/json/series-pib_por_ha.json">PIB por habitante</option>
-<option value="input/json/series-pib_por_area.json">PIB por km^2</option>
-<option value="input/json/series-area.json">Area</option>
 </select>
 <br/>
 

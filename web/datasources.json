@@ -1,0 +1,8 @@
+[
+	{"name": "Habitantes", "url": "input/json/series-ha.json"},
+	{"name": "Habitantes por km^2", "url": "input/json/series-ha_por_area.json"},
+	{"name": "PIB", "url": "input/json/series-pib.json"},
+	{"name": "PIB por habitante", "url": "input/json/series-pib_por_ha.json"},
+	{"name": "PIB por km^2", "url": "input/json/series-pib_por_area.json"},
+	{"name": "Area", "url": "input/json/series-area.json"}
+]
