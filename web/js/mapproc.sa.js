@@ -172,8 +172,8 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 		
 		//set style & map
 		placemark.kmlColor = catData[placemark.catId].kmlcolor;
-		placemark.rgbColor = catData[placemark.catId].color;
-		placemark.fillColor = '#'+placemark.rgbColor;
+		placemark.rgbColor = '#'+catData[placemark.catId].color;
+		placemark.fillColor = placemark.rgbColor;
 		//placemark.fillColor = placemark.kmlColor.substring(6,8) + placemark.kmlColor.substring(4,6) + placemark.kmlColor.substring(2,4);
 		//TODO: add category in description
 		
@@ -243,7 +243,7 @@ function showCategoryInfo(id, name, description) {
 	catbutton.innerHTML = ;
 	catbutton.setAttribute('onClick', 'selectFromCategory('+id+');');
 	container.appendChild(catbutton);*/
-	container.innerHTML = "[<a href='#' onClick='selectFromCategory("+id+");'>select elements from cat #"+id+"</a>]";
+	container.innerHTML = "[<a href='#' onClick='selectFromCategory("+id+");'>show elements from cat #"+id+"</a>]";
 }
 
 function closeCatInfo() {
@@ -278,10 +278,10 @@ function selectFromCategory(selectCatId) {
 			countOut++;
 		}
 	}
-	console.log('selectFromCategory.count: '+countIn+' / '+countOut);
+	console.log('selectFromCategory.count: '+countIn+' / '+countOut+' // in+out = '+(countIn+countOut)+' / all = '+Object.keys(gmapsPlaces).length);
 
 	var container = document.getElementById('category_info_button_container');
-	container.innerHTML = "[<a href='#' onClick='selectFromAllCategories("+selectCatId+");'>select all elements</a>]";
+	container.innerHTML = "[<a href='#' onClick='selectFromAllCategories("+selectCatId+");'>show all elements</a>]";
 	
 	global_selectCatIdElements = selectCatId;
 }
@@ -305,7 +305,7 @@ function selectFromAllCategories(oldSelectCatId) {
 	
 	if(oldSelectCatId) {
 		var container = document.getElementById('category_info_button_container');
-		container.innerHTML = "[<a href='#' onClick='selectFromCategory("+oldSelectCatId+");'>select elements from cat #"+oldSelectCatId+"</a>]";
+		container.innerHTML = "[<a href='#' onClick='selectFromCategory("+oldSelectCatId+");'>show elements from cat #"+oldSelectCatId+"</a>]";
 	}
 	
 	global_selectCatIdElements = 0;
