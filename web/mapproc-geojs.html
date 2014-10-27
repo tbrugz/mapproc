@@ -227,7 +227,12 @@ $.ajax({
 		console.log(sources);
 		var select = document.getElementById('dataUrl');
 		for(var i=0;i<sources.length;i++) {
-			select.innerHTML += "<option value='"+sources[i].url+"'>"+sources[i].name+"</option>\n";
+			if(sources[i].div) {
+				select.innerHTML += "<option disabled>"+sources[i].div+"</option>\n";
+			}
+			else {
+				select.innerHTML += "<option value='"+sources[i].url+"'>"+sources[i].name+"</option>\n";
+			}
 		}
 	}
 });
@@ -239,7 +244,12 @@ $.ajax({
 		console.log(sources);
 		var select = document.getElementById('mapUrl');
 		for(var i=0;i<sources.length;i++) {
-			select.innerHTML += "<option value='"+sources[i].url+"'>"+sources[i].name+"</option>\n";
+			if(sources[i].div) {
+				select.innerHTML += "<option disabled>"+sources[i].div+"</option>\n";
+			}
+			else {
+				select.innerHTML += "<option value='"+sources[i].url+"'>"+sources[i].name+"</option>\n";
+			}
 		}
 	}
 });
