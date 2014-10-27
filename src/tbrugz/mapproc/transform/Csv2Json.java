@@ -1,10 +1,13 @@
 package tbrugz.mapproc.transform;
 
 import java.io.BufferedReader;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -13,6 +16,8 @@ import org.apache.commons.logging.LogFactory;
 import org.xml.sax.SAXException;
 
 import tbrugz.mapproc.Category;
+import tbrugz.mapproc.IndexedSeries;
+import static tbrugz.mapproc.transform.Kml2Json.QUOT; 
 
 public class Csv2Json {
 
@@ -20,7 +25,7 @@ public class Csv2Json {
 
 	public static void main(String[] args) throws SAXException, IOException, ParserConfigurationException {
 		genSeries();
-		genCats();
+		//genCats();
 	}
 
 	static void genSeries() throws IOException {
@@ -36,7 +41,7 @@ public class Csv2Json {
 		BufferedReader csvFile = new BufferedReader(new FileReader("work/input/csv/"+s+".csv"));
 		String fout = "work/output/series-"+s+".json";
 		FileWriter csvWriter = new FileWriter(fout);
-		Kml2Json.indexedSeries2json(csvFile, csvWriter);
+		indexedSeries2json(csvFile, csvWriter);
 		csvWriter.close();
 		log.info("series writter to "+fout);
 	}
@@ -49,5 +54,29 @@ public class Csv2Json {
 		Kml2Json.categories2json(cats, csvCatWriter);
 		csvCatWriter.close();
 	}
+
+	static void indexedSeries2json(BufferedReader reader, Writer os) throws IOException {
+		IndexedSeries is = new IndexedSeries();
+		is.readFromStream(reader);
+		Set<String> keys = is.getKeys();
+		
+		int outCount = 0;
+		os.write("{ \n");
+		os.write("\t"+QUOT+"objectLabel"+QUOT+": "+QUOT+""+is.metadata.objectLabel+""+QUOT+",\n");
+		os.write("\t"+QUOT+"valueLabel"+QUOT+": "+QUOT+""+is.metadata.valueLabel+""+QUOT+",\n");
+		os.write("\t"+QUOT+"valueType"+QUOT+": "+QUOT+""+is.metadata.valueType+""+QUOT+",\n");
+		os.write("\t"+QUOT+"measureUnit"+QUOT+": "+QUOT+""+is.metadata.measureUnit+""+QUOT+",\n");
+		os.write("\t"+QUOT+"series"+QUOT+": {\n");
+		for(String key: keys) {
+			//XXX: only works for integer/float values
+			os.write((outCount!=0?",\n":"")
+					+"\t\t"+QUOT+key+QUOT+": "+is.getValue(key));
+			outCount++;
+		}
+		os.write("\n\t}\n}");
+
+		log.info("wrote "+outCount+" elements");
+	}
+	
 
 }

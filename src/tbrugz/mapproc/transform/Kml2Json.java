@@ -1,6 +1,5 @@
 package tbrugz.mapproc.transform;
 
-import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,7 +7,6 @@ import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -23,7 +21,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import tbrugz.mapproc.Category;
-import tbrugz.mapproc.IndexedSeries;
 import tbrugz.xml.DomUtils;
 
 public class Kml2Json {
@@ -31,7 +28,13 @@ public class Kml2Json {
 	final static String QUOT = "\"";
 	
 	public static void main(String[] args) throws SAXException, IOException, ParserConfigurationException {
-		int[] idEstados = {35, 43};
+		//int[] idEstados = {35, 43};
+		int[] idEstados = {11,12,13,14,15,16,17,
+				21,22,23,24,25,26,27,28,29,
+				31,32,33,35,
+				41,42,43,
+				50,51,52,53,
+				100};
 		genMaps(idEstados);
 	}
 	
@@ -141,29 +144,6 @@ public class Kml2Json {
 		return null;
 	}
 
-	static void indexedSeries2json(BufferedReader reader, Writer os) throws IOException {
-		IndexedSeries is = new IndexedSeries();
-		is.readFromStream(reader);
-		Set<String> keys = is.getKeys();
-		
-		int outCount = 0;
-		os.write("{ \n");
-		os.write("\t"+QUOT+"objectLabel"+QUOT+": "+QUOT+""+is.metadata.objectLabel+""+QUOT+",\n");
-		os.write("\t"+QUOT+"valueLabel"+QUOT+": "+QUOT+""+is.metadata.valueLabel+""+QUOT+",\n");
-		os.write("\t"+QUOT+"valueType"+QUOT+": "+QUOT+""+is.metadata.valueType+""+QUOT+",\n");
-		os.write("\t"+QUOT+"measureUnit"+QUOT+": "+QUOT+""+is.metadata.measureUnit+""+QUOT+",\n");
-		os.write("\t"+QUOT+"series"+QUOT+": {\n");
-		for(String key: keys) {
-			//XXX: only works for integer/float values
-			os.write((outCount!=0?",\n":"")
-					+"\t\t"+QUOT+key+QUOT+": "+is.getValue(key));
-			outCount++;
-		}
-		os.write("\n\t}\n}");
-
-		log.info("wrote "+outCount+" elements");
-	}
-	
 	static void categories2json(List<Category> cats, Writer os) throws IOException {
 		int outCount = 0;
 		os.write("{\n");
