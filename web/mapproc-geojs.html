@@ -53,13 +53,16 @@ function loadNakedMapCallback(map_canvas_id) {
 	var box = new google.maps.LatLngBounds();
 	for(idx in places) {
 		var thisplace = places[idx];
-		var id = thisplace.properties.id;
+		var id = idx;
+		if(thisplace.properties && thisplace.properties.id) {
+			id = thisplace.properties.id;
+		}
 		//console.log(thisplace);
 		var polygons = new Array();
 		for(polyid in thisplace.geometry.coordinates) {
 			var coords = new Array();
 			for(c in thisplace.geometry.coordinates[polyid]) {
-				var latlng = new google.maps.LatLng(thisplace.geometry.coordinates[polyid][c][0], thisplace.geometry.coordinates[polyid][c][1]);
+				var latlng = new google.maps.LatLng(thisplace.geometry.coordinates[polyid][c][1], thisplace.geometry.coordinates[polyid][c][0]);
 				coords.push( latlng );
 				box.extend( latlng );
 			}
@@ -74,8 +77,10 @@ function loadNakedMapCallback(map_canvas_id) {
 			fillOpacity: 0.7
 		});
 		theplace.id = id;
-		theplace.name = thisplace.properties.name;
-		theplace.description = thisplace.properties.description;
+		if(thisplace.properties) {
+			theplace.name = thisplace.properties.name;
+			theplace.description = thisplace.properties.description;
+		}
 		theplace.setMap(map);
 		gmapsPlaces[theplace.id] = theplace;
 		count++;

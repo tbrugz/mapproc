@@ -81,8 +81,8 @@ public class Kml2Json {
 					String ss = coord[j];
 					String s[] = ss.split(",");
 					if(s.length>1) {
-						newCoords += (j==0?"":", ") + "["+s[1]+", "+s[0]+"]";
-						//newCoords += (j==0?"":", ") + "["+s[0]+", "+s[1]+"]";
+						//newCoords += (j==0?"":", ") + "["+s[1]+", "+s[0]+"]";
+						newCoords += (j==0?"":", ") + "["+s[0]+", "+s[1]+"]";
 					}
 					else {
 						log.warn("ss: "+ss);
