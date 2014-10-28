@@ -57,7 +57,7 @@ function formatNumber(n, c, d, t) {
 };
 
 function formatFloat(n) {
-	return formatNumber(n, 0, ',', '.');
+	return formatNumber(n, 2, '.', ',');
 };
 
 //----
