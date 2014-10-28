@@ -1,0 +1,69 @@
+<html>
+<head>
+<title>MapProc: d3 test</title>
+<link rel="stylesheet" type="text/css" href="css/mapproc.css" />
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
+<body>
+<label>geojson url: <input type="text" id="geojsonurl" value="input/json/geojs-43-mun.json"/></label>
+<input type="button" value="load" onclick="d3.selectAll('svg path').remove();loadGeoJson()">
+<input type="button" value="clear" onclick="d3.selectAll('svg path').remove();">
+<br/>
+<script>
+var width = 960,
+	height = 700;
+
+var svg = d3.select("body").append("svg")
+	.attr("width", width)
+	.attr("height", height);
+
+// add a rectangle to see the bound of the svg
+svg.append("rect").attr('width', width).attr('height', height)
+	.style('stroke', 'black').style('fill', 'none');
+
+// see: http://stackoverflow.com/a/14691788/616413
+function loadGeoJson() {
+
+	console.log(d3.select("#geojsonurl")[0][0].value);
+	d3.json(d3.select("#geojsonurl")[0][0].value, function(error, json) {
+	//d3.json(geojsonUrl, function(error, json) {
+		if (error) return console.error(error);
+		
+		// Create a unit projection.
+		var projection = d3.geo.mercator()
+			.scale(1)
+			.translate([0, 0]);
+		
+		// Create a path generator.
+		var path = d3.geo.path()
+			.projection(projection);
+		
+		// Compute the bounds of a feature of interest, then derive scale & translate.
+		var b = path.bounds(json),
+			s = .95 / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height),
+			t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2];
+	
+		// Update the projection to use computed scale & translate.
+		projection
+			.scale(s)
+			.translate(t);
+	
+		svg.selectAll("path")
+			.data(json.features).enter()
+			.append("path")
+			.attr("d", path)
+			.style("fill", "red")
+			.style("stroke-width", "1")
+			.style("stroke", "black");
+	
+		/*svg.append("path")
+			.datum(topojson.feature(us, us.objects.nation))
+			.attr("class", "land")
+			.attr("d", path);*/
+	})
+	
+}
+</script>
+</body>
+</html>
+
