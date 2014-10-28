@@ -133,6 +133,7 @@ function createCatElements() {
 		catInt.setAttribute('class', 'categoryInternal');
 		catInt.setAttribute('style', 'background-color: #'+catData[id].color+'; height: 100%; width: 100%;');
 		catInt.setAttribute('onclick', 'showCategoryInfo("'+id+'", null, "'+catData[id].description+'")'); //catData[id].description
+		catInt.innerHTML = '#'+id;
 		//cat.setAttribute('onclick', 'showPlaceInfo(id, "'+catData[id].name+'", "'+catData[id].description+'")'); //catData[id].description
 		//cat.setAttribute('onclick', function() { showPlaceInfo(id, "", ""); }); //catData[id].description
 		//console.log(cat);
