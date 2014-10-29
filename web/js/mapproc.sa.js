@@ -49,6 +49,27 @@ function getLogCategoriesLimits(min, max, numCategories) {
 	return list;
 }
 
+function getQuantileCategoriesLimits(values, numCategories) {
+	var sorted = values.sort(compareNumbers);
+	var valuesPerQuantile = Math.ceil(sorted.length/numCategories);
+	
+	var list = [];
+	for(var i = 1;i<=sorted.length;i++) {
+		if(i==1) { list.push(sorted[i-1]); }
+		else if(i%valuesPerQuantile==0) {
+			list.push(sorted[i-1]);
+		}
+		else if(i==sorted.length) { list.push(sorted[i-1]); }
+	}
+	if(list.length<numCategories) {
+		console.log(">> prev list.length="+list.length+" / numCategories="+numCategories);
+		list.push(sorted[sorted.length-1]);
+	}
+	console.log("min=",min(values),"max=",max(values),"#values=",sorted.length,"#categories=",numCategories,"valuesPerQuantile=",valuesPerQuantile,"valuesFloat=",(sorted.length/numCategories),"list.length=",list.length);
+	console.log("list=",list);
+	return list;
+}
+
 function isInteger(x) {
 	return x % 1 === 0;
 }
@@ -85,6 +106,19 @@ function formatNumber(n, c, d, t) {
 function formatFloat(n) {
 	return formatNumber(n, 2, '.', ',');
 };
+
+function compareNumbers(a, b) {
+	return a - b;
+}
+
+function seriesValues(series) {
+	var ret = []
+	var count = 0;
+	for(var i in series) {
+		ret[count++] = series[i];
+	}
+	return ret;
+}
 
 //----
 
@@ -250,7 +284,7 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 			//console.log(placemark);
 			//console.log(this);
 			showPlaceInfo(this.id, this.name, this.description);
-		});		
+		});
 		
 		count++;
 	}
@@ -259,12 +293,12 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 
 function removeSeriesDataWhenPlacemarkNotFound(gPlaceMarks, seriesData) {
 	var count = 0;
-	console.log('before: '+Object.keys(seriesData.series).length+" / "+Object.keys(gPlaceMarks).length);
+	console.log('removeSeriesDataWhen... before: '+Object.keys(seriesData.series).length+" / "+Object.keys(gPlaceMarks).length);
 	for(var id in seriesData.series) {
 		//console.log(gPlaceMarks[id]);
 		if(gPlaceMarks[id]==undefined) { delete seriesData.series[id]; }
 	}
-	console.log('after: '+Object.keys(seriesData.series).length+" / "+Object.keys(gPlaceMarks).length);
+	console.log('removeSeriesDataWhen... after: '+Object.keys(seriesData.series).length+" / "+Object.keys(gPlaceMarks).length);
 }
 
 function showPlaceInfo(id, name, description) {

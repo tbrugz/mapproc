@@ -186,6 +186,9 @@ function loadDataCallback() {
 	if(scaleType=='LINEAR') {
 		catLimits = getLinearCategoriesLimits(minval, maxval, numOfCategories);
 	}
+	else if(scaleType=='QUANTILE') {
+		catLimits = getQuantileCategoriesLimits(seriesValues(seriesData.series), numOfCategories);
+	}
 	else {
 		catLimits = getLogCategoriesLimits(minval, maxval, numOfCategories);
 	}
@@ -333,7 +336,7 @@ Scale:
 <select name="scaleType" id="scaleType">
 	<option value="LINEAR">LINEAR</option>
 	<option value="LOG" selected>LOG</option>
-	<!-- option value="PERCENTILE">PERCENTILE</option -->
+	<option value="QUANTILE">QUANTILE</option>
 </select><br/>
 Normalize Limits? <input type="checkbox" class="smaller" name="genCatLimitsFromExistingPlacemarks" id="genCatLimitsFromExistingPlacemarks" value="1" checked/><br/>
 </div>
