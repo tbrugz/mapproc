@@ -41,10 +41,18 @@ function getQueryString(formname) {
 }
 
 function changeColor(elementChanged, elementToChange) {
-	document.getElementById(elementToChange).value = 'BB'
+	/*document.getElementById(elementToChange).value = 'BB'
 		+ document.getElementById(elementChanged).value.substring(4,6)
 		+ document.getElementById(elementChanged).value.substring(2,4)
-		+ document.getElementById(elementChanged).value.substring(0,2);
+		+ document.getElementById(elementChanged).value.substring(0,2);*/
+	document.getElementById(elementToChange).value = rgbColor2kmlColor(document.getElementById(elementChanged).value);
+}
+
+function rgbColor2kmlColor(rgb) {
+	return 'BB'
+		+ rgb.substring(4,6)
+		+ rgb.substring(2,4)
+		+ rgb.substring(0,2);
 }
 
 function showDivs(divs) {

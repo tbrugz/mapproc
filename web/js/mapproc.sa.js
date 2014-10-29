@@ -10,6 +10,28 @@ function getLinearCategoriesLimits(min, max, numCategories) {
 	return list;
 }
 
+function getLinearCategoriesLimitsMultipleValues(values, numCategories) {
+	//XXX error if numCategories <= 1
+	var list = [];
+	var div = (values.length-1)/(numCategories-1);
+	for(var i = 0;i<numCategories;i++) {
+		var mvalue = div*i;
+		//if(i==0) { list.push(values[0]); continue; }
+		//if(i==numCategories-1) { list.push(values[values.length-1]); continue; }
+		//if(isInteger(mvalue)) { list.push(values[mvalue]); continue; }
+		var mlow = Math.floor(mvalue);
+		var mhigh = Math.ceil(mvalue);
+		var min = values[mlow];
+		var max = values[mhigh];
+		var amplitude = max-min;
+		var mreminder = mvalue%1;
+		var newvalue = min+amplitude*mreminder;
+		console.log("["+i+"]","div=",div,"mvalue=",mvalue,"mlow=",mlow,"mhigh=",mhigh,"min=",min,"max=",max,"ampl=",amplitude,"newvalue=",newvalue);
+		list.push(newvalue);
+	}
+	return list;
+}
+
 function getLogCategoriesLimits(min, max, numCategories) {
 	var negativeDiff = 0;
 	if(min<1) {
@@ -25,6 +47,10 @@ function getLogCategoriesLimits(min, max, numCategories) {
 		list.push(Math.exp(newMin+interval*i)+negativeDiff);
 	}
 	return list;
+}
+
+function isInteger(x) {
+	return x % 1 === 0;
 }
 
 function max(series) {
