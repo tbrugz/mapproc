@@ -194,14 +194,21 @@ function loadDataCallback() {
 	var cats = genCategoriesFromLimits(catLimits);
 	catData = cats;
 
-	//console.log('cats::');
-	//console.log(cats);
+	console.log('cats=', cats);
 	
 	var colorFrom = document.getElementById('colorFrom').value;
 	var colorTo = document.getElementById('colorTo').value;
+	var colors = [colorFrom];
+	var xtracol = document.getElementById('xtraColorsContainer');
+	var colorElements = xtracol.querySelectorAll('input.color');
+	for(var i=colorElements.length-1;i>=0;i--) {
+		colors.push(rgbColor2kmlColor(colorElements[i].value));
+	}
+	colors.push(colorTo);
 
-	console.log('color: from='+colorFrom+'; to='+ colorTo);
-	procStylesFromCategories(cats, colorFrom, colorTo, seriesData.valueLabel);
+	console.log('color: from='+colorFrom+'; to='+ colorTo+" ; all="+colors);
+	//procStylesFromCategories(cats, colorFrom, colorTo, seriesData.valueLabel);
+	procStylesFromCategoriesMultipleColors(cats, colors, seriesData.valueLabel);
 	
 	console.log("hex:: "+hexString(2)+"; "+hexString(9)+"; "+hexString(10)+"; "+hexString(11)+"; "+hexString(250)+"; "+hexString(255));
 	
@@ -224,6 +231,19 @@ function loadGoogleMaps(map_canvas_id) {
 
 	map = new google.maps.Map(document.getElementById(map_canvas_id), myOptions);
 	map.setCenter(myOptions.position);
+}
+
+function addColorButton() {
+	/*<div id="xtraColorsContainer">
+	</div>
+	<input type="button" value="+" onclick="addColorButton" style="width: 2em;"><br/>
+	Color Min: <input type="text" class="color small" id="colorFromRGB" name="colorFromRGB" value="FFFF00" onchange="changeColor('colorFromRGB', 'colorFrom')"/> <input type="hidden" id="colorFrom" name="colorFrom"/><br/>*/
+	var cont = document.getElementById('xtraColorsContainer');
+	//console.log(cont);
+	var span = document.createElement('span');
+	span.innerHTML += 'Color: <input type="text" class="color small"/><input type="button" value="-" onclick="this.parentElement.parentElement.removeChild(this.parentElement);" style="width: 2em;"><br/>';
+	cont.appendChild(span);
+	jscolor.bind();
 }
 
 $.ajax({
@@ -308,8 +328,15 @@ Scale:
 </select><br/>
 Normalize Limits? <input type="checkbox" class="smaller" name="genCatLimitsFromExistingPlacemarks" id="genCatLimitsFromExistingPlacemarks" value="1" checked/><br/>
 </div>
+
+<div id="colorsContainer" class="boxsmall">
 Color Max: <input type="text" class="color small" id="colorToRGB" name="colorToRGB" value="FF0000" onchange="changeColor('colorToRGB', 'colorTo')"/> <input type="hidden" id="colorTo" name="colorTo"/><br/>
+<div id="xtraColorsContainer">
+</div>
+<input type="button" value="+" onclick="addColorButton()" style="width: 2em;"><br/>
 Color Min: <input type="text" class="color small" id="colorFromRGB" name="colorFromRGB" value="FFFF00" onchange="changeColor('colorFromRGB', 'colorFrom')"/> <input type="hidden" id="colorFrom" name="colorFrom"/><br/>
+</div>
+
 <!-- 
 Remove not found? <input type="checkbox" class="smaller" name="removeIfNotFound" value="1"/><br/ -->
 <br/>

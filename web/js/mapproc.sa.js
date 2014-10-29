@@ -154,6 +154,42 @@ function procStylesFromCategories(cats, colorFrom, colorTo, valueLabel) {
 	return cats;
 }
 
+function extractInts(colors, idx) {
+	var ints = [];
+	for(var i=0;i<colors.length;i++) {
+		ints.push(parseInt(colors[i].substring(idx, idx+2), 16));
+	}
+	return ints;
+}
+
+function procStylesFromCategoriesMultipleColors(cats, colors, valueLabel) {
+	console.log(colors);
+
+	var numCat = Object.keys(cats).length;
+	var colorsA = getLinearCategoriesLimitsMultipleValues(extractInts(colors, 0), numCat);
+	var colorsB = getLinearCategoriesLimitsMultipleValues(extractInts(colors, 2), numCat);
+	var colorsG = getLinearCategoriesLimitsMultipleValues(extractInts(colors, 4), numCat);
+	var colorsR = getLinearCategoriesLimitsMultipleValues(extractInts(colors, 6), numCat);
+	console.log(colors)
+	console.log(extractInts(colors, 0), extractInts(colors, 2), extractInts(colors, 4), extractInts(colors, 6))
+
+	var i=0;
+	for(var c in cats) {
+		cats[c].kmlcolor = hexString(Math.round(colorsA[i])) + hexString(Math.round(colorsB[i])) + hexString(Math.round(colorsG[i])) + hexString(Math.round(colorsR[i]));
+		//XXX: color -> rgbcolor?
+		cats[c].color = hexString(Math.round(colorsR[i])) + hexString(Math.round(colorsG[i])) + hexString(Math.round(colorsB[i]));
+		//TODO: format numbers! integer, float, ...
+		//cats[c].description = cats[c].startval + " &lt; # " + valueLabel + " &lt; " + cats[c].endval;
+		cats[c].description = formatFloat(cats[c].startval) + " &lt; # " + valueLabel + " &lt; " + formatFloat(cats[c].endval);
+		
+		//console.log('cat: '+c+'/'+colorsA[i]+'/'+colorsB[i]);
+		//console.log(cats[c].kmlcolor);
+		i++;
+	}
+	
+	return cats;
+}
+
 /*function applyStyleColor(gPlaceMarks, cats) {
 	var count = 0;
 	for(var id in gPlaceMarks) {
