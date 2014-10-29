@@ -283,7 +283,7 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 			//console.log('click!');
 			//console.log(placemark);
 			//console.log(this);
-			showPlaceInfo(this.id, this.name, this.description);
+			showPlaceInfo(this.id, this.name, this.description, this.catId);
 		});
 		
 		count++;
@@ -301,13 +301,14 @@ function removeSeriesDataWhenPlacemarkNotFound(gPlaceMarks, seriesData) {
 	console.log('removeSeriesDataWhen... after: '+Object.keys(seriesData.series).length+" / "+Object.keys(gPlaceMarks).length);
 }
 
-function showPlaceInfo(id, name, description) {
+function showPlaceInfo(id, name, description, catId) {
 	//TODO: do not show id (?); do not show name if null
 	//console.log(id+" / "+name);
 	//console.log(placemark);
 	document.getElementById('placeId').innerHTML = id;
 	document.getElementById('placeName').innerHTML = name;
 	document.getElementById('placeDesc').innerHTML = description;
+	document.getElementById('placeCat').innerHTML = catId;
 	if(name==null) {
 		document.getElementById('placeName').style.display = 'none';
 		document.getElementById('placeNameLabel').style.display = 'none';
@@ -341,7 +342,7 @@ function showCategoryInfo(id, name, description) {
 	container.appendChild(catbutton);*/
 	if(global_selectCatIdElements>0) {
 		selectFromCategory(id);
-		container.innerHTML = "[<a href='#' onClick='selectFromAllCategories("+selectCatId+");'>show all elements</a>]";
+		container.innerHTML = "[<a href='#' onClick='selectFromAllCategories("+id+");'>show all elements</a>]";
 	}
 	else {
 		container.innerHTML = "[<a href='#' onClick='selectFromCategory("+id+");'>show elements from cat #"+id+"</a>]";
