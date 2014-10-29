@@ -171,7 +171,7 @@ function loadDataCallback() {
 	//console.log(seriesData.series);
 	//TODOne: remove (or not) data elements not present in map
 	var genCatLimitsFromExistingPlacemarks = document.getElementById('genCatLimitsFromExistingPlacemarks').checked;
-	console.log('genCatLimitsFromExistingPlacemarks: '+genCatLimitsFromExistingPlacemarks)
+	//console.log('genCatLimitsFromExistingPlacemarks: '+genCatLimitsFromExistingPlacemarks)
 	if(genCatLimitsFromExistingPlacemarks) {
 		removeSeriesDataWhenPlacemarkNotFound(gmapsPlaces, seriesData);
 	}
@@ -209,11 +209,11 @@ function loadDataCallback() {
 	}
 	colors.push(colorTo);
 
-	console.log('color: from='+colorFrom+'; to='+ colorTo+" ; all="+colors);
+	//console.log('color: from='+colorFrom+'; to='+ colorTo+" ; all="+colors);
 	//procStylesFromCategories(cats, colorFrom, colorTo, seriesData.valueLabel);
 	procStylesFromCategoriesMultipleColors(cats, colors, seriesData.valueLabel);
 	
-	console.log("hex:: "+hexString(2)+"; "+hexString(9)+"; "+hexString(10)+"; "+hexString(11)+"; "+hexString(250)+"; "+hexString(255));
+	//console.log("hex:: "+hexString(2)+"; "+hexString(9)+"; "+hexString(10)+"; "+hexString(11)+"; "+hexString(250)+"; "+hexString(255));
 	
 	applySeriesDataAndStyle(gmapsPlaces, seriesData, cats, map);
 	//applySeriesData(gmapsPlaces, seriesData, cats);
@@ -255,7 +255,7 @@ $.ajax({
 	url: 'datasources.json',
 	success: function(data) {
 		var sources = JSON.parse(data);
-		console.log(sources);
+		//console.log(sources);
 		var select = document.getElementById('dataUrl');
 		for(var i=0;i<sources.length;i++) {
 			if(sources[i].div) {
@@ -272,7 +272,7 @@ $.ajax({
 	url: 'maps.json',
 	success: function(data) {
 		var sources = JSON.parse(data);
-		console.log(sources);
+		//console.log(sources);
 		var select = document.getElementById('mapUrl');
 		for(var i=0;i<sources.length;i++) {
 			if(sources[i].div) {

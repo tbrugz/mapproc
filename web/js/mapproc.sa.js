@@ -26,7 +26,7 @@ function getLinearCategoriesLimitsMultipleValues(values, numCategories) {
 		var amplitude = max-min;
 		var mreminder = mvalue%1;
 		var newvalue = min+amplitude*mreminder;
-		console.log("["+i+"]","div=",div,"mvalue=",mvalue,"mlow=",mlow,"mhigh=",mhigh,"min=",min,"max=",max,"ampl=",amplitude,"newvalue=",newvalue);
+		//console.log("["+i+"]","div=",div,"mvalue=",mvalue,"mlow=",mlow,"mhigh=",mhigh,"min=",min,"max=",max,"ampl=",amplitude,"newvalue=",newvalue);
 		list.push(newvalue);
 	}
 	return list;
@@ -197,15 +197,15 @@ function extractInts(colors, idx) {
 }
 
 function procStylesFromCategoriesMultipleColors(cats, colors, valueLabel) {
-	console.log(colors);
+	//console.log(colors);
 
 	var numCat = Object.keys(cats).length;
 	var colorsA = getLinearCategoriesLimitsMultipleValues(extractInts(colors, 0), numCat);
 	var colorsB = getLinearCategoriesLimitsMultipleValues(extractInts(colors, 2), numCat);
 	var colorsG = getLinearCategoriesLimitsMultipleValues(extractInts(colors, 4), numCat);
 	var colorsR = getLinearCategoriesLimitsMultipleValues(extractInts(colors, 6), numCat);
-	console.log(colors)
-	console.log(extractInts(colors, 0), extractInts(colors, 2), extractInts(colors, 4), extractInts(colors, 6))
+	//console.log(colors)
+	//console.log(extractInts(colors, 0), extractInts(colors, 2), extractInts(colors, 4), extractInts(colors, 6))
 
 	var i=0;
 	for(var c in cats) {
@@ -288,7 +288,7 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 		
 		count++;
 	}
-	console.log('applySeriesDataCount: '+count);
+	//console.log('applySeriesDataCount: '+count);
 }
 
 function removeSeriesDataWhenPlacemarkNotFound(gPlaceMarks, seriesData) {
@@ -358,7 +358,7 @@ function closeCatInfo() {
 
 function selectFromCategory(selectCatId) {
 	//XXX: gmapsPlaces as parameter
-	console.log('selectCatId: '+selectCatId);
+	//console.log('selectCatId: '+selectCatId);
 	var countIn = 0, countOut = 0;
 	for(var id in gmapsPlaces) {
 		var placemark = gmapsPlaces[id];
@@ -380,7 +380,7 @@ function selectFromCategory(selectCatId) {
 			countOut++;
 		}
 	}
-	console.log('selectFromCategory.count: '+countIn+' / '+countOut+' // in+out = '+(countIn+countOut)+' / all = '+Object.keys(gmapsPlaces).length);
+	//console.log('selectFromCategory.count: '+countIn+' / '+countOut+' // in+out = '+(countIn+countOut)+' / all = '+Object.keys(gmapsPlaces).length);
 
 	var container = document.getElementById('category_info_button_container');
 	container.innerHTML = "[<a href='#' onClick='selectFromAllCategories("+selectCatId+");'>show all elements</a>] [#elements = "+countIn+"]";
@@ -403,7 +403,7 @@ function selectFromAllCategories(oldSelectCatId) {
 		placemark.setMap(map);
 		countIn++;
 	}
-	console.log('selectFromAllCategories.count: '+countIn);
+	//console.log('selectFromAllCategories.count: '+countIn);
 	
 	if(oldSelectCatId) {
 		var container = document.getElementById('category_info_button_container');
