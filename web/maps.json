@@ -26,7 +26,7 @@
 	
 	{ "div": "Região Sul" },
 	{ "name": "Municipios PR", "url": "input/json/geojs-41-mun.json" },
-	{ "name": "Municipios RS", "url": "input/json/geojs-43-mun.json" },
+	{ "name": "Municipios RS", "url": "input/json/geojs-43-mun.json", "default": true },
 	{ "name": "Municipios SC", "url": "input/json/geojs-42-mun.json" },
 	
 	{ "div": "Região Centro-Oeste" },
@@ -35,5 +35,5 @@
 	{ "name": "Municipios MS", "url": "input/json/geojs-50-mun.json" },
 
 	{ "div": "Brasil" },
-	{ "name": "Municipios Brasil", "url": "input/json/geojs-all-mun.json" }
+	{ "name": "Municipios Brasil", "url": "input/json/geojs-100-mun.json" }
 ]

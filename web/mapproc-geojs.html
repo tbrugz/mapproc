@@ -257,7 +257,7 @@ $.ajax({
 				select.innerHTML += "<option disabled>"+sources[i].div+"</option>\n";
 			}
 			else {
-				select.innerHTML += "<option value='"+sources[i].url+"'>"+sources[i].name+"</option>\n";
+				select.innerHTML += "<option value='"+sources[i].url+"'"+(sources[i]['default']?" selected":"")+">"+sources[i].name+"</option>\n";
 			}
 		}
 	}
@@ -274,7 +274,7 @@ $.ajax({
 				select.innerHTML += "<option disabled>"+sources[i].div+"</option>\n";
 			}
 			else {
-				select.innerHTML += "<option value='"+sources[i].url+"'>"+sources[i].name+"</option>\n";
+				select.innerHTML += "<option value='"+sources[i].url+"'"+(sources[i]['default']?" selected":"")+">"+sources[i].name+"</option>\n";
 			}
 		}
 	}
@@ -319,6 +319,14 @@ Data:
 <option value="8">8</option>
 <option value="9">9</option>
 <option value="10">10</option>
+<option value="11">11</option>
+<option value="12">12</option>
+<option value="13">13</option>
+<option value="14">14</option>
+<option value="15">15</option>
+<option value="16">16</option>
+<option value="17">17</option>
+<option value="18">18</option>
 </select><br/>
 Scale: 
 <select name="scaleType" id="scaleType">
@@ -330,8 +338,8 @@ Normalize Limits? <input type="checkbox" class="smaller" name="genCatLimitsFromE
 </div>
 
 <div id="colorsContainer" class="boxsmall">
-Color Max: <input type="text" class="color small" id="colorToRGB" name="colorToRGB" value="FF0000" onchange="changeColor('colorToRGB', 'colorTo')"/> <input type="hidden" id="colorTo" name="colorTo"/><br/>
-<div id="xtraColorsContainer">
+Color Max: <input type="text" class="color small" id="colorToRGB" name="colorToRGB" value="FF0000" onchange="changeColor('colorToRGB', 'colorTo')"/> <input type="hidden" id="colorTo" name="colorTo"/>
+<div id="xtraColorsContainer" style="display: inline;">
 </div>
 <input type="button" value="+" onclick="addColorButton()" style="width: 2em;"><br/>
 Color Min: <input type="text" class="color small" id="colorFromRGB" name="colorFromRGB" value="FFFF00" onchange="changeColor('colorFromRGB', 'colorFrom')"/> <input type="hidden" id="colorFrom" name="colorFrom"/><br/>
