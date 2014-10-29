@@ -241,7 +241,8 @@ function addColorButton() {
 	var cont = document.getElementById('xtraColorsContainer');
 	//console.log(cont);
 	var span = document.createElement('span');
-	span.innerHTML += 'Color: <input type="text" class="color small"/><input type="button" value="-" onclick="this.parentElement.parentElement.removeChild(this.parentElement);" style="width: 2em;"><br/>';
+	span.setAttribute('style','display: inline-block');
+	span.innerHTML += 'Color: <input type="text" class="color small"/><input type="button" value="-" onclick="this.parentElement.parentElement.removeChild(this.parentElement);" style="width: 2em;">';
 	cont.appendChild(span);
 	jscolor.bind();
 }
