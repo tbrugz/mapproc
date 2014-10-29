@@ -127,7 +127,7 @@ var ERROR_FILL_COLOR = "#444444";
 var global_selectCatIdElements = 0;
 
 function normalizeNum(float) {
-	return Math.round(float * 100);
+	return Math.round(float * 1000);
 	//return float; //float.toFixed(0);
 }
 
@@ -178,7 +178,7 @@ function procStylesFromCategories(cats, colorFrom, colorTo, valueLabel) {
 		cats[c].color = hexString(Math.round(colorsR[i])) + hexString(Math.round(colorsG[i])) + hexString(Math.round(colorsB[i]));
 		//TODO: format numbers! integer, float, ...
 		//cats[c].description = cats[c].startval + " &lt; # " + valueLabel + " &lt; " + cats[c].endval;
-		cats[c].description = formatFloat(cats[c].startval) + " &lt; # " + valueLabel + " &lt; " + formatFloat(cats[c].endval);
+		cats[c].description = formatFloat(cats[c].startval) + " &le; # " + valueLabel + " &le; " + formatFloat(cats[c].endval);
 		
 		//console.log('cat: '+c+'/'+colorsA[i]+'/'+colorsB[i]);
 		//console.log(cats[c].kmlcolor);
@@ -214,7 +214,7 @@ function procStylesFromCategoriesMultipleColors(cats, colors, valueLabel) {
 		cats[c].color = hexString(Math.round(colorsR[i])) + hexString(Math.round(colorsG[i])) + hexString(Math.round(colorsB[i]));
 		//TODO: format numbers! integer, float, ...
 		//cats[c].description = cats[c].startval + " &lt; # " + valueLabel + " &lt; " + cats[c].endval;
-		cats[c].description = formatFloat(cats[c].startval) + " &lt; # " + valueLabel + " &lt; " + formatFloat(cats[c].endval);
+		cats[c].description = formatFloat(cats[c].startval) + " &le; # " + valueLabel + " &le; " + formatFloat(cats[c].endval);
 		
 		//console.log('cat: '+c+'/'+colorsA[i]+'/'+colorsB[i]);
 		//console.log(cats[c].kmlcolor);
@@ -383,7 +383,7 @@ function selectFromCategory(selectCatId) {
 	console.log('selectFromCategory.count: '+countIn+' / '+countOut+' // in+out = '+(countIn+countOut)+' / all = '+Object.keys(gmapsPlaces).length);
 
 	var container = document.getElementById('category_info_button_container');
-	container.innerHTML = "[<a href='#' onClick='selectFromAllCategories("+selectCatId+");'>show all elements</a>]";
+	container.innerHTML = "[<a href='#' onClick='selectFromAllCategories("+selectCatId+");'>show all elements</a>] [#elements = "+countIn+"]";
 	
 	global_selectCatIdElements = selectCatId;
 }
