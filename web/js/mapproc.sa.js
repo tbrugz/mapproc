@@ -339,7 +339,13 @@ function showCategoryInfo(id, name, description) {
 	catbutton.innerHTML = ;
 	catbutton.setAttribute('onClick', 'selectFromCategory('+id+');');
 	container.appendChild(catbutton);*/
-	container.innerHTML = "[<a href='#' onClick='selectFromCategory("+id+");'>show elements from cat #"+id+"</a>]";
+	if(global_selectCatIdElements>0) {
+		selectFromCategory(id);
+		container.innerHTML = "[<a href='#' onClick='selectFromAllCategories("+selectCatId+");'>show all elements</a>]";
+	}
+	else {
+		container.innerHTML = "[<a href='#' onClick='selectFromCategory("+id+");'>show elements from cat #"+id+"</a>]";
+	}
 }
 
 function closeCatInfo() {
