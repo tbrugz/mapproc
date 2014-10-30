@@ -153,6 +153,8 @@ function resetMap() {
 		placemark.fillColor = DEFAULT_FILL_COLOR;
 		placemark.setMap(null);
 		placemark.setMap(map); //atualiza placemark no mapa - 'null' retira elemento do mapa
+		placemark.catId = null;
+		placemark.description = null;
 		//TODO: removeListener
 		//google.maps.event.removeListener(placemark.listener);
 	}
@@ -246,9 +248,34 @@ function addColorButton() {
 	//console.log(cont);
 	var span = document.createElement('span');
 	span.setAttribute('style','display: inline-block');
-	span.innerHTML += 'Color: <input type="text" class="color small"/><input type="button" value="-" onclick="this.parentElement.parentElement.removeChild(this.parentElement);" style="width: 2em;">';
+	span.innerHTML += 'Color: <input type="text" class="color small"/><input type="button" value="-" onclick="this.parentElement.parentElement.removeChild(this.parentElement);" class="symbol">';
 	cont.appendChild(span);
 	jscolor.bind();
+}
+
+function addDataSeriesDialog() {
+	var div = document.createElement('div');
+	div.setAttribute('id','seriesDialog');
+	div.setAttribute('class','dialog');
+	div.innerHTML = "<div><label>Name: <input type='text' id='seriesName'/></label><br/>"
+		+"<label>URL: <input type='text' id='seriesUrl'/></label><br/>"
+		+"<input type='button' value='add' onclick='addElement2Select(document.getElementById(\"dataUrl\"),{\"name\":document.getElementById(\"seriesName\").value,\"url\":document.getElementById(\"seriesUrl\").value});removeElement(this.parentElement.parentElement);'>"
+		+"<input type='button' value='cancel' onclick='removeElement(this.parentElement.parentElement);'></div>";
+	var cont = document.getElementsByTagName('body')[0];
+	cont.appendChild(div);
+}
+
+function addElement2Select(select, element) {
+	if(element.div) {
+		select.innerHTML += "<option disabled>"+element.div+"</option>\n";
+	}
+	else {
+		select.innerHTML += "<option value='"+element.url+"'"+(element['default']?" selected":"")+">"+element.name+"</option>\n";
+	}
+}
+
+function removeElement(elem) {
+	elem.parentElement.removeChild(elem);
 }
 
 $.ajax({
@@ -258,12 +285,13 @@ $.ajax({
 		//console.log(sources);
 		var select = document.getElementById('dataUrl');
 		for(var i=0;i<sources.length;i++) {
-			if(sources[i].div) {
+			addElement2Select(select, sources[i]);
+			/*if(sources[i].div) {
 				select.innerHTML += "<option disabled>"+sources[i].div+"</option>\n";
 			}
 			else {
 				select.innerHTML += "<option value='"+sources[i].url+"'"+(sources[i]['default']?" selected":"")+">"+sources[i].name+"</option>\n";
-			}
+			}*/
 		}
 	}
 });
@@ -275,12 +303,13 @@ $.ajax({
 		//console.log(sources);
 		var select = document.getElementById('mapUrl');
 		for(var i=0;i<sources.length;i++) {
-			if(sources[i].div) {
+			addElement2Select(select, sources[i]);
+			/*if(sources[i].div) {
 				select.innerHTML += "<option disabled>"+sources[i].div+"</option>\n";
 			}
 			else {
 				select.innerHTML += "<option value='"+sources[i].url+"'"+(sources[i]['default']?" selected":"")+">"+sources[i].name+"</option>\n";
-			}
+			}*/
 		}
 	}
 });
@@ -310,6 +339,7 @@ Map:
 Data:
 <select name="dataUrl" id="dataUrl">
 </select>
+<input type="button" value="+" onclick="addDataSeriesDialog();" class="symbol"><br/>
 </div>
 
 <div id="categoriesGenComp" class="boxsmall">
@@ -342,7 +372,7 @@ Normalize Limits? <input type="checkbox" class="smaller" name="genCatLimitsFromE
 Color Max: <input type="text" class="color small" id="colorToRGB" name="colorToRGB" value="FF0000" onchange="changeColor('colorToRGB', 'colorTo')"/> <input type="hidden" id="colorTo" name="colorTo"/>
 <div id="xtraColorsContainer" style="display: inline;">
 </div>
-<input type="button" value="+" onclick="addColorButton()" style="width: 2em;"><br/>
+<input type="button" value="+" onclick="addColorButton()" class="symbol"><br/>
 Color Min: <input type="text" class="color small" id="colorFromRGB" name="colorFromRGB" value="FFFF00" onchange="changeColor('colorFromRGB', 'colorFrom')"/> <input type="hidden" id="colorFrom" name="colorFrom"/><br/>
 </div>
 

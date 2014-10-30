@@ -21,6 +21,11 @@ input.smaller {
 input[type=button] {
 	width: 7em;
 }
+input.symbol {
+	width: 1em;
+	padding: 0;
+	font-size: small;
+}
 .box {
 	border: 2px solid #bbb;
 	padding: 4px;
@@ -112,4 +117,22 @@ hr {
 	width: 70%;
 	height: 2px;
 	background-color: #ccc;
+}
+
+.dialog {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: rgba(100,100,100,0.7);
+}
+
+.dialog div {
+	top: 30px;
+	position: fixed;
+	left: 30%;
+	background-color: ddd;
+	padding: 10px;
+	border: 2px solid;
 }
