@@ -345,7 +345,7 @@ function showCategoryInfo(id, name, description) {
 	container.appendChild(catbutton);*/
 	if(global_selectCatIdElements>0) {
 		selectFromCategory(id);
-		container.innerHTML = "[<a href='#' onClick='selectFromAllCategories("+id+");'>show all elements</a>]";
+		//container.innerHTML = "[<a href='#' onClick='selectFromAllCategories("+id+");'>show all elements</a>] [#elements = "+countIn+"];
 	}
 	else {
 		container.innerHTML = "[<a href='#' onClick='selectFromCategory("+id+");'>show elements from cat #"+id+"</a>]";

@@ -130,7 +130,7 @@ function loadData(dataUrl) {
 }
 
 function parseCSV(csv, sep) {
-	var nl = /\r\n?/;
+	var nl = /\r?\n/;
 	var lines = csv.split(nl);
 	if(!lines.length || lines.length <= 1) { throw "error parsing CSV"; }
 	var header = lines[0].split(sep);
