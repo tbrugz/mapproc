@@ -17,18 +17,24 @@ var mapCenter = [-16, -48];
 //var mapUrl = "input/json/geojs-43-mun.json"; //RS
 
 function loadNakedMap(map_canvas_id, mapUrl) {
-	var dataPlaces = mapUrl;
-	var jqxhrPlaces = $.getJSON(dataPlaces, function(data) {
-		//okNumber++;
-		//XXX search all features of Polygon type? 
-		places = data.features;
-		var mymap = loadNakedMapCallback(map_canvas_id);
-		//if(okNumber==3) { doIt(); }
-		
-		//http://stackoverflow.com/questions/11029948/enabling-event-propogation-effectively-in-google-maps-api-v3
-		//addMapMouseListeners(mymap, document.getElementById('position'));
-	})
-	.error(function() { alert("error Places ["+dataPlaces+"]"); })
+	//var dataPlaces = mapUrl;
+	console.log("loadNakedMap:: mapUrl=",mapUrl);
+	var jqxhrPlaces = $.ajax({
+		url: mapUrl,
+		success: function(data) {
+			//okNumber++;
+			//XXX search all features of Polygon type?
+			data = JSON.parse(data);
+			places = data.features;
+			var mymap = loadNakedMapCallback(map_canvas_id);
+			//if(okNumber==3) { doIt(); }
+			
+			//http://stackoverflow.com/questions/11029948/enabling-event-propogation-effectively-in-google-maps-api-v3
+			//addMapMouseListeners(mymap, document.getElementById('position'));
+		},
+		error: function() { alert("error Places ["+mapUrl+"]"); }
+	});
+	//.error()
 }
 
 function addMapMouseListeners(map, element) {
@@ -96,13 +102,49 @@ function loadData(dataUrl) {
 	//XXX: json with 2 columns: 1st is id, 2nd is value ;
 	//     1st colname is object-label ; 2nd is value_label - what about measure-unit?
 	//var dataUrl = document.getElementById('dataUrl').value;
-	var jqxhrSeries = $.getJSON(dataUrl, function(data) {
-		//okNumber++;
-		seriesData = data;
-		loadDataCallback();
-		//if(okNumber==3) { doIt(); }
-	})
-	.error(function() { alert("error Series ["+dataUrl+"]"); })
+	console.log("loadData:: dataurl=",dataUrl);
+	var jqxhrSeries = $.ajax({ url: dataUrl,
+		success: function(data) {
+			//okNumber++;
+			seriesData = null;
+			try {
+				//parse JSON series
+				seriesData = JSON.parse(data);
+			}
+			catch(e) {
+				//try CSV parse
+				try {
+					seriesData = parseCSV(data, ";");
+					console.log("csv: seriesData=",seriesData);
+				}
+				catch(e) {
+					alert("error Series ["+dataUrl+"]: "+e);
+				}
+			}
+			if(seriesData) { loadDataCallback(); }
+			//if(okNumber==3) { doIt(); }
+		},
+		error: function() { alert("error Series ["+dataUrl+"]"); }
+	});
+	//.error()
+}
+
+function parseCSV(csv, sep) {
+	var nl = /\r\n?/;
+	var lines = csv.split(nl);
+	if(!lines.length || lines.length <= 1) { throw "error parsing CSV"; }
+	var header = lines[0].split(sep);
+	var sdata = { objectLabel: header[0], valueLabel: header[1], valueType: "FLOAT", series: {} };
+	for(var i=1;i<lines.length;i++) {
+		var values = lines[i].split(sep);
+		if(lines[i].length>0 && (!values.length || values.length <= 1)) { throw "error parsing CSV line "+(i+1)+": "+lines[i]; }
+		sdata.series[values[0]] = values[1];
+	}
+	return sdata;
+}
+
+function normalize(value) {
+	return value.replace(/[\"\']/,"");
 }
 
 function createCatElements() {
@@ -259,7 +301,7 @@ function addDataSeriesDialog() {
 	div.setAttribute('class','dialog');
 	div.innerHTML = "<div><label>Name: <input type='text' id='seriesName'/></label><br/>"
 		+"<label>URL: <input type='text' id='seriesUrl'/></label><br/>"
-		+"<input type='button' value='add' onclick='addElement2Select(document.getElementById(\"dataUrl\"),{\"name\":document.getElementById(\"seriesName\").value,\"url\":document.getElementById(\"seriesUrl\").value});removeElement(this.parentElement.parentElement);'>"
+		+"<input type='button' value='add' onclick='addElement2Select(document.getElementById(\"dataUrl\"),{\"name\":document.getElementById(\"seriesName\").value,\"url\":document.getElementById(\"seriesUrl\").value});document.getElementById(\"dataUrl\").value=document.getElementById(\"seriesUrl\").value;removeElement(this.parentElement.parentElement);'>"
 		+"<input type='button' value='cancel' onclick='removeElement(this.parentElement.parentElement);'></div>";
 	var cont = document.getElementsByTagName('body')[0];
 	cont.appendChild(div);

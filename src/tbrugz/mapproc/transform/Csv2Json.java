@@ -62,10 +62,10 @@ public class Csv2Json {
 		
 		int outCount = 0;
 		os.write("{ \n");
-		os.write("\t"+QUOT+"objectLabel"+QUOT+": "+QUOT+""+is.metadata.objectLabel+""+QUOT+",\n");
-		os.write("\t"+QUOT+"valueLabel"+QUOT+": "+QUOT+""+is.metadata.valueLabel+""+QUOT+",\n");
-		os.write("\t"+QUOT+"valueType"+QUOT+": "+QUOT+""+is.metadata.valueType+""+QUOT+",\n");
-		os.write("\t"+QUOT+"measureUnit"+QUOT+": "+QUOT+""+is.metadata.measureUnit+""+QUOT+",\n");
+		os.write("\t"+QUOT+"objectLabel"+QUOT+": "+getValue(is.metadata.objectLabel)+",\n");
+		os.write("\t"+QUOT+"valueLabel"+QUOT+": "+getValue(is.metadata.valueLabel)+",\n");
+		os.write("\t"+QUOT+"valueType"+QUOT+": "+QUOT+is.metadata.valueType+QUOT+",\n");
+		os.write("\t"+QUOT+"measureUnit"+QUOT+": "+getValue(is.metadata.measureUnit)+",\n");
 		os.write("\t"+QUOT+"series"+QUOT+": {\n");
 		for(String key: keys) {
 			//XXX: only works for integer/float values
@@ -76,6 +76,10 @@ public class Csv2Json {
 		os.write("\n\t}\n}");
 
 		log.info("wrote "+outCount+" elements");
+	}
+	
+	static String getValue(String s) {
+		return s==null?null:QUOT+s+QUOT;
 	}
 	
 

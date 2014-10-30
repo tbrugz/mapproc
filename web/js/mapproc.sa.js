@@ -256,7 +256,10 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 		placemark.dataValue = seriesData.series[id];
 		placemark.catId = getCat(placemark.dataValue, catData);
 		//TODO: numberFormat (grouping char, ...)
-		placemark.description = seriesData.valueLabel + ': '+formatFloat(seriesData.series[id]) + ' ' + seriesData.measureUnit;
+		//console.log("seriesData=",seriesData);
+		
+		placemark.description = seriesData.valueLabel + ': '+formatFloat(seriesData.series[id])
+			+ (seriesData.measureUnit?' ' + seriesData.measureUnit:"");
 		if(placemark.catId==undefined) {
 			console.warn('undefined cat: '+id+' / '+placemark.name); //+' / '+placemark.catId);
 			placemark.fillColor = ERROR_FILL_COLOR;
