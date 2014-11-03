@@ -134,7 +134,7 @@ function parseCSV(csv, sep) {
 	var lines = csv.split(nl);
 	if(!lines.length || lines.length <= 1) { throw "error parsing CSV"; }
 	var header = lines[0].split(sep);
-	var sdata = { objectLabel: header[0], valueLabel: header[1], valueType: "FLOAT", series: {} };
+	var sdata = { objectLabel: normalize(header[0]), valueLabel: normalize(header[1]), valueType: "FLOAT", series: {} };
 	for(var i=1;i<lines.length;i++) {
 		var values = lines[i].split(sep);
 		if(lines[i].length>0 && (!values.length || values.length <= 1)) { throw "error parsing CSV line "+(i+1)+": "+lines[i]; }
@@ -144,7 +144,7 @@ function parseCSV(csv, sep) {
 }
 
 function normalize(value) {
-	return value.replace(/[\"\']/,"");
+	return value.replace(/[\"\']/g,"");
 }
 
 function createCatElements() {
@@ -223,7 +223,7 @@ function loadDataCallback() {
 	var maxval = max(seriesData.series);
 	var minval = min(seriesData.series);
 	var numOfCategories = document.getElementById('numOfCategories').value;
-	//console.log('vals: '+minval+'; '+ maxval+'; '+numOfCategories );
+	console.log('vals: min=',minval,' max=',maxval,' #cats= '+numOfCategories );
 	//TODO: log/linear/percentile cat limits
 	var catLimits;
 	var scaleType = document.getElementById('scaleType').value;
@@ -236,7 +236,7 @@ function loadDataCallback() {
 	else {
 		catLimits = getLogCategoriesLimits(minval, maxval, numOfCategories);
 	}
-	//console.log(catLimits);
+	console.log("catLimits=",catLimits);
 	
 	var cats = genCategoriesFromLimits(catLimits);
 	catData = cats;

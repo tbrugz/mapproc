@@ -79,7 +79,7 @@ function max(series) {
 	for(var i in series) {
 		if(series[i]>max) { max = series[i]; }
 	}
-	return max;
+	return Number(max);
 }
 
 function min(series) {
@@ -88,7 +88,7 @@ function min(series) {
 		//console.log("i:"+i+" / "+series[i]);
 		if(series[i]<min) { min = series[i]; }
 	}
-	return min;
+	return Number(min);
 }
 
 function hexString(number) {
@@ -248,7 +248,7 @@ function procStylesFromCategoriesMultipleColors(cats, colors, valueLabel) {
 }*/
 
 function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
-	var count = 0;
+	var countOk = 0, countUndef = 0;
 	for(var id in gPlaceMarks) {
 		var placemark = gPlaceMarks[id];
 		
@@ -261,10 +261,11 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 		placemark.description = seriesData.valueLabel + ': '+formatFloat(seriesData.series[id])
 			+ (seriesData.measureUnit?' ' + seriesData.measureUnit:"");
 		if(placemark.catId==undefined) {
-			console.warn('undefined cat: '+id+' / '+placemark.name); //+' / '+placemark.catId);
+			//console.warn('undefined cat: '+id+' / '+placemark.name); //+' / '+placemark.catId);
 			placemark.fillColor = ERROR_FILL_COLOR;
 			placemark.setMap(null);
 			placemark.setMap(map);
+			countUndef++;
 			//TODO: option to remove element from map
 			continue;
 		}
@@ -289,9 +290,9 @@ function applySeriesDataAndStyle(gPlaceMarks, seriesData, catData, map) {
 			showPlaceInfo(this.id, this.name, this.description, this.catId);
 		});
 		
-		count++;
+		countOk++;
 	}
-	//console.log('applySeriesDataCount: '+count);
+	console.log('applySeriesDataCount: ok=',countOk,' err=',countUndef);
 }
 
 function removeSeriesDataWhenPlacemarkNotFound(gPlaceMarks, seriesData) {
