@@ -1,39 +1,45 @@
-[
+{
+"maps": [
 	{ "div": "Região Norte" },
-	{ "name": "Municipios AC", "url": "input/json/geojs-12-mun.json" },
-	{ "name": "Municipios AM", "url": "input/json/geojs-13-mun.json" },
-	{ "name": "Municipios PA", "url": "input/json/geojs-15-mun.json" },
-	{ "name": "Municipios RO", "url": "input/json/geojs-11-mun.json" },
-	{ "name": "Municipios RR", "url": "input/json/geojs-14-mun.json" },
-	{ "name": "Municipios TO", "url": "input/json/geojs-17-mun.json" },
+	{ "id": "AC", "name": "Municipios AC", "url": "input/json/geojs-12-mun.json" },
+	{ "id": "AM", "name": "Municipios AM", "url": "input/json/geojs-13-mun.json" },
+	{ "id": "AP", "name": "Municipios AP", "url": "input/json/geojs-16-mun.json" },
+	{ "id": "PA", "name": "Municipios PA", "url": "input/json/geojs-15-mun.json" },
+	{ "id": "RO", "name": "Municipios RO", "url": "input/json/geojs-11-mun.json" },
+	{ "id": "RR", "name": "Municipios RR", "url": "input/json/geojs-14-mun.json" },
+	{ "id": "TO", "name": "Municipios TO", "url": "input/json/geojs-17-mun.json" },
 	
 	{ "div": "Região Nordeste" },
-	{ "name": "Municipios AL", "url": "input/json/geojs-27-mun.json" },
-	{ "name": "Municipios BA", "url": "input/json/geojs-29-mun.json" },
-	{ "name": "Municipios CE", "url": "input/json/geojs-23-mun.json" },
-	{ "name": "Municipios MA", "url": "input/json/geojs-21-mun.json" },
-	{ "name": "Municipios PB", "url": "input/json/geojs-25-mun.json" },
-	{ "name": "Municipios PE", "url": "input/json/geojs-26-mun.json" },
-	{ "name": "Municipios PI", "url": "input/json/geojs-22-mun.json" },
-	{ "name": "Municipios RN", "url": "input/json/geojs-24-mun.json" },
-	{ "name": "Municipios SE", "url": "input/json/geojs-28-mun.json" },
+	{ "id": "AL", "name": "Municipios AL", "url": "input/json/geojs-27-mun.json" },
+	{ "id": "BA", "name": "Municipios BA", "url": "input/json/geojs-29-mun.json" },
+	{ "id": "CE", "name": "Municipios CE", "url": "input/json/geojs-23-mun.json" },
+	{ "id": "MA", "name": "Municipios MA", "url": "input/json/geojs-21-mun.json" },
+	{ "id": "PB", "name": "Municipios PB", "url": "input/json/geojs-25-mun.json" },
+	{ "id": "PE", "name": "Municipios PE", "url": "input/json/geojs-26-mun.json" },
+	{ "id": "PI", "name": "Municipios PI", "url": "input/json/geojs-22-mun.json" },
+	{ "id": "RN", "name": "Municipios RN", "url": "input/json/geojs-24-mun.json" },
+	{ "id": "SE", "name": "Municipios SE", "url": "input/json/geojs-28-mun.json" },
 	
 	{ "div": "Região Sudeste" },
-	{ "name": "Municipios ES", "url": "input/json/geojs-32-mun.json" },
-	{ "name": "Municipios MG", "url": "input/json/geojs-31-mun.json" },
-	{ "name": "Municipios RJ", "url": "input/json/geojs-33-mun.json" },
-	{ "name": "Municipios SP", "url": "input/json/geojs-35-mun.json" },
+	{ "id": "ES", "name": "Municipios ES", "url": "input/json/geojs-32-mun.json" },
+	{ "id": "MG", "name": "Municipios MG", "url": "input/json/geojs-31-mun.json" },
+	{ "id": "RJ", "name": "Municipios RJ", "url": "input/json/geojs-33-mun.json" },
+	{ "id": "SP", "name": "Municipios SP", "url": "input/json/geojs-35-mun.json" },
 	
 	{ "div": "Região Sul" },
-	{ "name": "Municipios PR", "url": "input/json/geojs-41-mun.json" },
-	{ "name": "Municipios RS", "url": "input/json/geojs-43-mun.json", "default": true },
-	{ "name": "Municipios SC", "url": "input/json/geojs-42-mun.json" },
+	{ "id": "PR", "name": "Municipios PR", "url": "input/json/geojs-41-mun.json" },
+	{ "id": "RS", "name": "Municipios RS", "url": "input/json/geojs-43-mun.json", "default": true },
+	{ "id": "SC", "name": "Municipios SC", "url": "input/json/geojs-42-mun.json" },
 	
 	{ "div": "Região Centro-Oeste" },
-	{ "name": "Municipios GO", "url": "input/json/geojs-52-mun.json" },
-	{ "name": "Municipios MT", "url": "input/json/geojs-51-mun.json" },
-	{ "name": "Municipios MS", "url": "input/json/geojs-50-mun.json" },
+	{ "id": "DF", "name": "Municipios DF", "url": "input/json/geojs-53-mun.json" },
+	{ "id": "GO", "name": "Municipios GO", "url": "input/json/geojs-52-mun.json" },
+	{ "id": "MT", "name": "Municipios MT", "url": "input/json/geojs-51-mun.json" },
+	{ "id": "MS", "name": "Municipios MS", "url": "input/json/geojs-50-mun.json" },
 
 	{ "div": "Brasil" },
-	{ "name": "Municipios Brasil", "url": "input/json/geojs-100-mun.json" }
-]
+	{ "id": "Brasil", "name": "Municipios Brasil", "url": "input/json/geojs-100-mun.json" }
+],
+"mapcenter": [-16, -48],
+"gmapsapikey": ""
+}

@@ -12,7 +12,7 @@
 var places, catData, seriesData;
 var gmapsPlaces = {};
 var map;
-var mapCenter = [-16, -48];
+var mapCenter = [-16, -48]; //XXX get from maps.json
 //var mapUrl = "input/json/geojs-35-mun.json"; //SP
 //var mapUrl = "input/json/geojs-43-mun.json"; //RS
 
@@ -21,6 +21,7 @@ function loadNakedMap(map_canvas_id, mapUrl) {
 	console.log("loadNakedMap:: mapUrl=",mapUrl);
 	var jqxhrPlaces = $.ajax({
 		url: mapUrl,
+		dataType: 'text',
 		success: function(data) {
 			//okNumber++;
 			//XXX search all features of Polygon type?
@@ -104,6 +105,7 @@ function loadData(dataUrl) {
 	//var dataUrl = document.getElementById('dataUrl').value;
 	console.log("loadData:: dataurl=",dataUrl);
 	var jqxhrSeries = $.ajax({ url: dataUrl,
+		dataType: 'text',
 		success: function(data) {
 			//okNumber++;
 			seriesData = null;
@@ -322,8 +324,10 @@ function removeElement(elem) {
 
 $.ajax({
 	url: 'datasources.json',
+	dataType: 'text',
 	success: function(data) {
-		var sources = JSON.parse(data);
+		var seriesData = JSON.parse(data);
+		var sources = seriesData.series;
 		//console.log(sources);
 		var select = document.getElementById('dataUrl');
 		for(var i=0;i<sources.length;i++) {
@@ -335,13 +339,18 @@ $.ajax({
 				select.innerHTML += "<option value='"+sources[i].url+"'"+(sources[i]['default']?" selected":"")+">"+sources[i].name+"</option>\n";
 			}*/
 		}
-	}
+	},
+	error: function(jqXHR, textStatus, errorThrown) {
+		console.log('datasources.json', jqXHR, textStatus, errorThrown);
+	}	
 });
 
 $.ajax({
 	url: 'maps.json',
+	dataType: 'text',
 	success: function(data) {
-		var sources = JSON.parse(data);
+		var mapsData = JSON.parse(data);
+		var sources = mapsData.maps;
 		//console.log(sources);
 		var select = document.getElementById('mapUrl');
 		for(var i=0;i<sources.length;i++) {
@@ -353,6 +362,9 @@ $.ajax({
 				select.innerHTML += "<option value='"+sources[i].url+"'"+(sources[i]['default']?" selected":"")+">"+sources[i].name+"</option>\n";
 			}*/
 		}
+	},
+	error: function(jqXHR, textStatus, errorThrown) {
+		console.log('maps.json', jqXHR, textStatus, errorThrown);
 	}
 });
 
@@ -404,8 +416,8 @@ Data:
 Scale: 
 <select name="scaleType" id="scaleType">
 	<option value="LINEAR">LINEAR</option>
-	<option value="LOG" selected>LOG</option>
-	<option value="QUANTILE">QUANTILE</option>
+	<option value="LOG">LOG</option>
+	<option value="QUANTILE" selected>QUANTILE</option>
 </select><br/>
 Normalize Limits? <input type="checkbox" class="smaller" name="genCatLimitsFromExistingPlacemarks" id="genCatLimitsFromExistingPlacemarks" value="1" checked/><br/>
 </div>
