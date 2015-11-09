@@ -1,8 +1,16 @@
 <project name="mapproc_gae" basedir=".">
 
+  <property file="build.properties"/>
+
   <import file="${sdk.dir}/config/user/ant-macros.xml" />
 
   <!-- admin: http://localhost:8080/_ah/admin -->
+
+  <target name="prepare">
+  </target>
+
+  <target name="gae-deps">
+  </target>
 
   <!-- XXX put into build-gae.xml? -->
   <target name="gae-copyjars" depends="prepare" description="Copies the App Engine JARs to the WAR.">
@@ -64,4 +72,5 @@
       </args>
     </appcfg>
   </target>
+
 </project>

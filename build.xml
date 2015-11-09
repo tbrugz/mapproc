@@ -15,7 +15,7 @@
 	<target name="compile" depends="prepare">
 	</target>
 	
-	<target name="war" depends="gae-copyjars">
+	<target name="war"> <!--depends="gae-copyjars"-->
 		<war destfile="${war.file}" needxmlfile="false">
 			<webinf dir="web/WEB-INF"></webinf>
 			<lib dir="lib">
@@ -53,6 +53,7 @@
 				<include name="**/*.css"/>
 				<include name="**/*.png"/>
 				<include name="**/*.gif"/>
+				<include name="**/*.ico"/>
 			</fileset>
 		</copy>
 		<copy todir="${deploy.dir}/mapproc/input" verbose="true">
