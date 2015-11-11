@@ -95,8 +95,16 @@ function loadNakedMapCallback(map_canvas_id) {
 		count++;
 		//if(count>10) { break; }
 	}
-	
-	map.fitBounds(box);
+
+	if(map) {
+		map.fitBounds(box);
+	}
+	else {
+		var message = "Error loading map";
+		console.warn(message);
+		alert(message);
+	}
+
 	//console.log(box);
 	return map;
 }
@@ -183,6 +191,7 @@ function createCatElements() {
 		catInt.setAttribute('onclick', 'showCategoryInfo("'+id+'")');
 		if(ncats < 25) {
 			catInt.innerHTML = '#'+id;
+			//XXX category text color should constrast with background (black/white)
 		}
 		//cat.setAttribute('onclick', 'showPlaceInfo(id, "'+catData[id].name+'", "'+catData[id].description+'")'); //catData[id].description
 		//cat.setAttribute('onclick', function() { showPlaceInfo(id, "", ""); }); //catData[id].description
@@ -214,6 +223,10 @@ function resetMapData() {
 	container.style.display = 'none';
 	var mapcanvas = document.getElementById('map_canvas');
 	mapcanvas.style.right = 0;
+	var categoriesCounter = document.getElementById('categoriesCounter');
+	categoriesCounter.value = '';
+
+	document.getElementById('setColorsFromCats').disabled = true;
 	
 	global_selectCatIdElements = 0;
 	closeCatInfo();
@@ -230,14 +243,18 @@ function loadDataCallback() {
 
 	var catLimits = null;
 	var isNumericData = true;
+	var isCategoricalDataChk = document.getElementById('isCategoricalData').checked;
 	
-	if(isNumericArray(seriesData.series)) {
+	if(isNumericArray(seriesData.series) && !isCategoricalDataChk) {
 		console.log('is numeric series!');
 		catLimits = loadDataNumericSeries(seriesData);
 	} else {
 		console.log('is NOT numeric series!');
 		catLimits = loadDataCategoricalSeries(seriesData);
 		isNumericData = false;
+		document.getElementById('isCategoricalData').checked = true;
+		document.getElementById('categoriesCounter').value = catLimits.length-1;
+		isCategoricalDataChanged();
 	}
 
 	console.log("catLimits=",catLimits);
@@ -246,6 +263,8 @@ function loadDataCallback() {
 	catData = cats;
 
 	console.log('cats=', cats);
+
+	changeColor('colorFromRGB', 'colorFrom');changeColor('colorToRGB', 'colorTo');
 	
 	var colorFrom = document.getElementById('colorFrom').value;
 	var colorTo = document.getElementById('colorTo').value;
@@ -267,6 +286,8 @@ function loadDataCallback() {
 	//applySeriesData(gmapsPlaces, seriesData, cats);
 	//applyStyleColor(gmapsPlaces, cats);
 	createCatElements();
+
+	document.getElementById('setColorsFromCats').disabled = false;
 	
 	closeCatInfo();
 	//TODO: option to select (show only) placemarks from given category
@@ -295,14 +316,20 @@ function loadDataNumericSeries(seriesData) {
 }
 
 function loadDataCategoricalSeries() {
-	var shash = seriesHash(seriesData.series)
+	/* var shash = seriesHash(seriesData.series)
 	console.log('series hash:',shash);
 	var keys = Object.keys(shash);
 	var numOfCategories = keys.length;
-	var catLimits = [];
-	var skeys = keys.sort();
+	var skeys = keys.sort(); // null becomes 'null' ?
 	console.log('series sorted keys:',skeys);
 	//skeys.push(skeys[skeys.length-1]);
+	skeys.push(null); */
+
+	var dvarr = distinctValuesArray(seriesData.series);
+	console.log('distinctValuesArray:',dvarr);
+	var numOfCategories = dvarr.length;
+	var skeys = dvarr.sort(); // null becomes 'null' ?
+	console.log('series sorted keys:',skeys);
 	skeys.push(null);
 	
 	return skeys;
@@ -357,6 +384,20 @@ function addElement2Select(select, element) {
 
 function removeElement(elem) {
 	elem.parentElement.removeChild(elem);
+}
+
+function isCategoricalDataChanged() {
+	// XXX enable/disable "createCategoriesFromDataSeries"
+	if(document.getElementById('isCategoricalData').checked) {
+		document.getElementById('categoriesGenComp').style.display = 'none';
+		document.getElementById('categoriesCounterContainer').style.display = 'block';
+		//document.getElementById('shouldCreateCategoriesFromDataSeries').disabled = false;
+	}
+	else {
+		document.getElementById('categoriesGenComp').style.display = 'block';
+		document.getElementById('categoriesCounterContainer').style.display = 'none';
+		//document.getElementById('shouldCreateCategoriesFromDataSeries').disabled = false;
+	}
 }
 
 function loadMap() {
@@ -433,6 +474,10 @@ Data:
 <select name="dataUrl" id="dataUrl">
 </select>
 <input type="button" value="+" onclick="addDataSeriesDialog();" class="symbol"><br/>
+<label>
+	<input type="checkbox" name="isCategoricalData" id="isCategoricalData" style="width:inherit;" onchange="isCategoricalDataChanged();"/>
+	Categorical Data?
+</label>
 </div>
 
 <div id="categoriesGenComp" class="boxsmall">
@@ -458,7 +503,16 @@ Scale:
 	<option value="LOG">LOG</option>
 	<option value="QUANTILE" selected>QUANTILE</option>
 </select><br/>
-Normalize Limits? <input type="checkbox" class="smaller" name="genCatLimitsFromExistingPlacemarks" id="genCatLimitsFromExistingPlacemarks" value="1" checked/><br/>
+<label>
+<input type="checkbox" class="smaller" name="genCatLimitsFromExistingPlacemarks" id="genCatLimitsFromExistingPlacemarks" value="1" checked/>
+Normalize Limits?
+</label>
+<br/>
+</div>
+
+<div id="categoriesCounterContainer" class="boxsmall" style="display: none;">
+#Cat: 
+<input type="text" name="categoriesCounter" id="categoriesCounter" style="width: 5em" readonly disabled />
 </div>
 
 <div id="colorsContainer" class="boxsmall">
@@ -467,6 +521,8 @@ Color Max: <input type="text" class="color small" id="colorToRGB" name="colorToR
 </div>
 <input type="button" value="+" onclick="addColorButton()" class="symbol"><br/>
 Color Min: <input type="text" class="color small" id="colorFromRGB" name="colorFromRGB" value="FFFF00" onchange="changeColor('colorFromRGB', 'colorFrom')"/> <input type="hidden" id="colorFrom" name="colorFrom"/><br/>
+<input type=button id="setColorsFromCats" style="font-size: 7pt;" class="small" value="Update" onclick="setColorsFromCategories();" title="update colors from categories" disabled/>
+<input type=button id="resetColors" style="font-size: 7pt;" class="small" value="Reset" onclick="resetColorsDiv('FF0000','FFFF00');" title="reset colors"/>
 </div>
 
 <!-- 

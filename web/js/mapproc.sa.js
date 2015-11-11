@@ -80,7 +80,10 @@ function isNumeric(n) {
 
 function isNumericArray(series) {
 	for(var i in series) {
-		if(!isNumeric(series[i])) { return false; }
+		if((series[i] != null) && !isNumeric(series[i])) {
+			//console.log("non-numeric: "+series[i]);
+			return false;
+		}
 	}
 	return true;
 }
@@ -131,7 +134,7 @@ function seriesValues(series) {
 	return ret;
 }
 
-function seriesHash(series) {
+/*function seriesHash(series) {
 	var ret = {};
 	for(var i in series) {
 		if(ret[series[i]]) {
@@ -139,6 +142,16 @@ function seriesHash(series) {
 		}
 		else {
 			ret[series[i]] = 1;
+		}
+	}
+	return ret;
+}*/
+
+function distinctValuesArray(series) {
+	var ret = [];
+	for(var i in series) {
+		if(ret.indexOf(series[i])<0) {
+			ret.push(series[i]);
 		}
 	}
 	return ret;
@@ -154,6 +167,15 @@ var global_numberOfCats = 0;
 function normalizeNum(float) {
 	return Math.round(float * 1000);
 	//return float; //float.toFixed(0);
+}
+
+// http://stackoverflow.com/a/3627747/616413
+function rgb2hex(rgb) {
+	rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+	function hex(x) {
+		return ("0" + parseInt(x).toString(16)).slice(-2);
+	}
+	return ("" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3])).toUpperCase();
 }
 
 function getCat(value, catData, isNumerical) {
@@ -260,8 +282,8 @@ function procStylesFromCategoriesMultipleColors(cats, colors, valueLabel, isNume
 	var colorsB = getLinearCategoriesLimitsMultipleValues(extractInts(colors, 2), numCat);
 	var colorsG = getLinearCategoriesLimitsMultipleValues(extractInts(colors, 4), numCat);
 	var colorsR = getLinearCategoriesLimitsMultipleValues(extractInts(colors, 6), numCat);
-	//console.log(colors)
-	//console.log(extractInts(colors, 0), extractInts(colors, 2), extractInts(colors, 4), extractInts(colors, 6))
+	//console.log('procStylesFromCategoriesMultipleColors: colors: ',colors);
+	//console.log('extractInts:', extractInts(colors, 0), extractInts(colors, 2), extractInts(colors, 4), extractInts(colors, 6))
 
 	var i=0;
 	for(var c in cats) {
@@ -492,6 +514,49 @@ function getCategoryInfoNavigation(currentCatId) {
 	if(currentCatId < catlen) {
 		str += "<a href='#' onclick='showCategoryInfo("+(1+currentCatId)+")'> &gt; </a>";
 	}
-	console.log("getCategoryInfoNavigation: "+currentCatId+" / "+catlen);
+	//console.log("getCategoryInfoNavigation: "+currentCatId+" / "+catlen);
 	return "[ "+str+" ]";
+}
+
+function setColorsFromCategories() {
+	var catdiv = document.getElementById('categories_canvas');
+	if(catdiv==null) {
+		console.warn("elem 'categories_canvas' does not exsits");
+		return;
+	}
+	var cats = catdiv.querySelectorAll(".category");
+	var catnum = cats.length;
+	
+	var coldiv = document.getElementById('colorsContainer');
+	var colors = coldiv.querySelectorAll("input.color");
+	var colnum = colors.length;
+	//console.log('catnum: '+catnum+' ; colors: '+colnum)
+	//while()
+	for(var i=colnum; i<catnum;i++) {
+		addColorButton();
+	}
+	//----------
+	var colors = coldiv.querySelectorAll("input.color");
+	var colnum = colors.length;
+	//console.log('colors',colors);
+	//for(var i=0)
+	for(var i=colnum;i>0;i--) {
+		var col = colors[colnum-i];
+		var catid = 'cat'+i;
+		var cat = document.getElementById(catid).querySelector('.categoryInternal');
+		//console.log('cat "'+catid+'":',cat.style+" ; "+colnum+" , "+i);
+		col.style.backgroundColor = cat.style.backgroundColor;
+		col.value = rgb2hex(cat.style.backgroundColor);
+	}
+}
+
+function resetColorsDiv(colorTo, colorFrom) {
+	var div = document.getElementById('xtraColorsContainer');
+	div.innerHTML = '';
+	var cFrom = document.getElementById('colorFromRGB');
+	cFrom.value = colorFrom;
+	cFrom.style.backgroundColor = '#'+colorFrom;
+	var cTo = document.getElementById('colorToRGB');
+	cTo.value = colorTo;
+	cTo.style.backgroundColor = '#'+colorTo;
 }
